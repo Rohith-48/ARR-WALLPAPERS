@@ -2,264 +2,266 @@
 <!DOCTYPE html>
 <html lang="en" class="no-js">
 <head>
-	<title>Signout Page</title>
-	<meta charset="UTF-8">
-	<meta name="description" content="">
-	<meta name="keywords" content="">
-	<meta name="author" content="">
-	<link rel="profile" href="#">
-
-    <!--Google Font-->
-    <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600' />
-	<!-- Mobile specific meta -->
-	<meta name=viewport content="width=device-width, initial-scale=1">
-	<meta name="format-detection" content="telephone-no">
-
+    <title>Signup Page</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css'>
     <style>
-        /* General styles */
-        body {
+        * {
             margin: 0;
             padding: 0;
-            font-family: "Muli", sans-serif;
-            background-color: #000000;
-  background-image: url("../static/image-asset/cover.png");
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
 
-        /* Signup page styles */
-        .login-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .container {
             height: 100vh;
-        }
-        .row3 {
-    display: flex;
-    justify-content: center;
-}
-.row5 {
-    display: flex;
-    justify-content: center;
-}
-        .login-content {
-            background-color: #ffffff;
-            padding: 60px;
-            border-radius: 10px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
             width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: black;
+            background-image: url("../static/image-asset/cover.png");
+            column-gap: 30px;
         }
 
-        .login-content h3 {
-            margin: 0 0 20px;
+        .form {
+            position: absolute;
+            max-width: 450px;
+            width: 100%;
+            padding: 30px;
+            border-radius: 6px;
+            background: #FFF;
+        }
+
+        header {
+            font-size: 28px;
+            font-weight: 600;
+            color: #232836;
             text-align: center;
         }
 
-        .row {
-            margin-bottom: 15px;
+        form {
+            margin-top: 30px;
         }
 
-        label {
-            display: block;
-            font-weight: bold;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        input[type="file"] {
+        .field {
+            position: relative;
+            height: 50px;
             width: 100%;
-            padding: 10px;
-            border: 1px solid #d1c3cc;
-            border-radius: 3px;
+            margin-top: 20px;
+            border-radius: 6px;
         }
 
-        button[type="submit"] {
-            background-color: #ff0000;
-            color: #ffffff;
+        .field input,
+        .field button {
+            height: 100%;
+            width: 100%;
             border: none;
-            padding: 10px 20px;
-            border-radius: 3px;
+            font-size: 16px;
+            font-weight: 400;
+            border-radius: 6px;
+        }
+
+        .field input {
+            outline: none;
+            padding: 0 15px;
+            border: 1px solid #CACACA;
+        }
+
+        .field input:focus {
+            border-bottom-width: 2px;
+        }
+
+        .eye-icon {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: #8b8b8b;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .field button {
+            color: #fff;
+            background-color: #0171d3;
+            transition: all 0.3s ease;
             cursor: pointer;
         }
 
-        button[type="submit"]:hover {
-            background-color: #cc0000;
+        .field button:hover {
+            background-color: #016dcb;
         }
 
-        .social-btn-2 a {
-            display: inline-block;
-            margin-right: 10px;
-            padding: 10px 20px;
-            background-color: #ffffff;
-            color: #000000;
-            border-radius: 3px;
+        .form-link {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .form-link span,
+        .form-link a {
+            font-size: 14px;
+            font-weight: 400;
+            color: #232836;
+        }
+
+        .form a {
+            color: #0171d3;
             text-decoration: none;
         }
 
-        /* Additional styling for social buttons */
-        .social-btn-2 a.fb {
-            background-color: #3b5998;
-            color: #ffffff;
+        .line {
+            position: relative;
+            height: 1px;
+            width: 100%;
+            margin: 36px 0;
+            background-color: #d4d4d4;
         }
 
-        .social-btn-2 a.tw {
-            background-color: #1877f2;
-            color: #ffffff;
+        .line::before {
+            content: 'OR';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #FFF;
+            color: #8b8b8b;
+            padding: 0 15px;
         }
 
-        .social-btn-2 a i {
-            margin-right: 5px;
+        .media-options a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .social-login ul {
-  list-style-type: none;
-  margin: 30px 0;
-  padding: 0;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
-}
 
-.social-login ul li {
-  -webkit-box-flex: 1;
-  -ms-flex: 1 auto;
-  flex: 1 auto;
-}
+        a.facebook {
+            color: #fff;
+            background-color: #4267b2;
+        }
 
-.social-login ul li a {
-  background-color: #ffffff;
-  -webkit-box-shadow: 20px 11px 42px -21px rgba(168,168,168,1);
--moz-box-shadow: 20px 11px 42px -21px rgba(168,168,168,1);
-box-shadow: 20px 11px 42px -21px rgba(168,168,168,1);
-  border-radius: 3px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  padding: 15px;
-  color: #000000;
-  font-weight: bold;
-  text-decoration: none;
-  -webkit-transition: background-color 0.3s;
-  transition: background-color 0.3s;
-}
+        a.facebook .facebook-icon {
+            height: 28px;
+            width: 28px;
+            color: #0171d3;
+            font-size: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+        }
 
-.social-login ul li a::before {
-  content: "";
-  width: 30px;
-  height: 30px;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 30px;
-  margin-right: 5px;
-}
+        img.google-img {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            height: 20px;
+            width: 20px;
+            object-fit: cover;
+        }
 
-.social-login ul li a:hover {
-  background-color: #fff199;
-  color: #0e090e;
-  -webkit-box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
+        a.google {
+            border: 1px solid #CACACA;
+        }
 
-li.google {
-  margin-right: 10px;
-}
+        a.google span {
+            font-weight: 500;
+            opacity: 0.6;
+            color: #232836;
+        }
 
-li.google a::before {
-  background-image: url("../static/image-asset/google.png");
-}
-
-li.fb {
-  margin-left: 10px;
-}
-
-li.fb a::before {
-  margin: 0;
-  background-image: url("../static/image-asset/fb.png");
-}
-
-@media only screen and (max-width: 400px) {
-  .social-login ul {
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-    flex-direction: column;
-  }
-
-  li.google,
-  li.fb {
-    margin: 0;
-  }
-
-  li.google {
-    margin-bottom: 10px;
-  }
-}
+        @media screen and (max-width: 400px) {
+            .form {
+                padding: 20px 10px;
+            }
+        }
     </style>
 </head>
 <body>
+    <section class="container forms">
+        <div class="form signup">
+            {% csrf_token %}
+            <div class="form-content">
+                <header>Signup</header>
+                <form action="#">
+                    <div class="field input-field">
+                        <input type="text" placeholder="Username" class="input">
+                    </div>
+                    <div class="field input-field">
+                        <input type="email" placeholder="Email" class="input">
+                    </div>
 
-<div class="login-wrapper" id="signup-content">
-    <div class="login-content">
-        <h3>SIGN UP</h3>
-        <form method="post" action="#">
-            <div class="row">
-                <label for="username-2">
-                    Username:
-                    <input type="text" name="username" id="username-2" pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{8,20}$" required>
-                </label>
-            </div>
-            <div class="row">
-                <label for="email-2">
-                    Your email:
-                    <input type="email" name="email" id="email-2" pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9!@#$%^&*()_+])(?=.{8,})" required>
-                </label>
-            </div>
-            <div class="row">
-                <label for="password-2">
-                    Password:
-                    <input type="password" name="password" id="password-2" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" required>
-                </label>
-            </div>
-            <div class="row">
-                <label for="repassword-2">
-                    Re-type Password:
-                    <input type="password" name="repassword" id="repassword-2" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" required>
-                </label>
-            </div>
-            <div class="row">
-                <label for="pdf-upload">
-                    Upload your Portfolio/Your existing Work:
-                    <input type="file" name="pdf_file" id="pdf-upload" accept=".pdf" required>
-                </label>
-            </div>
-            <div class="row3">
-                <button type="submit">Sign Up<a href="{% url 'login'%}"></a></button>
-            </div>
-            <div class="row5">
-                <p><center>OR</center></p>
-                <div class="social-login">
-                    <ul>
-                        <li class="google"><a href="#">Google</a></li>
-                        <li class="fb"><a href="#">Facebook</a></li>
-                    </ul>
+                    <div class="field input-field">
+                        <input type="password" placeholder="Create password" class="password">
+                    </div>
+
+                    <div class="field input-field">
+                        <input type="password" placeholder="Confirm password" class="password">
+                        <i class='bx bx-hide eye-icon'></i>
+                    </div>
+                    <div class="field input-field">
+                        <p class="verification-text">Upload your portfolio or existing work for verification.</p>
+                        <input type="file" accept=".pdf" placeholder="Upload PDF" class="file-input">
+                    </div>
+                    <div class="field button-field">
+                        <button>Signup</button>
+                    </div>
+                </form>
+
+                <div class="form-link">
+                    <span>Already have an account? <a href="{% url 'login'%}" class="link login-link">Login</a></span>
                 </div>
             </div>
-        </form>
-    </div>
-</div>
 
+            <div class="line"></div>
+
+            <div class="media-options">
+                <a href="#" class="field facebook">
+                    <i class='bx bxl-facebook facebook-icon'></i>
+                    <span>Login with Facebook</span>
+                </a>
+            </div>
+
+            <div class="media-options">
+                <a href="#" class="field google">
+                    <img src="{% static 'image-asset\google.png'%}" alt="" class="google-img">
+                    <span>Login with Google</span>
+                </a>
+            </div>
+        </div>
+    </section>
+<script>
+    const forms = document.querySelector(".forms"),
+      pwShowHide = document.querySelectorAll(".eye-icon"),
+      links = document.querySelectorAll(".link");
+
+pwShowHide.forEach(eyeIcon => {
+    eyeIcon.addEventListener("click", () => {
+        let pwFields = eyeIcon.parentElement.parentElement.querySelectorAll(".password");
+        
+        pwFields.forEach(password => {
+            if(password.type === "password"){
+                password.type = "text";
+                eyeIcon.classList.replace("bx-hide", "bx-show");
+                return;
+            }
+            password.type = "password";
+            eyeIcon.classList.replace("bx-show", "bx-hide");
+        })
+        
+    })
+})      
+
+links.forEach(link => {
+    link.addEventListener("click", e => {
+       e.preventDefault();
+       forms.classList.toggle("show-signup");
+    })
+})
+</script>
 </body>
 </html>
