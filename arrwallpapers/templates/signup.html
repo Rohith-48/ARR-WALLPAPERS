@@ -1,0 +1,265 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+	<title>Signout Page</title>
+	<meta charset="UTF-8">
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+	<meta name="author" content="">
+	<link rel="profile" href="#">
+
+    <!--Google Font-->
+    <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600' />
+	<!-- Mobile specific meta -->
+	<meta name=viewport content="width=device-width, initial-scale=1">
+	<meta name="format-detection" content="telephone-no">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        /* General styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Muli", sans-serif;
+            background-color: #000000;
+  background-image: url("../static/image-asset/cover.png");
+        }
+
+        /* Signup page styles */
+        .login-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .row3 {
+    display: flex;
+    justify-content: center;
+}
+.row5 {
+    display: flex;
+    justify-content: center;
+}
+        .login-content {
+            background-color: #ffffff;
+            padding: 60px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .login-content h3 {
+            margin: 0 0 20px;
+            text-align: center;
+        }
+
+        .row {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1c3cc;
+            border-radius: 3px;
+        }
+
+        button[type="submit"] {
+            background-color: #ff0000;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #cc0000;
+        }
+
+        .social-btn-2 a {
+            display: inline-block;
+            margin-right: 10px;
+            padding: 10px 20px;
+            background-color: #ffffff;
+            color: #000000;
+            border-radius: 3px;
+            text-decoration: none;
+        }
+
+        /* Additional styling for social buttons */
+        .social-btn-2 a.fb {
+            background-color: #3b5998;
+            color: #ffffff;
+        }
+
+        .social-btn-2 a.tw {
+            background-color: #1877f2;
+            color: #ffffff;
+        }
+
+        .social-btn-2 a i {
+            margin-right: 5px;
+        }
+        .social-login ul {
+  list-style-type: none;
+  margin: 30px 0;
+  padding: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+.social-login ul li {
+  -webkit-box-flex: 1;
+  -ms-flex: 1 auto;
+  flex: 1 auto;
+}
+
+.social-login ul li a {
+  background-color: #ffffff;
+  -webkit-box-shadow: 20px 11px 42px -21px rgba(168,168,168,1);
+-moz-box-shadow: 20px 11px 42px -21px rgba(168,168,168,1);
+box-shadow: 20px 11px 42px -21px rgba(168,168,168,1);
+  border-radius: 3px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 15px;
+  color: #000000;
+  font-weight: bold;
+  text-decoration: none;
+  -webkit-transition: background-color 0.3s;
+  transition: background-color 0.3s;
+}
+
+.social-login ul li a::before {
+  content: "";
+  width: 30px;
+  height: 30px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 30px;
+  margin-right: 5px;
+}
+
+.social-login ul li a:hover {
+  background-color: #fff199;
+  color: #0e090e;
+  -webkit-box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+li.google {
+  margin-right: 10px;
+}
+
+li.google a::before {
+  background-image: url("../static/image-asset/google.png");
+}
+
+li.fb {
+  margin-left: 10px;
+}
+
+li.fb a::before {
+  margin: 0;
+  background-image: url("../static/image-asset/fb.png");
+}
+
+@media only screen and (max-width: 400px) {
+  .social-login ul {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+  }
+
+  li.google,
+  li.fb {
+    margin: 0;
+  }
+
+  li.google {
+    margin-bottom: 10px;
+  }
+}
+    </style>
+</head>
+<body>
+
+<div class="login-wrapper" id="signup-content">
+    <div class="login-content">
+        <h3>SIGN UP</h3>
+        <form method="post" action="#">
+            <div class="row">
+                <label for="username-2">
+                    Username:
+                    <input type="text" name="username" id="username-2" pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{8,20}$" required>
+                </label>
+            </div>
+            <div class="row">
+                <label for="email-2">
+                    Your email:
+                    <input type="email" name="email" id="email-2" pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9!@#$%^&*()_+])(?=.{8,})" required>
+                </label>
+            </div>
+            <div class="row">
+                <label for="password-2">
+                    Password:
+                    <input type="password" name="password" id="password-2" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" required>
+                </label>
+            </div>
+            <div class="row">
+                <label for="repassword-2">
+                    Re-type Password:
+                    <input type="password" name="repassword" id="repassword-2" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" required>
+                </label>
+            </div>
+            <div class="row">
+                <label for="pdf-upload">
+                    Upload your Portfolio/Your existing Work:
+                    <input type="file" name="pdf_file" id="pdf-upload" accept=".pdf" required>
+                </label>
+            </div>
+            <div class="row3">
+                <button type="submit">Sign Up<a href="{% url 'login'%}"></a></button>
+            </div>
+            <div class="row5">
+                <p><center>OR</center></p>
+                <div class="social-login">
+                    <ul>
+                        <li class="google"><a href="#">Google</a></li>
+                        <li class="fb"><a href="#">Facebook</a></li>
+                    </ul>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

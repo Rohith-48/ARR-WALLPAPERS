@@ -21,103 +21,6 @@
 
 </head>
 <body>
-
-<!--login form popup-->
-<div class="login-wrapper" id="login-content">
-    <div class="login-content">
-        <a href="#" class="close">x</a>
-        <h3>Login</h3>
-        <form method="post" action="#">
-        	<div class="row">
-        		 <label for="username">
-                    Username:
-                    <input type="text" name="username" id="username" placeholder="username" pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{8,20}$" required="required" />
-                </label>
-        	</div>
-           
-            <div class="row">
-            	<label for="password">
-                    Password:
-                    <input type="password" name="password" id="password" placeholder="password" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" required="required" />
-                </label>
-            </div>
-            <div class="row">
-            	<div class="remember">
-					<div>
-						<input type="checkbox" name="remember" value="Remember me"><span>Remember me</span>
-					</div>
-            		<a href="{% url 'forgot_password'%}">Forget password ?</a>
-            	</div>
-            </div>
-           <div class="row">
-           	 <button type="submit">Login</button>
-           </div>
-        </form>
-        <div class="row">
-        	<p>Or via social</p>
-            <div class="social-btn-2">
-                <a class="fb" href="#"><i class="ion-social-google"></i>Google</a>
-                <a class="tw" href="#"><i class="ion-social-facebook"></i>Facebook</a>
-            </div>
-        </div>
-    </div>
-	
-</div>
-<!--end of login form popup-->
-<!--signup form popup-->
-<div class="login-wrapper"  id="signup-content">
-    <div class="login-content">
-        <a href="#" class="close">x</a>
-        <h3>sign up</h3>
-        <form method="post" action="#">
-            <div class="row">
-                 <label for="username-2">
-                    Username:
-                    <input type="text" name="username" id="username-2" pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{8,20}$" required="required" />
-                </label>
-            </div>
-           
-            <div class="row">
-                <label for="email-2">
-                    your email:
-					<input type="email" name="email" id="email-2" placeholder="" pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9!@#$%^&*()_+])(?=.{8,})" required="required" />
-
-                </label>
-            </div>
-             <div class="row">
-                <label for="password-2">
-                    Password:
-                    <input type="password" name="password" id="password-2" placeholder="" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" required="required" />
-                </label>
-            </div>
-             <div class="row">
-                <label for="repassword-2">
-                    re-type Password:
-                    <input type="password" name="password" id="repassword-2" placeholder="" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" required="required" />
-                </label>
-            </div>
-			<div class="row">
-                <label for="pdf-upload">
-                    Upload your Portfolio/Your existing Work:
-                    <input type="file" name="pdf_file" id="pdf-upload" accept=".pdf" required="required" />
-                </label>
-            </div>
-
-           <div class="row">
-             <button type="submit">sign up</button>
-           </div>
-<div class="row">
-	<p><center>OR</center></p>
-<div class="social-btn-2">
-    <a class="fb" href="#"><i class="ion-social-google"></i>Google</a>
-    <a class="tw" href="#"><i class="ion-social-facebook"></i>Facebook</a>
-</div>
-        </div>
-        </form>
-    </div>
-</div>
-<!--end of signup form popup-->
-
 <!-- BEGIN | Header -->
 <header class="ht-header">
 	<div class="container">
@@ -201,8 +104,8 @@
 							</ul>
 						</li>                
 						<li><a href="#">Help</a></li>
-						<li class="loginLink"><a href="#">LOG In</a></li>
-						<li class="btn signupLink"><a href="#">sign up</a></li>
+						<li class="loginbtn"><a href="{% url 'login'%}">LOG In</a></li>
+						<li class="btn signup"><a href="{% url 'signup'%}">sign up</a></li>
 					</ul>
 				</div>
 			<!-- /.navbar-collapse -->
@@ -220,7 +123,7 @@
 </header>
 <!-- END | Header -->
 
-<div class="slider movie-items">
+<div class="slider wall-item">
 	<div class="container">
 		<div class="row">
 			<div class="social-link">
@@ -343,7 +246,7 @@
 	    </div>
 	</div>
 </div>
-<div class="movie-items">
+<div class="wall-item">
 	<div class="container">
 		<div class="row ipad-width">
 			<div class="col-md-8">

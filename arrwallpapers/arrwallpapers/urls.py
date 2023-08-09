@@ -22,5 +22,7 @@ from miniwallpapers import views
 urlpatterns = [
      path('admin/', admin.site.urls),
     path('',views.homepage ,name='index'),
+     path('loginpage/', views.loginpage, name='login'),
+      path('signuppage/', views.signuppage, name='signup'),
     path('forgot/', views.forgot, name='forgot_password'),
 ]

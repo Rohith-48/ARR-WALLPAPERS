@@ -8,6 +8,7 @@
     box-shadow: none !important;
     text-shadow: none !important;
   }
+  
   a,
   a:visited {
     text-decoration: underline;
@@ -3597,14 +3598,14 @@ ul {
 }
 /* IV. SKELETON
 ***********************/
-.movie-items.full-width,
+.wall-item.full-width,
 .trailers.full-width,
 .latestnew.full-width,
 .full-width {
   padding: 70px 100px;
 }
 @media (max-width: 767px) {
-  .movie-items.full-width,
+  .wall-item.full-width,
   .trailers.full-width,
   .latestnew.full-width,
   .full-width {
@@ -3621,12 +3622,12 @@ ul {
     padding: 0 30px;
   }
 }
-.movie-items .slide-it {
+.wall-item .slide-it {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
 }
-.movie-items .movie-item {
+.wall-item .movie-item {
   position: relative;
   margin-right: 30px;
   -webkit-border-radius: 5px;
@@ -3634,15 +3635,15 @@ ul {
   border-radius: 5px;
 }
 @media (max-width: 767px) {
-  .movie-items .movie-item {
+  .wall-item .movie-item {
     display: inherit;
     margin-right: 0px;
   }
 }
-.movie-items .movie-item .mv-img {
+.wall-item .movie-item .mv-img {
   position: relative;
 }
-.movie-items .movie-item .mv-img:after {
+.wall-item .movie-item .mv-img:after {
   box-shadow: inset -5px -50px 100px -15px #000000;
   -webkit-box-shadow: inset -5px -50px 100px -15px #000000;
   -moz-box-shadow: inset -5px -50px 100px -15px #000000;
@@ -3655,14 +3656,14 @@ ul {
   height: 100%;
   content: "";
 }
-.movie-items .movie-item img {
+.wall-item .movie-item img {
   width: 100%;
   -webkit-transition: all 0.5s ease-out;
   -moz-transition: all 0.5s ease-out;
   -o-transition: all 0.5s ease-out;
   transition: all 0.5s ease-out;
 }
-.movie-items .movie-item .title-in {
+.wall-item .movie-item .title-in {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -3673,30 +3674,30 @@ ul {
   position: absolute;
 }
 @media (max-width: 767px) {
-  .movie-items .movie-item .title-in {
+  .wall-item .movie-item .title-in {
     margin-left: 60px;
   }
 }
-.movie-items .movie-item .title-in h6 a {
+.wall-item .movie-item .title-in h6 a {
   font-family: 'Dosis', sans-serif;
   font-size: 14px;
   color: #ffffff;
   font-weight: bold;
   text-transform: uppercase;
 }
-.movie-items .movie-item .title-in p {
+.wall-item .movie-item .title-in p {
   font-size: 12px;
   color: #ffffff;
 }
-.movie-items .movie-item .title-in p i {
+.wall-item .movie-item .title-in p i {
   color: #f5b50a;
   font-size: 22px;
 }
-.movie-items .movie-item .title-in p span {
+.wall-item .movie-item .title-in p span {
   font-weight: 400;
   font-size: 18px;
 }
-.movie-items .movie-item .hvr-inner {
+.wall-item .movie-item .hvr-inner {
   margin: auto;
   position: absolute;
   top: 0;
@@ -3718,7 +3719,7 @@ ul {
   -o-transition: all 0.5s ease-out;
   transition: all 0.5s ease-out;
 }
-.movie-items .movie-item .hvr-inner a {
+.wall-item .movie-item .hvr-inner a {
   font-family: 'Dosis', sans-serif;
   font-size: 14px;
   color: #abb7c4;
@@ -3726,10 +3727,10 @@ ul {
   text-transform: uppercase;
   color: #ffffff;
 }
-.movie-items .movie-item .hvr-inner a i {
+.wall-item .movie-item .hvr-inner a i {
   margin-right: 5px;
 }
-.movie-items .movie-item:hover .hvr-inner {
+.wall-item .movie-item:hover .hvr-inner {
   -moz-opacity: 1;
   -khtml-opacity: 1;
   -webkit-opacity: 1;
@@ -3741,8 +3742,8 @@ ul {
   -o-transition: all 0.5s ease-out;
   transition: all 0.5s ease-out;
 }
-.movie-items .movie-item:hover .title-in,
-.movie-items .movie-item:hover img {
+.wall-item .movie-item:hover .title-in,
+.wall-item .movie-item:hover img {
   -webkit-transition: all 0.5s ease-out;
   -moz-transition: all 0.5s ease-out;
   -o-transition: all 0.5s ease-out;
@@ -3754,7 +3755,7 @@ ul {
   -ms-filter: progid:DXImageTransform.Microsoft.Alpha(opacity=25);
   filter: alpha(opacity=25);
 }
-.movie-items .movie-item:hover h6 a {
+.wall-item .movie-item:hover h6 a {
   color: #dcf836;
 }
 .cate {
@@ -4029,25 +4030,25 @@ ul {
     width: 100%;
   }
 }
-.movie-items,
+.wall-item,
 .latestnew {
   padding: 70px 0;
   background-color: #020d18;
 }
-.movie-items .tab-links {
+.wall-item .tab-links {
   position: relative;
 }
-.movie-items .slick-multiItem,
-.movie-items .slick-multiItem2 {
+.wall-item .slick-multiItem,
+.wall-item .slick-multiItem2 {
   display: flex;
   flex-direction: column;
 }
-.movie-items .slick-multiItem .slick-list,
-.movie-items .slick-multiItem2 .slick-list {
+.wall-item .slick-multiItem .slick-list,
+.wall-item .slick-multiItem2 .slick-list {
   order: 2;
 }
-.movie-items .slick-multiItem .slick-dots,
-.movie-items .slick-multiItem2 .slick-dots {
+.wall-item .slick-multiItem .slick-dots,
+.wall-item .slick-multiItem2 .slick-dots {
   position: absolute;
   margin-left: 50%;
   text-align: right;
@@ -4058,15 +4059,15 @@ ul {
   margin-top: -55px;
 }
 @media (max-width: 767px) {
-  .movie-items .slick-multiItem .slick-dots,
-  .movie-items .slick-multiItem2 .slick-dots {
+  .wall-item .slick-multiItem .slick-dots,
+  .wall-item .slick-multiItem2 .slick-dots {
     width: 100%;
     margin-left: 0;
     margin-top: 0;
     text-align: left;
   }
 }
-.movie-items .slick-slider {
+.wall-item .slick-slider {
   margin-left: 15px;
 }
 .topbar-filter {
@@ -6870,7 +6871,7 @@ background-color: black;
 .buster-light p {
   color: #233a50;
 }
-.buster-light .movie-items,
+.buster-light .wall-item,
 .buster-light .latestnew {
   background-color: #fff;
 }
