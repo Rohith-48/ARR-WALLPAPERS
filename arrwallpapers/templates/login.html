@@ -200,7 +200,7 @@ a.google span{
             <div class="form-content">
                 <header>Login</header>
                 <form id="login-form" method="POST">
-                  
+                    {% csrf_token %}
                     <div class="field input-field">
                         <input type="email" name="email" id="email" placeholder="Email" class="input" required>
                         <span class="validation-message" id="email-validation"></span>
