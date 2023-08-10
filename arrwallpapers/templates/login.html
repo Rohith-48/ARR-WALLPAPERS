@@ -185,6 +185,13 @@ a.google span{
     }
     
 }
+.validation-message {
+    display: none;
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
     </style>
 </head>
 <body>
@@ -192,76 +199,53 @@ a.google span{
         <div class="form login">
             <div class="form-content">
                 <header>Login</header>
-                <form action="#">
+                <form id="login-form" method="POST">
+                  
                     <div class="field input-field">
-                        <input type="email" placeholder="Email" class="input">
+                        <input type="email" name="email" id="email" placeholder="Email" class="input" required>
+                        <span class="validation-message" id="email-validation"></span>
                     </div>
-
+    
                     <div class="field input-field">
-                        <input type="password" placeholder="Password" class="password">
+                        <input type="password" name="password" id="password" placeholder="Password" class="password" required>
                         <i class='bx bx-hide eye-icon'></i>
+                        <span class="validation-message" id="password-validation"></span>
                     </div>
-
+    
                     <div class="form-link">
                         <a href="{% url 'forgot_password'%}" class="forgot-pass">Forgot password?</a>
                     </div>
-
+    
                     <div class="field button-field">
-                        <button>Login</button>
+                        <button type="submit">Login</button>
                     </div>
                 </form>
-
+    
                 <div class="form-link">
                     <span>Don't have an account? <a href="{% url 'signup'%}" class="link signup-link">Signup</a></span>
                 </div>
             </div>
-
+    
             <div class="line"></div>
-
+    
             <div class="media-options">
                 <a href="#" class="field facebook">
                     <i class='bx bxl-facebook facebook-icon'></i>
                     <span>Login with Facebook</span>
                 </a>
             </div>
-
+    
             <div class="media-options">
                 <a href="#" class="field google">
                     <img src="{% static 'image-asset\google.png'%}" alt="" class="google-img">
                     <span>Login with Google</span>
                 </a>
             </div>
-
+    
         </div>
     </section>
-    <script>
-      const forms = document.querySelector(".forms"),
-        pwShowHide = document.querySelectorAll(".eye-icon"),
-        links = document.querySelectorAll(".link");
-  
-  pwShowHide.forEach(eyeIcon => {
-      eyeIcon.addEventListener("click", () => {
-          let pwFields = eyeIcon.parentElement.parentElement.querySelectorAll(".password");
-          
-          pwFields.forEach(password => {
-              if(password.type === "password"){
-                  password.type = "text";
-                  eyeIcon.classList.replace("bx-hide", "bx-show");
-                  return;
-              }
-              password.type = "password";
-              eyeIcon.classList.replace("bx-show", "bx-hide");
-          })
-          
-      })
-  })      
-  
-  links.forEach(link => {
-      link.addEventListener("click", e => {
-         e.preventDefault(); //preventing form submit
-         forms.classList.toggle("show-signup");
-      })
-  })
-  </script>
+
+    
+    <script src="{% static 'js\script.js'%}"></script>
 </body>
 </html>

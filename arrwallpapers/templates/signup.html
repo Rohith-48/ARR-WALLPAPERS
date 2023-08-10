@@ -178,53 +178,68 @@
                 padding: 20px 10px;
             }
         }
+
+.validation-message {
+    display: none;
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+
     </style>
 </head>
 <body>
+   
     <section class="container forms">
         <div class="form signup">
-            {% csrf_token %}
             <div class="form-content">
                 <header>Signup</header>
-                <form action="#">
+                <form id="signup-form" method="POST">
+                    {% csrf_token %}
                     <div class="field input-field">
-                        <input type="text" placeholder="Username" class="input">
+                        <input type="text" name="username" id="username" placeholder="Username" class="input" required>
+                        <span class="validation-message" id="username-validation"></span>
                     </div>
                     <div class="field input-field">
-                        <input type="email" placeholder="Email" class="input">
+                        <input type="email" name="email" id="email" placeholder="Email" class="input" required>
+                        <span class="validation-message" id="email-validation"></span>
                     </div>
-
+    
                     <div class="field input-field">
-                        <input type="password" placeholder="Create password" class="password">
+                        <input type="password" name="password1" id="password1" placeholder="Create password" class="password" required>
+                        <span class="validation-message" id="password1-validation"></span>
                     </div>
-
+    
                     <div class="field input-field">
-                        <input type="password" placeholder="Confirm password" class="password">
+                        <input type="password" name="password2" id="password2" placeholder="Confirm password" class="password" required>
                         <i class='bx bx-hide eye-icon'></i>
+                        <span class="validation-message" id="password2-validation"></span>
                     </div>
                     <div class="field input-field">
                         <p class="verification-text">Upload your portfolio or existing work for verification.</p>
-                        <input type="file" accept=".pdf" placeholder="Upload PDF" class="file-input">
+                        <input type="file" name="portfolio" id="portfolio" accept=".pdf" placeholder="Upload PDF" class="file-input" required>
+                        <span class="validation-message" id="portfolio-validation"></span>
                     </div>
                     <div class="field button-field">
-                        <button>Signup</button>
+                        <button type="submit">Signup</button>
                     </div>
                 </form>
-
+    
                 <div class="form-link">
                     <span>Already have an account? <a href="{% url 'login'%}" class="link login-link">Login</a></span>
                 </div>
             </div>
-
+    
             <div class="line"></div>
-
+    
             <div class="media-options">
                 <a href="#" class="field facebook">
                     <i class='bx bxl-facebook facebook-icon'></i>
                     <span>Login with Facebook</span>
                 </a>
             </div>
-
+    
             <div class="media-options">
                 <a href="#" class="field google">
                     <img src="{% static 'image-asset\google.png'%}" alt="" class="google-img">
@@ -233,34 +248,8 @@
             </div>
         </div>
     </section>
-<script>
-    const forms = document.querySelector(".forms"),
-      pwShowHide = document.querySelectorAll(".eye-icon"),
-      links = document.querySelectorAll(".link");
-
-pwShowHide.forEach(eyeIcon => {
-    eyeIcon.addEventListener("click", () => {
-        let pwFields = eyeIcon.parentElement.parentElement.querySelectorAll(".password");
-        
-        pwFields.forEach(password => {
-            if(password.type === "password"){
-                password.type = "text";
-                eyeIcon.classList.replace("bx-hide", "bx-show");
-                return;
-            }
-            password.type = "password";
-            eyeIcon.classList.replace("bx-show", "bx-hide");
-        })
-        
-    })
-})      
-
-links.forEach(link => {
-    link.addEventListener("click", e => {
-       e.preventDefault();
-       forms.classList.toggle("show-signup");
-    })
-})
-</script>
+    
+    
+     <script src="{% static 'js\script.js'%}"></script>
 </body>
 </html>

@@ -1,12 +1,6 @@
-/*!
- * Dropdownhover v1.0.0 (http://bs-dropdownhover.kybarg.com)
- */
+
 +function ($) {
   'use strict';
-
-  // DROPDOWNHOVER CLASS DEFINITION
-  // =========================
-
   var Dropdownhover = function (element, options) {
     this.options    = options    
     this.$element   = $(element)
