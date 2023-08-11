@@ -15,3 +15,6 @@ def forgot(request):
     # Handle form submission here (sending password reset email, etc.)
     # Implement your forgot password logic here if needed
     return render(request, 'forgot_password.html')
+
+def Premium_signup(request):
+    return render(request, 'Premium_signup.html')

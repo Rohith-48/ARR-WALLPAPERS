@@ -140,7 +140,6 @@
             color: #fff;
             background-color: #4267b2;
         }
-        
 
         a.facebook .facebook-icon{
     height: 28px;
@@ -201,7 +200,7 @@ img.google-img{
     <section class="container forms">
         <div class="form signup">
             <div class="form-content">
-                <header>Signup</header>
+                <header>Premium User Signup</header>
                 <form id="signup-form" method="POST">
                     {% csrf_token %}
                     <div class="field input-field">
@@ -222,11 +221,6 @@ img.google-img{
                         <input type="password" name="password2" id="password2" placeholder="Confirm password" class="password" required>
                         <i class='bx bx-hide eye-icon'></i>
                         <span class="validation-message" id="password2-validation"></span>
-                    </div>
-                    <div class="field input-field">
-                        <p class="verification-text">Upload your portfolio or existing work for verification.</p>
-                        <input type="file" name="portfolio" id="portfolio" accept=".pdf" placeholder="Upload PDF" class="file-input" required>
-                        <span class="validation-message" id="portfolio-validation"></span>
                     </div>
                     <div class="field button-field">
                         <button type="submit">Signup</button>

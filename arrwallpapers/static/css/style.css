@@ -7322,6 +7322,7 @@ header .navbar-default .navbar-nav li.btn a {
   -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
   border-radius: 20px;
+  margin-left: 5px;
 }
 header .navbar-default .navbar-nav .dropdown .dropdown-menu.level1 {
   position: absolute;
