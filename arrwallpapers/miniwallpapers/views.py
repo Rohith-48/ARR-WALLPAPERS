@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
+from .models import Creatorauth
 from django.contrib import messages
 
 def index(request):
@@ -7,18 +7,24 @@ def index(request):
 
 def signup(request):
     if request.method == "POST":
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['password']
-        #portfolio= request.POST['portfolio']        
-        user=User.objects.create_user(username=username, password=password,email=email)#portfolio=portfolio)
-        user.save()
-        messages.success(request, f"Account has been created. Welcome, {username}!")
-        return redirect("login")
-
+        username=request.POST['username']
+        email=request.POST['email']
+        password=request.POST['password']
+        if Creatorauth.objects.filter(username=username).exists():
+            messages.info(request,"Username Already Exists")
+            return redirect('register')
+        elif Creatorauth.objects.filter(email=email).exists():
+            messages.info(request,"Email Already Exists") 
+            return redirect('register')
+        else:
+            user=Creatorauth.objects.create(username=username,email=email,password=password)
+            user.save()
+            success_message = "Registration successful. You can now log in."
+            messages.success(request, success_message)
+            return redirect('login')
+           
     else:
-        return render(request, 'signup.html')
-
+        return render (request, "signup.html")
 
 def login(request):
     return render(request, 'login.html')
