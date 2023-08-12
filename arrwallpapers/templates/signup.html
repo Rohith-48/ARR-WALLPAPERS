@@ -1,4 +1,5 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en" class="no-js">
 <head>
@@ -197,7 +198,6 @@ img.google-img{
     </style>
 </head>
 <body>
-   
     <section class="container forms">
         <div class="form signup">
             <div class="form-content">
@@ -214,20 +214,20 @@ img.google-img{
                     </div>
     
                     <div class="field input-field">
-                        <input type="password" name="password1" id="password1" placeholder="Create password" class="password" required>
+                        <input type="password" name="password" id="password1" placeholder="Create password" class="password" required>
                         <span class="validation-message" id="password1-validation"></span>
                     </div>
     
                     <div class="field input-field">
-                        <input type="password" name="password2" id="password2" placeholder="Confirm password" class="password" required>
+                        <input type="password" name="password" id="password2" placeholder="Confirm password" class="password" required>
                         <i class='bx bx-hide eye-icon'></i>
                         <span class="validation-message" id="password2-validation"></span>
                     </div>
-                    <div class="field input-field">
+                    <!-- <div class="field input-field">
                         <p class="verification-text">Upload your portfolio or existing work for verification.</p>
                         <input type="file" name="portfolio" id="portfolio" accept=".pdf" placeholder="Upload PDF" class="file-input" required>
                         <span class="validation-message" id="portfolio-validation"></span>
-                    </div>
+                    </div> -->
                     <div class="field button-field">
                         <button type="submit">Signup</button>
                     </div>
@@ -255,8 +255,7 @@ img.google-img{
             </div>
         </div>
     </section>
-    
-    
-     <script src="{% static 'js\script.js'%}"></script>
+
+     <!-- <script src="{% static 'js\script.js'%}"></script> -->
 </body>
 </html>

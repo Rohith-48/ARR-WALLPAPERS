@@ -20,6 +20,7 @@
 
 </head>
 <body>
+	{% block content %}
 <!-- BEGIN | Header -->
 <header class="ht-header">
 	<div class="container">
@@ -308,7 +309,7 @@
 	</div>
 </footer>
 <!-- end of footer section-->
-
+{% endblock %}
 <script src="{% static 'js\jquery.js'%}"></script>
 <script src="{% static 'js\plugins.js'%}"></script>
 <script src="{% static 'js\plugins2.js'%}"></script>
