@@ -201,7 +201,7 @@ img.google-img{
         <div class="form signup">
             <div class="form-content">
                 <header>Premium User Signup</header>
-                <form id="signup-form" method="POST" action="premiumsignup">
+                <form id="signup-form" method="POST">
                     {% csrf_token %}
                     <div class="field input-field">
                         <input type="text" name="username" id="username" placeholder="Username" class="input" required>
