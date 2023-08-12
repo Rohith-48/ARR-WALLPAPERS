@@ -20,10 +20,11 @@ from django.urls import path
 from miniwallpapers import views
 
 urlpatterns = [
-     path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
     path('',views.homepage ,name='index'),
-     path('loginpage/', views.loginpage, name='login'),
-      path('signuppage/', views.signuppage, name='signup'),
+    path('loginpage/', views.loginpage, name='login'),
+    path('signuppage/', views.signuppage, name='signup'),
+    path('userpage/', views.userpage, name='userprofile'),
     path('forgot/', views.forgot, name='forgot_password'),
     path('Premium_signup/', views.Premium_signup, name='Premium_signup'),
 ]

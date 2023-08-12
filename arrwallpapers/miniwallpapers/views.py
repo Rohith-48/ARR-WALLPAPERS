@@ -1,15 +1,19 @@
 from django.shortcuts import render
 
+
 def homepage(request):
     return render(request, 'index.html')
 
 
-def signuppage(request):
-    return render(request, 'signup.html')
-
 def loginpage(request):
     return render(request, 'login.html')
 
+def signuppage(request):
+    return render(request, 'signup.html')
+
+
+def userpage(request):
+    return render(request, 'userprofile.html')
 
 def forgot(request):
     # Handle form submission here (sending password reset email, etc.)
