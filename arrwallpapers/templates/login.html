@@ -201,11 +201,11 @@ a.google span{
         <div class="form login">
             <div class="form-content">
                 <header>Login</header>
-                <form id="login-form" method="POST">
+                <form id="login-form" method="POST" action="login">
                     {% csrf_token %}
                     <div class="field input-field">
-                        <input type="email" name="email" id="email" placeholder="Email" class="input" required>
-                        <span class="validation-message" id="email-validation"></span>
+                        <input type="text" name="username" id="username" placeholder="Username" class="input" required>
+                        <span class="validation-message" id="username-validation"></span>
                     </div>
     
                     <div class="field input-field">
@@ -243,11 +243,15 @@ a.google span{
                     <span>Login with Google</span>
                 </a>
             </div>
-    
+    <div>
+        {% for message in messages %}
+        <h3>{{message}}</h3>
+        {% endfor %}
+    </div>
         </div>
     </section>
 
     {% endblock %}
-    <script src="{% static 'js\script.js'%}"></script>
+    <!-- <script src="{% static 'js\script.js'%}"></script> -->
 </body>
 </html>
