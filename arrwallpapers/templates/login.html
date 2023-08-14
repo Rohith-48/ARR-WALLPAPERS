@@ -186,12 +186,17 @@ a.google span{
     }
     
 }
-.validation-message {
-    display: none;
-    color: red;
-    font-size: 14px;
-    margin-top: 0px;
+.input-field input.invalid {
+    border-color: #ff6b6b;
 }
+
+.validation-message.invalid {
+    color: #ff6b6b;
+    font-size: 14px;
+    margin-top: 5px;
+    display: block;
+}
+
 
     </style>
 </head>
@@ -252,6 +257,62 @@ a.google span{
     </section>
 
     {% endblock %}
-    <!-- <script src="{% static 'js\script.js'%}"></script> -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const loginForm = document.getElementById("login-form");
+            const usernameInput = loginForm.querySelector("#username");
+            const passwordInput = loginForm.querySelector("#password");
+            const usernameValidation = loginForm.querySelector("#username-validation");
+            const passwordValidation = loginForm.querySelector("#password-validation");
+            const forms = document.querySelectorAll(".forms");
+            forms.forEach(form => {
+                const pwShowHide = form.querySelectorAll(".eye-icon");
+                
+                pwShowHide.forEach(eyeIcon => {
+                    eyeIcon.addEventListener("click", () => {
+                        let pwFields = eyeIcon.parentElement.parentElement.querySelectorAll(".password");
+                        
+                        pwFields.forEach(password => {
+                            if(password.type === "password"){
+                                password.type = "text";
+                                eyeIcon.classList.replace("bx-hide", "bx-show");
+                            } else {
+                                password.type = "password";
+                                eyeIcon.classList.replace("bx-show", "bx-hide");
+                            }
+                        });
+                    });
+                });
+            })
+            loginForm.addEventListener("submit", function (event) {
+                if (usernameInput.value.trim() === "") {
+                    event.preventDefault();
+                    showErrorMessage(usernameValidation, "Username is required.");
+                } else {
+                    hideErrorMessage(usernameValidation);
+                }
+        
+                if (passwordInput.value.trim() === "") {
+                    event.preventDefault();
+                    showErrorMessage(passwordValidation, "Password is required.");
+                } else {
+                    hideErrorMessage(passwordValidation);
+                }
+            });
+        
+            function showErrorMessage(element, message) {
+                element.textContent = message;
+                element.style.display = 'block';
+                element.classList.add("invalid");
+            }
+        
+            function hideErrorMessage(element) {
+                element.textContent = "";
+                element.style.display = 'none';
+                element.classList.remove("invalid");
+            }
+        });
+    
+    </script>
 </body>
 </html>

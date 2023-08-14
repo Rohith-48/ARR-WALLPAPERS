@@ -193,6 +193,10 @@ img.google-img{
     font-size: 14px;
     margin-top: 0px;
 }
+.password-match-message {
+    color: red;
+    margin-top: 10px;
+}
 
 
     </style>
@@ -222,7 +226,9 @@ img.google-img{
                         <input type="password" name="password2" id="password2" placeholder="Confirm password" class="password" required>
                         <i class='bx bx-hide eye-icon'></i>
                         <span class="validation-message" id="password2-validation"></span>
+                        <span class="password-match-message" id="password-match-message"></span> 
                     </div>
+                    
                     <div class="field input-field">
                         <p class="verification-text">Upload your portfolio or existing work for verification.</p>
                         <input type="file" name="portfolio" id="portfolio"  multiple accept=".pdf" placeholder="Upload PDF" class="file-input" required >
@@ -263,6 +269,25 @@ img.google-img{
         </div>
     </section>
 
-     <!-- <script src="{% static 'js\script.js'%}"></script> -->
+     <script src="{% static 'js\script.js'%}"></script>
+     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const confirmPasswordInput = document.getElementById("password2"); // Get the confirmation password input
+            const passwordInput = document.querySelector(".password");
+            const passwordMatchMessage = document.getElementById("password-match-message"); // Use the existing element
+        
+            confirmPasswordInput.addEventListener("input", function () {
+                const passwordInputValue = passwordInput.value;
+                const confirmPasswordValue = confirmPasswordInput.value;
+        
+                if (passwordInputValue === confirmPasswordValue) {
+                    passwordMatchMessage.textContent = ""; // Clear the message
+                } else {
+                    passwordMatchMessage.textContent = "Passwords do not match.";
+                }
+            });
+        });
+        
+     </script>
 </body>
 </html>
