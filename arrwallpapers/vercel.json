@@ -1,0 +1,14 @@
+{
+    "builds": [
+      {
+        "src": "miniwallpapers/wsgi.py",
+        "use": "@vercel/python"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "miniwallpapers/wsgi.py"
+      }
+    ]
+  }
