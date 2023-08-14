@@ -5229,14 +5229,14 @@ ul {
 }
 .common-hero {
   height: 385px;
-  background: url('../images/uploads/user-hero-bg.jpg') no-repeat;
+  background: url('../image-asset/bg.jpg') no-repeat;
 }
 .common-hero:before {
   background-color: rgba(0, 0, 0, 0.4);
 }
 .user-hero {
   height: 385px;
-  background: url('../images/uploads/user-hero-bg.jpg') no-repeat;
+  background: url('../image-asset/bg.jpg') no-repeat;
 }
 .user-hero .hero-ct {
   padding-top: 225px;
@@ -5268,7 +5268,7 @@ ul {
   background-color: rgba(0, 0, 0, 0.4);
 }
 .landing-hero {
-  background-image: url('../images/uploads/user-hero-bg.jpg');
+  background-image: url('../image-asset/bg.jpg');
   box-shadow: inset 0 0 1000px rgba(0, 0, 0, 0.5);
   text-align: center;
   padding: 110px 0;
@@ -5373,7 +5373,7 @@ ul {
 .user-information .user-img {
   text-align: center;
   margin-bottom: 30px;
-  padding: 30px 0 20px 0;
+  padding: 300px 0 20px 0;
 }
 .user-information .user-img img {
   margin-bottom: 30px;
