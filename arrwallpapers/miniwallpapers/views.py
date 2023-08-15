@@ -68,8 +68,11 @@ def login(request):
         return render(request, "login.html")
 
 
+def logout(request):
+    auth.logout(request)
+    return redirect("index")
 
-def userprofile(request):
+def userprofile(request): 
     return render(request, 'userprofile.html')
 
 def forgot_password(request):

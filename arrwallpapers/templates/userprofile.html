@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en" class="no-js">
 <head>
-	<title>Content Creator Page</title>
+	<title>Creator Page</title>
 	<meta charset="UTF-8">
 	<meta name="description" content="">
 	<meta name="keywords" content="">
@@ -20,18 +20,11 @@
 
 </head>
 <body>
-<!--preloading-->
-<div id="preloader">
-    <img class="logo" src="{% static '\image-asset\icon.png'%}" alt="" width="119" height="58">
-    <div id="status">
-        <span></span>
-        <span></span>
-    </div>
-</div>
+	{% block content %}
+<!-- BEGIN | Header -->
 <header class="ht-header">
 	<div class="container">
 		<nav class="navbar navbar-default navbar-custom">
-			{% csrf_token %}
 				<!-- Brand and toggle get grouped for better mobile display -->
 				<div class="navbar-header logo">
 				    <div class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -42,7 +35,7 @@
 							<span></span>
 						</div>
 				    </div>
-				    <a href="#"><img class="logo" src="{% static '\image-asset\icon.png'%}" alt="" width="119" height="58"></a>
+				    <a href="{% url 'index'%}"><img class="logo" src="{% static '\image-asset\icon.png'%}" alt="" width="119" height="58"></a>
 			    </div>
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1">
@@ -51,75 +44,64 @@
 							<a href="#page-top"></a>
 						</li>
 						<li class="dropdown first">
-							<a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown">
-							Home <i class="fa fa-angle-down" aria-hidden="true"></i>
+							<a href="{% url 'index'%}" class="btn btn-default dropdown-toggle lv1">
+								Home <i class="fa fa-angle-down" aria-hidden="true"></i>
 							</a>
-		
 						</li>
+						
 						<li class="dropdown first">
 							<a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
-							movies<i class="fa fa-angle-down" aria-hidden="true"></i>
+							Categories<i class="fa fa-angle-down" aria-hidden="true"></i>
 							</a>
 							<ul class="dropdown-menu level1">
 								<li class="dropdown">
-									<a href="#" class="dropdown-toggle" data-toggle="dropdown" >Movie grid<i class="ion-ios-arrow-forward"></i></a>
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown" >Superheros<i class="ion-ios-arrow-forward"></i></a>
 									<ul class="dropdown-menu level2">
-										<li><a href="moviegrid.html">Movie grid</a></li>
-										<li><a href="moviegridfw.html">movie grid full width</a></li>
+										<!-- <li><a href="#"></a></li>
+										<li><a href="#"></a></li> -->
 									</ul>
 								</li>			
-								<li><a href="movielist.html">Movie list</a></li>
-								<li><a href="moviesingle.html">Movie single</a></li>
-								<li class="it-last"><a href="seriessingle.html">Series single</a></li>
+								<li><a href="#">Anime</a></li>
+								<!-- <li><a href="#">Movie single</a></li> -->
+								<li class="it-last"><a href="#">Nature</a></li>
 							</ul>
 						</li>
 						<li class="dropdown first">
 							<a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
-							celebrities <i class="fa fa-angle-down" aria-hidden="true"></i>
+							Artists <i class="fa fa-angle-down" aria-hidden="true"></i>
 							</a>
 							<ul class="dropdown-menu level1">
-								<li><a href="celebritygrid01.html">celebrity grid 01</a></li>
-								<li><a href="celebritygrid02.html">celebrity grid 02 </a></li>
-								<li><a href="celebritylist.html">celebrity list</a></li>
-								<li class="it-last"><a href="celebritysingle.html">celebrity single</a></li>
+								<li><a href="#">Artist 1</a></li>
+								<li><a href="#">Artist 2 </a></li>
+								<li><a href="#">Artist lists</a></li>
 							</ul>
 						</li>
 						<li class="dropdown first">
 							<a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
-							news <i class="fa fa-angle-down" aria-hidden="true"></i>
+							Upload <i class="fa fa-angle-down" aria-hidden="true"></i>
 							</a>
-							<ul class="dropdown-menu level1">
-								<li><a href="bloglist.html">blog List</a></li>
-								<li><a href="bloggrid.html">blog Grid</a></li>
-								<li class="it-last"><a href="blogdetail.html">blog Detail</a></li>
-							</ul>
 						</li>
 						<li class="dropdown first">
 							<a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
 							community <i class="fa fa-angle-down" aria-hidden="true"></i>
 							</a>
 							<ul class="dropdown-menu level1">
-								<li><a href="userfavoritegrid.html">user favorite grid</a></li>
-								<li><a href="userfavoritelist.html">user favorite list</a></li>
-								<li><a href="userprofile.html">user profile</a></li>
-								<li class="it-last"><a href="userrate.html">user rate</a></li>
+								<li><a href="#">user favorite grid</a></li>
+								<li><a href="#">user favorite list</a></li>
+								<li><a href="#">user profile</a></li>
+								<li class="it-last"><a href="#">user rate</a></li>
 							</ul>
 						</li>
+					
 					</ul>
 					<ul class="nav navbar-nav flex-child-menu menu-right">
-						<li class="dropdown first">
-							<a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
-							pages <i class="fa fa-angle-down" aria-hidden="true"></i>
-							</a>
-							<ul class="dropdown-menu level1">
-								<li><a href="landing.html">Landing</a></li>
-								<li><a href="404.html">404 Page</a></li>
-								<li class="it-last"><a href="comingsoon.html">Coming soon</a></li>
-							</ul>
-						</li>                
-						<li><a href="#">Help</a></li>
-						<li class="loginLink"><a href="#">LOG In</a></li>
-						<li class="btn signupLink"><a href="#">sign up</a></li>
+						{% if user.is_authenticated %}
+							<li><a href="{% url 'logout'%}">LOG OUT ({{ user.username }})</a></li>
+						{% else %}
+							<li><a href="{% url 'login'%}">LOG IN</a></li>
+							<li class="btn signup"><a href="{% url 'Premium_signup'%}">Subscribe</a></li>
+							<li class="btn signup"><a href="{% url 'signup'%}">SIGN UP</a></li>
+						{% endif %}
 					</ul>
 				</div>
 			<!-- /.navbar-collapse -->
@@ -128,21 +110,22 @@
 	    <!-- top search form -->
 	    <div class="top-search">
 	    	<select>
-				<option value="united">TV show</option>
-				<option value="saab">Others</option>
+				<option value="united">Search</option>
+				<option value="saab">Search with Image</option>
 			</select>
-			<input type="text" placeholder="Search for a movie, TV Show or celebrity that you are looking for">
+			<input type="text" placeholder="Search for a Wallpaper, Superheros, nature etc. that you are looking for">
 	    </div>
 	</div>
 </header>
 <!-- END | Header -->
-
 <div class="hero user-hero">
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
 				<div class="hero-ct">
-					<h1>Edward kennedy’s profile</h1>
+					{% if user.is_authenticated %}
+					<h2 style="color: white;">Hello, {{user.username}}</h2>
+
 					<ul class="breadcumb">
 						<li class="active"><a href="#">Home</a></li>
 						<li> <span class="ion-ios-arrow-right"></span>Profile</li>
@@ -173,7 +156,10 @@
 						<p>Others</p>
 						<ul>
 							<li><a href="#">Change password</a></li>
-							<li><a href="{% url 'index'%}">Log out</a></li>
+							<li><a href="logout">Log out</a></li>
+
+
+							{% endif %}
 						</ul>
 					</div>
 				</div>
@@ -319,6 +305,6 @@
 <script src="{% static 'js\plugins2.js'%}"></script>
 <script src="{% static 'js\custom.js'%}"></script>
 </body>
-
+{% endblock %}
 <!-- userprofile14:04-->
 </html>
