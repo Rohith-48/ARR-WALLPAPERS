@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from django.contrib.auth import authenticate, login
 from .models import UserProfileDoc
+from django.shortcuts import get_object_or_404, redirect
 
 # from .models import Creatorauth
 
@@ -31,7 +32,7 @@ def signup(request):
 
             else:
                 user = User.objects.create_user(username=username, password=password1, email=email)
-                user_profile = UserProfileDoc(user=user)  # Associate with the user
+                user_profile = UserProfileDoc(user=user, is_approved=False)  # Set is_approved to False
                 user_profile.save()
 
                 for uploaded_file in uploaded_files:
@@ -46,21 +47,52 @@ def signup(request):
             return redirect('signup')
 
     return render(request, "signup.html")
+    
+
+def approve_user(request, user_id):
+    if request.user.is_superuser:
+        user_profile = get_object_or_404(UserProfileDoc, user__id=user_id)
+        user_profile.is_approved = True
+        user_profile.save()
+        return redirect('admin_dashboard')
+    else:
+        return redirect('login')
+
+def delete_user(request, user_id):
+    user_profile = get_object_or_404(UserProfileDoc, user__id=user_id)
+    user_profile.user.delete()
+    return redirect('admin_dashboard')  
 
 
-
-
+def admin_dashboard(request):
+    if request.user.is_superuser:
+        users = User.objects.all()
+        user_profiles = UserProfileDoc.objects.select_related('user').all()
+        context = {
+            'users': users,
+            'user_profiles': user_profiles,
+        }
+        return render(request, 'admin_dashboard.html', context)
+    else:
+        return redirect('login')
 
 def login(request):
-    if request.method=="POST":
-        username= request.POST['username']
-        password=request.POST['password']
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
 
-        user=auth.authenticate(username=username,password=password)
+        user = auth.authenticate(username=username, password=password)
 
         if user is not None:
-            auth.login(request, user)
-            return redirect('userprofile')
+            if user.is_superuser or (hasattr(user, 'userprofiledoc') and user.userprofiledoc.is_approved):
+                auth.login(request, user)
+                if user.is_superuser:
+                    return redirect('admin_dashboard')
+                else:
+                    return redirect('userprofile')
+            else:
+                messages.info(request, 'Your account is not approved yet. Please wait for admin approval.')
+                return redirect('login')
         else:
             messages.info(request, 'Invalid Credentials')
             return redirect('login')

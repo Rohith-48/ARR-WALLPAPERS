@@ -243,7 +243,11 @@ img.google-img{
                     <span>Already have an account? <a href="{% url 'login'%}" class="link login-link">Login</a></span>
                 </div>
             </div>
-    
+            <div>
+                {% for message in messages %}
+                <h3>{{message}}</h3>
+                {% endfor %}
+            </div>
             <div class="line"></div>
     
             <div class="media-options">
@@ -260,12 +264,6 @@ img.google-img{
                 </a>
             </div>
         
-        </div>
-        
-        <div>
-            {% for message in messages %}
-            <h3>{{message}}</h3>
-            {% endfor %}
         </div>
     </section>
 
