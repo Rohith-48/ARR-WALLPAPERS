@@ -530,7 +530,27 @@ body.dark-mode .user-table tbody tr:nth-child(even) {
 body.dark-mode .user-table tbody tr:hover {
     background-color: #555;
 }
+.user-table button {
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 10px; 
+    padding: 5px 10px;
+    cursor: pointer;
+}
 
+.user-table a {
+    text-decoration: none;
+    color: blue; 
+}
+.name-pos h4 {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #f44336; /* Red color */
+    color: #fff; /* White text color */
+    border-radius: 10px; /* Adjust the radius as needed for the desired curve */
+    cursor: pointer;
+}
     </style>
 </head>
 <body>
@@ -554,7 +574,7 @@ body.dark-mode .user-table tbody tr:hover {
             <div class="avtar">
                 <img src="{% static '#'%}">
             </div>
-            <div class="name-pos">
+            <div class="name-pos2">
                 <h2>{{ user.username }}</h2>
                 <h5>ARR</h5>
             </div>
@@ -568,23 +588,19 @@ body.dark-mode .user-table tbody tr:hover {
                 </li>
                 <li>
                     <span><i class="fab fa-uikit"></i></span>
-                    <a href="#">Ui Elements</a>
+                    <a href="#">Upload Wallpapers</a>
                 </li>
                 <li>
                     <span><i class="fab fa-wpforms"></i></span>
-                    <a href="#">Forms Stuff</a>
+                    <a href="#">Edit/Update</a>
                 </li>
                 <li>
                     <span><i class="fas fa-table"></i></span>
-                    <a href="#">Data Table</a>
-                </li>
-                <li>
-                    <span><i class="far fa-chart-bar"></i></span>
-                    <a href="#">Chart</a>
+                    <a href="#">Delete Wallpapers</a>
                 </li>
                 <li>
                     <span><i class="fas fa-cubes"></i></span>
-                    <a href="#">Components</a>
+                    <a href="#">Manage</a>
                 </li>
                 <li>
                     <span><i class="fas fa-sign-out-alt"></i></span>
@@ -611,7 +627,7 @@ body.dark-mode .user-table tbody tr:hover {
                             <img src="img/avtar.png" alt="" srcset="">
                         </div>
                         <div class="name-pos">
-                            <h2>{{ user.username }}</h2>
+                            <h4>{{ user.username }}</h4>
                         </div>
                         
                     </li>
