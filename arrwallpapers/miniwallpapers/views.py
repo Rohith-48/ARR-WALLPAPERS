@@ -47,6 +47,33 @@ def signup(request):
             return redirect('signup')
 
     return render(request, "signup.html")
+
+
+
+def login(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = auth.authenticate(username=username, password=password)
+
+        if user is not None:
+            if user.is_superuser or (hasattr(user, 'userprofiledoc') and user.userprofiledoc.is_approved):
+                auth.login(request, user)
+                if user.is_superuser:
+                    return redirect('admin_dashboard')
+                else:
+                    return redirect('userprofile')
+            else:
+                messages.info(request, 'Your account is not approved yet. Please wait for admin approval.')
+                return redirect('login')
+        else:
+            messages.info(request, 'Invalid Credentials')
+            return redirect('login')
+    else:
+        return render(request, "login.html")
+    
+    
     
 
 def approve_user(request, user_id):
@@ -75,29 +102,6 @@ def admin_dashboard(request):
         return render(request, 'admin_dashboard.html', context)
     else:
         return redirect('login')
-
-def login(request):
-    if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
-
-        user = auth.authenticate(username=username, password=password)
-
-        if user is not None:
-            if user.is_superuser or (hasattr(user, 'userprofiledoc') and user.userprofiledoc.is_approved):
-                auth.login(request, user)
-                if user.is_superuser:
-                    return redirect('admin_dashboard')
-                else:
-                    return redirect('userprofile')
-            else:
-                messages.info(request, 'Your account is not approved yet. Please wait for admin approval.')
-                return redirect('login')
-        else:
-            messages.info(request, 'Invalid Credentials')
-            return redirect('login')
-    else:
-        return render(request, "login.html")
 
 
 def logout(request):
