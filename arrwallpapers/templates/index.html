@@ -43,13 +43,14 @@
 						<li class="hidden">
 							<a href="#page-top"></a>
 						</li>
+						<li class="dropdown first">
 						{% if user.is_authenticated %}
     						{% if user.is_superuser %}
        							 <a href="{% url 'admin_dashboard' %}" class="btn btn-default dropdown-toggle lv1">
             							Dashboard <i class="fa fa-angle-down" aria-hidden="true"></i>
         							</a>
     						{% else %}
-        				<a href="{% url 'user_profile' %}" class="btn btn-default dropdown-toggle lv1">
+        				<a href="{% url 'userprofile' %}" class="btn btn-default dropdown-toggle lv1">
            						 Dashboard <i class="fa fa-angle-down" aria-hidden="true"></i>
         					</a>
     				{% endif %}
@@ -58,6 +59,7 @@
         			Home <i class="fa fa-angle-down" aria-hidden="true"></i>
     				</a>
 			{% endif %}
+						</li>
 
 						<li class="dropdown first">
 							<a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
@@ -298,7 +300,7 @@
 				<h4>Account</h4>
 				<ul>
 					<li><a href="#">My Account</a></li> 
-					<li><a href="#">Watchlist</a></li>	
+					<li><a href="#">Liked</a></li>	
 					<li><a href="#">Collections</a></li>
 					<li><a href="#">User Guide</a></li>
 				</ul>
