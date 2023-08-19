@@ -4,13 +4,14 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from django.contrib.auth import authenticate, login
-from .models import UserProfileDoc
+from .models import Tag, UserProfileDoc, WallpaperCollection
 from django.shortcuts import get_object_or_404, redirect
 
 # from .models import Creatorauth
 
 def index(request):
-    return render(request, 'index.html')
+    wallpapers = WallpaperCollection.objects.select_related('user').all()
+    return render(request, 'index.html', {'wallpapers': wallpapers})
 
 
 def signup(request):
@@ -120,5 +121,32 @@ def Premium_signup(request):
     return render(request, 'Premium_signup.html')
 
 
+def upload_wallpaper(request):
+    if request.method == 'POST':
+        title = request.POST['title']
+        price = request.POST['price']
+        description = request.POST['description']
+        wallpaper_file = request.FILES['wallpaper_file']
+        user = request.user
+        # category_name = request.POST['category']
+        tags_names = request.POST.getlist('tags')
 
+        # category = Category.objects.get(name=category_name)
+        tags = Tag.objects.filter(name__in=tags_names)
 
+        wallpaper = WallpaperCollection.objects.create(
+            title=title,
+            price=price,
+            description=description,
+            user=user,
+            # category=category,
+            wallpaper_image=wallpaper_file
+        )
+        wallpaper.tags.set(tags)
+
+        return redirect('index')  # Replace 'index' with the appropriate URL name
+    else:
+        # categories = Category.objects.all()
+        tags = Tag.objects.all()
+        upload_successful = True
+        return render(request, 'upload_wallpaper.html', {'tags': tags, 'upload_successful': upload_successful})

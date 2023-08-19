@@ -601,8 +601,9 @@ body.dark-mode .user-table tbody tr:hover {
                 </li>
                 <li>
                     <span><i class="fab fa-uikit"></i></span>
-                    <a href="#">Upload Wallpapers</a>
+                    <a href="{% url 'upload_wallpaper' %}">Upload Wallpapers</a>
                 </li>
+                
                 <li>
                     <span><i class="fab fa-wpforms"></i></span>
                     <a href="#">Edit/Update</a>
@@ -657,9 +658,9 @@ body.dark-mode .user-table tbody tr:hover {
             </div>
         </div>
     </header>
-
+    
     <div class="main_contant">
-
+        {% block content %}
         <div class="bread-crumbs">
             <ul>
                 <li>
@@ -668,8 +669,7 @@ body.dark-mode .user-table tbody tr:hover {
                 </li>
             </ul>
         </div>
-        
-
+      
 <div class="content_table">
     <div class="title">
         <h2>Manage Users</h2>
@@ -717,6 +717,7 @@ body.dark-mode .user-table tbody tr:hover {
                 {% endfor %}
             </tbody>
         </table>
+        {% endblock %}
     </div>
 </div>
 

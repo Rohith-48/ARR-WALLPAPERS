@@ -10,6 +10,9 @@
 	<link rel="profile" href="#">
     <!--Google Font-->
     <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600' />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+    <link rel="stylesheet" href="{% static 'your_app/style.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
 	<!-- Mobile specific meta -->
 	<meta name=viewport content="width=device-width, initial-scale=1">
 	<meta name="format-detection" content="telephone-no">
@@ -17,6 +20,59 @@
 	<!-- CSS files -->
 	<link rel="stylesheet" href="{% static 'css\plugins.css'%}">
 	<link rel="stylesheet" href="{% static 'css\style.css'%}">
+	<style>
+
+		.wallpaper-row {
+			display: flex;
+			justify-content: space-between;
+			margin-bottom: 20px;
+		}
+		
+		.wallpaper-box {
+			width: calc(33.33% - 20px);
+			border: 1px solid #ddd;
+			padding: 20px;
+			background-color: #f9f9f9;
+			display: flex;
+			flex-direction: column;
+		}
+		
+		.wallpaper-image img {
+			max-width: 100%;
+			height: auto;
+			margin-bottom: 10px;
+			border-bottom: 1px solid #ddd;
+		}
+		
+		.wallpaper-details {
+			padding-top: 10px;
+		}
+		
+		.wallpaper-details h3 {
+			font-size: 18px;
+			margin: 0;
+			margin-bottom: 10px;
+		}
+		
+		.wallpaper-details p {
+			margin: 0;
+			margin-bottom: 5px;
+		}
+		.download-button {
+			display: inline-block;
+			background-color: red;
+			color: white;
+			border-radius: 20px;
+			padding: 10px 20px;
+			text-decoration: none;
+			transition: background-color 0.3s ease;
+		}
+		
+		.download-button:hover {
+			background-color: darkred;
+		}
+		
+	</style>
 
 </head>
 <body>
@@ -254,17 +310,43 @@
 	</div>
 </div>
 <div class="wall-item">
-	<div class="container">
-		<div class="row ipad-width">
-			<div class="col-md-8">
-				<div class="title-hd">
-					<h2>WALLPAPERS</h2>
-					<a href="#" class="viewall">View all <i class="ion-ios-arrow-right"></i></a>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="container">
+        <div class="row ipad-width">
+            <div class="col-md-8">
+                <div class="title-hd">
+                    <h2>WALLPAPERS</h2>
+                    <a href="#" class="viewall">View all <i class="ion-ios-arrow-right"></i></a>
+                </div>
+                <div class="wallpapers">
+                    <div class="wallpaper-row">
+                        {% for wallpaper in wallpapers %}
+                        <div class="wallpaper-box">
+                            <a href="{{ wallpaper.wallpaper_image.url }}" data-lightbox="wallpapers" data-title="{{ wallpaper.title }}">
+                                <div class="wallpaper-image">
+                                    <img src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}">
+                                </div>
+                            </a>
+                            <div class="wallpaper-details">
+                                <h3>{{ wallpaper.title }}</h3>
+                                <p>{{ wallpaper.description }}</p>
+                                <p>Uploaded by: {{ wallpaper.user.username }}</p>
+                                <p>Uploader type: {% if wallpaper.user.is_superuser %}Admin{% else %}Creator{% endif %}</p>
+                                <p>Uploaded on: {{ wallpaper.upload_date }}</p>
+                                <a href="{{ wallpaper.wallpaper_image.url }}" download class="download-button">Download</a>
+                            </div>
+                        </div>
+                        {% if forloop.counter|divisibleby:3 and not forloop.last %}
+                            </div><div class="wallpaper-row">
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
 
 <!--end of latest new v1 section-->
 <!-- footer section-->

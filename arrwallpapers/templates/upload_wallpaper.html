@@ -1,0 +1,50 @@
+{% extends 'admin_dashboard.html' %}
+
+{% block content %}
+<div class="content_table">
+    <div class="title">
+        <h2>Upload Wallpaper</h2>
+    </div>
+    <div class="upload-form">
+        {% if upload_successful %}
+        <div class="alert alert-success">
+            Wallpaper uploaded successfully!
+        </div>
+        {% endif %}
+        
+        <form method="post" enctype="multipart/form-data" action="/upload_wallpaper/">
+            {% csrf_token %}
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required>
+            
+            <label for="price">Price:</label>
+            <select id="price" name="price">
+                <option value="free">Free</option>
+                <option value="paid">Paid</option>
+            </select>
+            
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="4" required></textarea>
+            
+            <label for="wallpaper_file">Image:</label>
+            <input type="file" id="wallpaper_file" name="wallpaper_file" accept="image/*" required>
+            
+            <!-- <label for="category">Category:</label>
+            <select id="category" name="category">
+                {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select> -->
+            
+            <label for="tags">Tags:</label>
+            <select id="tags" name="tags" multiple>
+                {% for tag in tags %}
+                    <option value="{{ tag.id }}">{{ tag.name }}</option>
+                {% endfor %}
+            </select>
+            
+            <button type="submit">Upload Wallpaper</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

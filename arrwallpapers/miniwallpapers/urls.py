@@ -3,6 +3,8 @@ from django.urls import path
 from . import views
 from django.conf.urls.static import static
 
+
+
 urlpatterns=[
     path('',views.index ,name='index'),
     path('login', views.login, name='login'),
@@ -12,8 +14,11 @@ urlpatterns=[
     path('userprofile', views.userprofile, name='userprofile'),
     path('forgot_password', views.forgot_password, name='forgot_password'),
     path('Premium_signup', views.Premium_signup, name='Premium_signup'),
-     path('delete_user/<int:user_id>/', views.delete_user, name='delete_user'),
-      path('approve_user/<int:user_id>/', views.approve_user, name='approve_user'),
+    path('delete_user/<int:user_id>/', views.delete_user, name='delete_user'),
+    path('approve_user/<int:user_id>/', views.approve_user, name='approve_user'),
+
+
+    path('upload_wallpaper/', views.upload_wallpaper, name='upload_wallpaper'),
 ]
 
 if settings.DEBUG:
