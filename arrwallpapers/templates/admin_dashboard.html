@@ -563,6 +563,64 @@ body.dark-mode .user-table tbody tr:hover {
     height: 15px;
     width: 15px;
 }
+.wallpaper-box {
+    border: 5px solid orange;
+    box-shadow: 0 0 10px white;
+    padding: 15px;
+    margin: 10px;
+    background-color: #fff;
+}
+
+/* Wallpaper image styles */
+.wallpaper-image img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Wallpaper details styles */
+.wallpaper-details {
+    margin-top: 15px;
+}
+
+.wallpaper-title {
+    color: blue;
+    font-weight: bold;
+}
+
+.wallpaper-description {
+    margin-bottom: 10px;
+    color: black;
+    letter-spacing: 1px;
+}
+
+.uploader-info,
+.uploader-type,
+.upload-date {
+    color: black;
+    margin-bottom: 5px;
+}
+
+/* Delete button styles */
+.delete-button-container {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.delete-button {
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 767px) {
+    .wallpaper-box {
+        margin: 10px 0;
+    }
+}
 
     </style>
 </head>
@@ -608,13 +666,13 @@ body.dark-mode .user-table tbody tr:hover {
                     <span><i class="fab fa-wpforms"></i></span>
                     <a href="#">Edit/Update</a>
                 </li>
-                <li>
+                <!-- <li>
                     <span><i class="fas fa-table"></i></span>
                     <a href="#">Delete Wallpapers</a>
-                </li>
+                </li> -->
                 <li>
                     <span><i class="fas fa-cubes"></i></span>
-                    <a href="#">Manage</a>
+                    <a href="{% url 'view_delete_wallpaper' %}">View/Delete</a>
                 </li>
                 <li>
                     <span><i class="fas fa-sign-out-alt"></i></span>

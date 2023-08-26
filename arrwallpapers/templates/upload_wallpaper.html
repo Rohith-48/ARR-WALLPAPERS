@@ -6,45 +6,99 @@
         <h2>Upload Wallpaper</h2>
     </div>
     <div class="upload-form">
-        {% if upload_successful %}
-        <div class="alert alert-success">
-            Wallpaper uploaded successfully!
-        </div>
-        {% endif %}
-        
-        <form method="post" enctype="multipart/form-data" action="/upload_wallpaper/">
+        <form method="post" enctype="multipart/form-data" action="/upload_wallpaper/" onsubmit="showSuccessMessage()">
             {% csrf_token %}
-            <label for="title">Title:</label>
-            <input type="text" id="title" name="title" required>
+            <div class="form-field">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" required>
+            </div>
             
-            <label for="price">Price:</label>
-            <select id="price" name="price">
-                <option value="free">Free</option>
-                <option value="paid">Paid</option>
-            </select>
+            <div class="form-field">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" rows="4" required></textarea>
+            </div>
             
-            <label for="description">Description:</label>
-            <textarea id="description" name="description" rows="4" required></textarea>
+            <div class="form-field">
+                <label for="price">Price:</label>
+                <select id="price" name="price">
+                    <option value="free">Free</option>
+                    <option value="paid">Paid</option>
+                </select>
+            </div>
             
-            <label for="wallpaper_file">Image:</label>
-            <input type="file" id="wallpaper_file" name="wallpaper_file" accept="image/*" required>
-            
-            <!-- <label for="category">Category:</label>
+            <div class="form-field">
+                <label for="tags">Tags:</label>
+                <select id="tags" name="tags" multiple>
+                    {% for tag in tags %}
+                        <option value="{{ tag.id }}">{{ tag.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+             <!-- <label for="category">Category:</label>
             <select id="category" name="category">
                 {% for category in categories %}
                     <option value="{{ category.id }}">{{ category.name }}</option>
                 {% endfor %}
             </select> -->
             
-            <label for="tags">Tags:</label>
-            <select id="tags" name="tags" multiple>
-                {% for tag in tags %}
-                    <option value="{{ tag.id }}">{{ tag.name }}</option>
-                {% endfor %}
-            </select>
+
+            <div class="form-field">
+                <label for="wallpaper_file">Choose File:</label>
+                <input type="file" id="wallpaper_file" name="wallpaper_file" accept="image/*" required>
+            </div>
             
-            <button type="submit">Upload Wallpaper</button>
+            <button type="submit" class="upload-button">Upload Wallpaper</button>
         </form>
     </div>
+    <div class="upload-success-message" id="upload-success-message"></div>
 </div>
+
+<script>
+    function showSuccessMessage() {
+        var successMessage = document.getElementById('upload-success-message');
+        successMessage.innerHTML = '<div class="alert alert-success">Wallpaper uploaded successfully!</div>';
+    }
+</script>
+
+<style>
+    .upload-form {
+        background-color: #f6f6f6;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-field {
+        margin-bottom: 15px;
+    }
+
+    .upload-button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .upload-button:hover {
+        background-color: #0056b3;
+    }
+
+    .upload-success-message {
+        margin-top: 20px;
+    }
+
+    .alert {
+        padding: 10px 15px;
+        border-radius: 5px;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+</style>
 {% endblock %}

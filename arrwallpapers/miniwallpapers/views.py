@@ -144,9 +144,24 @@ def upload_wallpaper(request):
         )
         wallpaper.tags.set(tags)
 
-        return redirect('index')  # Replace 'index' with the appropriate URL name
+        return redirect('upload_wallpaper')  # Replace 'index' with the appropriate URL name
     else:
         # categories = Category.objects.all()
         tags = Tag.objects.all()
         upload_successful = True
         return render(request, 'upload_wallpaper.html', {'tags': tags, 'upload_successful': upload_successful})
+    
+
+
+def view_delete_wallpaper(request):
+    if request.method == 'POST':
+        wallpaper_id = request.POST.get('wallpaper_id')
+        wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
+        wallpaper.delete()
+        # Optionally, you can add a success message using messages framework
+        return redirect('view_delete_wallpaper')
+    
+    # Retrieve the list of wallpapers
+    wallpapers = WallpaperCollection.objects.all()
+    context = {'wallpapers': wallpapers}
+    return render(request, 'view_delete_wallpaper.html', context)

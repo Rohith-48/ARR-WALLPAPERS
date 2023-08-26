@@ -19,6 +19,8 @@ urlpatterns=[
 
 
     path('upload_wallpaper/', views.upload_wallpaper, name='upload_wallpaper'),
+    path('view_delete_wallpaper/', views.view_delete_wallpaper, name='view_delete_wallpaper'),
+     path('view_delete_wallpaper/', views.view_delete_wallpaper, name='view_delete_wallpaper'),
 ]
 
 if settings.DEBUG:

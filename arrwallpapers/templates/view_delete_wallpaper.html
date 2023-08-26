@@ -1,0 +1,42 @@
+{% extends 'admin_dashboard.html' %}
+
+{% block content %}
+<div class="content_table">
+    <div class="title">
+        <h2>View/Delete Wallpapers</h2>
+    </div>
+    <div class="main">
+        <div class="wallpapers">
+            <div class="wallpaper-row">
+                {% for wallpaper in wallpapers %}
+                <div class="wallpaper-box" style="border: 5px solid orange; box-shadow: 0 0 10px white; padding: 15px; margin: 10px; background-color: #fff; width: 23%; display: inline-block;">
+                    <a href="{{ wallpaper.wallpaper_image.url }}" data-lightbox="wallpapers" data-title="{{ wallpaper.title }}">
+                        <div class="wallpaper-image">
+                            <img src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}" style="max-width: 100%; height: auto;">
+                        </div>
+                    </a>
+                    <div class="wallpaper-details">
+                        <h3 class="wallpaper-title">{{ wallpaper.title }}</h3>
+                        <p class="wallpaper-description">{{ wallpaper.description }}</p>
+                        <p class="uploader-info">Uploaded by: {{ wallpaper.user.username }}</p>
+                        <p class="uploader-type">Uploader type: {% if wallpaper.user.is_superuser %}Admin{% else %}Creator{% endif %}</p>
+                        <p class="upload-date">Uploaded on: {{ wallpaper.upload_date }}</p>
+
+                        <div class="delete-button-container">
+                            <form method="post" action="{% url 'view_delete_wallpaper' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="wallpaper_id" value="{{ wallpaper.id }}">
+                                <button type="submit" class="delete-button" style="background-color: red; color: white; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer;">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% if forloop.counter|divisibleby:4 and not forloop.last %}
+                </div><div class="wallpaper-row">
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
