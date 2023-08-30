@@ -88,6 +88,18 @@
     .update-button:hover {
         background-color: #0d8ddb;
     }
+    .alert {
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid transparent;
+        border-radius: 5px;
+    }
+
+    .alert-success {
+        color: #3c763d;
+        background-color: #dff0d8;
+        border-color: #d6e9c6;
+    }
 </style>
 <div class="content_table">
     <div class="title">
@@ -137,8 +149,21 @@
                         {% endfor %}
                     </div>
                 </div>
-            <button type="submit" class="update-button">Update Wallpaper</button>
+                <button type="submit" class="update-button" onclick="showUpdateSuccessMessage()">Update Wallpaper</button>
+
+
         </form>
     </div>
+    
+    <div id="update-success-message"></div>
 </div>
+<script>
+    function showUpdateSuccessMessage() {
+        var successMessage = document.getElementById('update-success-message');
+        successMessage.innerHTML = '<div class="alert alert-success">Wallpaper updated successfully!</div>';
+        setTimeout(function() {
+            successMessage.innerHTML = '';
+        }, 5000); 
+    }
+</script>
 {% endblock %}
