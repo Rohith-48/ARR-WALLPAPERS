@@ -27,22 +27,6 @@
 			margin-bottom: 20px;
 		}
 		
-		.wallpaper-box {
-			width: calc(33.33% - 20px);
-			padding: 20px;
-			background-color: #f9f9f9;
-			display: flex;
-			flex-direction: column;
-			border: 1px solid orange;
-		}
-		
-		.wallpaper-image img {
-			max-width: 100%;
-			height: auto;
-			margin-bottom: 10px;
-			border-bottom: 1px solid #ddd;
-		}
-		
 		.wallpaper-details {
 			padding-top: 10px;
 		}
@@ -72,6 +56,28 @@
 		.download-button:hover {
 			background-color: rgb(0, 151, 233);
 		}
+
+
+		.wallpapers {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+		}
+	
+		.wallpaper-box {
+			border: 5px solid orange;
+			box-shadow: 0 0 10px white;
+			padding: 15px;
+			background-color: #fff;
+			flex-basis: calc(33.33% - 30px);
+			box-sizing: border-box;
+			margin-bottom: 20px;
+		}
+		.wallpaper-image img {
+			max-width: 100%;
+			max-height: 200px; /* Adjust this as needed */
+		}
+	
 	</style>
 </head>
 <body>
@@ -144,10 +150,17 @@
 							</ul>
 						</li>
 						<li class="dropdown first">
-							<a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
-							Upload <i class="fa fa-angle-down" aria-hidden="true"></i>
-							</a>
+							{% if user.is_authenticated %}
+								<a href="{% url 'userprofile' %}" class="btn btn-default lv1">
+									Upload
+								</a>
+							{% else %}
+								<a href="{% url 'login' %}" class="btn btn-default lv1">
+									Upload
+								</a>
+							{% endif %}
 						</li>
+						
 						<li class="dropdown first">
 							<a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
 							community <i class="fa fa-angle-down" aria-hidden="true"></i>
@@ -319,7 +332,7 @@
                 <div class="wallpapers">
                     <div class="wallpaper-row">
                         {% for wallpaper in wallpapers %}
-						<div class="wallpaper-box" style="border: 5px solid orange; box-shadow: 0 0 10px white;">
+                        <div class="wallpaper-box">
                             <a href="{{ wallpaper.wallpaper_image.url }}" data-lightbox="wallpapers" data-title="{{ wallpaper.title }}">
                                 <div class="wallpaper-image">
                                     <img src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}">
@@ -328,13 +341,13 @@
                             <div class="wallpaper-details">
                                 <h3 style="color: blue; font-weight: bold;">{{ wallpaper.title }}</h3>
                                 <p style="margin-bottom: 10px; color: black; letter-spacing: 1px;">{{ wallpaper.description }}</p>
-								<p style="color: black;">Uploaded by: {{ wallpaper.user.username }}</p>
-								<p style="color: black;">Uploader type: {% if wallpaper.user.is_superuser %}Admin{% else %}Creator{% endif %}</p>
-								<p style="color: black;">Uploaded on: {{ wallpaper.upload_date }}</p>
-
+                                <p style="color: black;">Uploaded by: {{ wallpaper.user.username }}</p>
+                                <p style="color: black;">Uploader type: {% if wallpaper.user.is_superuser %}Admin{% else %}Creator{% endif %}</p>
+                                <p style="color: black;">Uploaded on: {{ wallpaper.upload_date }}</p>
+                                <p style="color: black;">{% if wallpaper.price == 0 %}Free{% else %}${{ wallpaper.price }}{% endif %}</p>
                                 <div style="margin-top: 25px; text-align: center;">
-									<a href="{{ wallpaper.wallpaper_image.url }}" download class="download-button">Download</a>
-								</div>
+                                    <a href="{{ wallpaper.wallpaper_image.url }}" download class="download-button">Download</a>
+                                </div>
                             </div>
                         </div>
                         {% if forloop.counter|divisibleby:3 and not forloop.last %}

@@ -636,6 +636,7 @@ body.dark-mode .user-table tbody tr:hover {
     }
 }
 
+
     </style>
 </head>
 <body>
@@ -649,7 +650,7 @@ body.dark-mode .user-table tbody tr:hover {
     <div class="sidebar-nav">
         <div class="logo">
             <a href="#">
-                <h1>Admin Dasgboard</h1>
+                <h1>Admin Dashboard</h1>
             </a>
             <a href="#">
                 <img src="{% static '#'%}">
@@ -669,7 +670,7 @@ body.dark-mode .user-table tbody tr:hover {
             <ul>
                 <li>
                     <span><i class="fas fa-home"></i></span>
-                    <a href="#">Dashbord</a>
+                    <a href="{% url 'admin_dashboard' %}">Manage Users</a>
                 </li>
                 <li>
                     <span><i class="fab fa-uikit"></i></span>
@@ -678,12 +679,8 @@ body.dark-mode .user-table tbody tr:hover {
                 
                 <li>
                     <span><i class="fab fa-wpforms"></i></span>
-                    <a href="#">Edit/Update</a>
+                    <a href="{% url 'update_wallpaper' %}" class="button edit-button">Update Wallpaper</a>
                 </li>
-                <!-- <li>
-                    <span><i class="fas fa-table"></i></span>
-                    <a href="#">Delete Wallpapers</a>
-                </li> -->
                 <li>
                     <span><i class="fas fa-cubes"></i></span>
                     <a href="{% url 'view_delete_wallpaper' %}">View/Delete</a>

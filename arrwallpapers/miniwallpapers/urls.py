@@ -16,12 +16,10 @@ urlpatterns=[
     path('Premium_signup', views.Premium_signup, name='Premium_signup'),
     path('delete_user/<int:user_id>/', views.delete_user, name='delete_user'),
     path('approve_user/<int:user_id>/', views.approve_user, name='approve_user'),
-
-
     path('upload_wallpaper/', views.upload_wallpaper, name='upload_wallpaper'),
     path('view_delete_wallpaper/', views.view_delete_wallpaper, name='view_delete_wallpaper'),
-     path('view_delete_wallpaper/', views.view_delete_wallpaper, name='view_delete_wallpaper'),
-]
+    
+ path('update_wallpaper/', views.update_wallpaper, name='update_wallpaper'),    ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

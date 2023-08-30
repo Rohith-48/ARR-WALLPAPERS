@@ -1,0 +1,144 @@
+{% extends 'admin_dashboard.html' %}
+
+{% block content %}
+<style>
+    .wallpaper-selection {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+    }
+
+    .wallpaper-card {
+        background-color: white;
+        border: 5px solid #FFA500; 
+        padding: 10px;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color 0.3s, box-shadow 0.3s;
+        flex: 0 0 calc(25% - 40px);
+        box-sizing: border-box;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        color: black;
+    }
+
+    .wallpaper-card:hover {
+        border-color: #4CAF50;
+        box-shadow: 0 0 10px rgba(76, 175, 80, 0.7); 
+    }
+
+    .wallpaper-card img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .tag-selection {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .tag-checkbox {
+        display: none;
+    }
+
+  
+    .tag-label {
+        /* Update tag text color to black */
+        color: black;
+        display: inline-block;
+        background-color: #ccc;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .tag-checkbox:checked + .tag-label {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .edit-form.active {
+        display: block;
+    }
+    .form-field {
+        margin-bottom: 15px;
+    }
+
+    #title,
+    #description {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .update-button {
+        background-color: #2196F3;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-top: 15px;
+    }
+
+    .update-button:hover {
+        background-color: #0d8ddb;
+    }
+</style>
+<div class="content_table">
+    <div class="title">
+        <h2>Update Wallpaper</h2>
+    </div>
+        
+    <div class="update-form">
+        <form method="post" action="{% url 'update_wallpaper' %}">
+            {% csrf_token %}
+            <div class="form-field">
+                <label>Select Wallpaper:</label>
+                <div class="wallpaper-selection">
+                    {% for wallpaper in wallpapers %}
+                    <label class="wallpaper-card">
+                        <input type="radio" name="selected_wallpaper" value="{{ wallpaper.id }}">
+                        <img src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}">
+                        <div class="wallpaper-details">
+                            <p class="wallpaper-title">{{ wallpaper.title }}</p>
+                            <p class="wallpaper-description">{{ wallpaper.description }}</p>
+                            <p class="wallpaper-tags">
+                                Tags:
+                                {% for tag in wallpaper.tags.all %}
+                                <span class="tag-label">{{ tag.name }}</span>
+                                {% endfor %}
+                            </p>
+                        </div>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="form-field">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" value="" required>
+            </div>
+            
+            <div class="form-field">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" rows="4" required></textarea>
+            </div>
+                <div class="tags-section">
+                    <h3>All Tags:</h3>
+                    <div class="tag-selection">
+                        {% for tag in all_tags %}
+                        <input type="checkbox" class="tag-checkbox" id="tag_{{ tag.id }}" name="tags" value="{{ tag.id }}">
+                        <label class="tag-label" for="tag_{{ tag.id }}">{{ tag.name }}</label>
+                        {% endfor %}
+                    </div>
+                </div>
+            <button type="submit" class="update-button">Update Wallpaper</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

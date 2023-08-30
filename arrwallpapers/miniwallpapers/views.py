@@ -165,3 +165,26 @@ def view_delete_wallpaper(request):
     wallpapers = WallpaperCollection.objects.all()
     context = {'wallpapers': wallpapers}
     return render(request, 'view_delete_wallpaper.html', context)
+
+
+
+
+def update_wallpaper(request):
+    if request.method == 'POST':
+        selected_wallpaper_id = request.POST.get('selected_wallpaper')
+        title = request.POST['title']
+        description = request.POST['description']
+        selected_tags = request.POST.getlist('tags') 
+
+        wallpaper = get_object_or_404(WallpaperCollection, id=selected_wallpaper_id)
+        wallpaper.title = title
+        wallpaper.description = description
+        wallpaper.save()
+        tags = Tag.objects.filter(id__in=selected_tags)
+        wallpaper.tags.set(tags)
+
+        messages.success(request, 'Wallpaper updated successfully')
+        return redirect('update_wallpaper')
+    wallpapers = WallpaperCollection.objects.all()
+    all_tags = Tag.objects.all()
+    return render(request, 'update_wallpaper.html', {'wallpapers': wallpapers, 'all_tags': all_tags})

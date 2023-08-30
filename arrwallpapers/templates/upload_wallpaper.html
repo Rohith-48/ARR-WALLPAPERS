@@ -63,7 +63,7 @@
 <style>
     .upload-form {
         background-color: #f6f6f6;
-        padding: 20px;
+        padding: 75px;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
@@ -99,6 +99,20 @@
         background-color: #d4edda;
         color: #155724;
         border: 1px solid #c3e6cb;
+    }
+    @media (prefers-color-scheme: dark) {
+        .upload-form {
+            background-color: #181818; 
+        }
+        .form-field label,
+        .upload-button {
+            color: white; 
+        }
+
+        .upload-success-message {
+            margin-top: 20px;
+            color: white; 
+        }
     }
 </style>
 {% endblock %}
