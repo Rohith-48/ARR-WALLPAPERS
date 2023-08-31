@@ -1,0 +1,99 @@
+{% extends 'userprofile.html' %}
+
+{% block content %}
+<div class="content_table">
+    <div class="title">
+         <h2 style="color: white;">Upload Wallpaper</h2>
+    </div>
+    <div class="upload-form">
+        <form method="post" enctype="multipart/form-data" action="{% url 'user_upload' %}">
+            {% csrf_token %}
+            <div class="form-field">
+                <label for="title" style="color: white;">Title:</label>
+                <input type="text" id="title" name="title" required style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">
+            </div>
+            
+            <div class="form-field">
+                <label for="description" style="color: rgb(255, 255, 255);">Description:</label>
+                <textarea id="description" name="description" rows="4" required style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);"></textarea>
+            </div>
+            
+            <div class="form-field">
+                <label for="price" style="color: rgb(255, 255, 255);">Price:</label>
+                <select id="price" name="price" style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">
+                    <option value="free">Free</option>
+                    <option value="paid">Paid</option>
+                </select>
+            </div>
+            
+            <div class="form-field">
+                <label for="tags" style="color: rgb(255, 255, 255);">Tags:</label>
+                <select id="tags" name="tags" multiple style="background-color: rgba(255, 255, 255, 0.955); color: rgb(0, 0, 0);">
+                    {% for tag in tags %}
+                        <option value="{{ tag.id }}">{{ tag.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="wallpaper_file" style="color: rgb(255, 255, 255);">Choose File:</label>
+                <input type="file" id="wallpaper_file" name="wallpaper_file" accept="image/*" required style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">
+            </div>
+            
+            <button type="submit" class="upload-button" onclick="showUploadSuccessMessage()">Upload Wallpaper</button>
+        </form>
+    </div>
+    <div class="upload-success-message" id="upload-success-message"></div>
+</div>
+
+<script>
+    function showUploadSuccessMessage() {
+        var successMessage = document.getElementById('upload-success-message');
+        successMessage.innerHTML = '<div class="alert alert-success" style="color: #3c763d; background-color: #dff0d8; border-color: #d6e9c6;">Wallpaper uploaded successfully!</div>';
+        setTimeout(function() {
+            successMessage.innerHTML = '';
+        }, 10000); 
+    }
+</script>
+
+
+<style>
+    
+    .upload-form {
+   
+        padding: 75px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-field {
+        margin-bottom: 15px;
+    }
+
+    .upload-button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .upload-button:hover {
+        background-color: #0056b3;
+    }
+    .alert {
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid transparent;
+        border-radius: 5px;
+    }
+
+    .alert-success {
+        color: #3c763d;
+        background-color: #dff0d8;
+        border-color: #d6e9c6;
+    }
+</style>
+{% endblock %}

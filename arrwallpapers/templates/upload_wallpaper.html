@@ -5,6 +5,7 @@
     <div class="title">
         <h2>Upload Wallpaper</h2>
     </div>
+    <div class="upload-success-message" id="upload-success-message"></div>
     <div class="upload-form">
         <form method="post" enctype="multipart/form-data" action="/upload_wallpaper/" onsubmit="showSuccessMessage()">
             {% csrf_token %}
@@ -50,13 +51,13 @@
             <button type="submit" class="upload-button">Upload Wallpaper</button>
         </form>
     </div>
-    <div class="upload-success-message" id="upload-success-message"></div>
 </div>
 
 <script>
     function showSuccessMessage() {
         var successMessage = document.getElementById('upload-success-message');
         successMessage.innerHTML = '<div class="alert alert-success">Wallpaper uploaded successfully!</div>';
+        successMessage.style.display = 'block';
     }
 </script>
 
@@ -96,23 +97,13 @@
     }
 
     .alert-success {
-        background-color: #d4edda;
-        color: #155724;
+        background-color: green; /* Change to green */
+        color: white; /* Change to white */
         border: 1px solid #c3e6cb;
     }
-    @media (prefers-color-scheme: dark) {
-        .upload-form {
-            background-color: #181818; 
-        }
-        .form-field label,
-        .upload-button {
-            color: white; 
-        }
-
-        .upload-success-message {
-            margin-top: 20px;
-            color: white; 
-        }
+    .upload-success-message {
+        margin-top: 20px;
+        display: none; 
     }
 </style>
 {% endblock %}

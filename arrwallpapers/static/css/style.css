@@ -3333,11 +3333,11 @@ a {
   -moz-transition: all 0.3s ease-out;
   -o-transition: all 0.3s ease-out;
   transition: all 0.3s ease-out;
-  color: #666;
+  color: #ffffff;
   border-bottom: 1px solid dotted;
 }
 a:hover {
-  color: #000000;
+  color: #fcc100;
 }
 p {
   margin-bottom: 10px;

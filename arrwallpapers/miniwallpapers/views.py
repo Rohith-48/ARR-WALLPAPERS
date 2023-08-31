@@ -188,3 +188,81 @@ def update_wallpaper(request):
     wallpapers = WallpaperCollection.objects.all()
     all_tags = Tag.objects.all()
     return render(request, 'update_wallpaper.html', {'wallpapers': wallpapers, 'all_tags': all_tags})
+
+
+
+
+
+def user_upload(request):
+    if request.method == "POST":
+        title = request.POST.get("title")
+        description = request.POST.get("description")
+        price = request.POST.get("price")
+        user = request.user  
+        category_id = request.POST.get("category") 
+        tags = request.POST.getlist("tags")  
+        wallpaper_image = request.FILES.get("wallpaper_file")
+        wallpaper = WallpaperCollection.objects.create(
+            title=title,
+            description=description,
+            price=price,
+            user=user,
+            category_id=category_id,
+            wallpaper_image=wallpaper_image,
+        )
+        wallpaper.tags.set(tags)  
+        
+        return redirect("user_upload")  
+    else:
+        tags = Tag.objects.all()  
+    
+    context = {
+        "tags": tags,
+    }
+    return render(request, "user_upload.html", context)
+
+
+def user_edit_wallpaper(request):
+    if request.method == 'POST':
+        selected_wallpaper_id = request.POST.get('selected_wallpaper')
+        selected_wallpaper = get_object_or_404(WallpaperCollection, id=selected_wallpaper_id)
+
+        if selected_wallpaper.user == request.user:
+            new_title = request.POST.get('title')
+            new_description = request.POST.get('description')
+            selected_tags = request.POST.getlist('tags')
+
+            selected_wallpaper.title = new_title
+            selected_wallpaper.description = new_description
+            selected_wallpaper.tags.set(Tag.objects.filter(id__in=selected_tags))
+            selected_wallpaper.save()
+
+            return redirect('user_edit') 
+    else:
+        user_uploaded_wallpapers = WallpaperCollection.objects.filter(user=request.user)
+
+    context = {
+        'wallpapers': user_uploaded_wallpapers,
+        'all_tags': Tag.objects.all(),
+    }
+    return render(request, 'user_edit.html', context)
+
+
+from django.contrib.auth.decorators import login_required
+from .models import WallpaperCollection
+@login_required
+def view_delete_wallpapers(request):
+    user = request.user
+    wallpapers = WallpaperCollection.objects.filter(user=user)
+
+    if request.method == 'POST':
+        wallpaper_id = request.POST.get('wallpaper_id')
+        wallpaper_to_delete = WallpaperCollection.objects.get(id=wallpaper_id)
+        if wallpaper_to_delete.user == user:
+            wallpaper_to_delete.delete()
+            return redirect('view_delete_userwallpaper')
+
+    context = {
+        'wallpapers': wallpapers,
+    }
+    return render(request, 'view_delete_userwallpaper.html', context)
