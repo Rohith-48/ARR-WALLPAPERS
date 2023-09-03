@@ -343,7 +343,9 @@
                                 <p style="margin-bottom: 10px; color: black; letter-spacing: 1px;">{{ wallpaper.description }}</p>
                                 <p style="color: black;">Uploaded by: {{ wallpaper.user.username }}</p>
                                 <p style="color: black;">Uploader type: {% if wallpaper.user.is_superuser %}Admin{% else %}Creator{% endif %}</p>
-                                <p style="color: black;">Uploaded on: {{ wallpaper.upload_date }}</p>
+								<p style="color: black;">Uploaded on: {{ wallpaper.upload_date|date:"F j, Y g:i A" }}</p>
+
+
                                 <p style="color: black;">{% if wallpaper.price == 0 %}Free{% else %}${{ wallpaper.price }}{% endif %}</p>
                                 <div style="margin-top: 25px; text-align: center;">
                                     <a href="{{ wallpaper.wallpaper_image.url }}" download class="download-button">Download</a>
