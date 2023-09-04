@@ -53,16 +53,23 @@
         max-height: 200px; /* Adjust this as needed */
     }
 </style>
-
 <div class="content_table">
     <div class="title">
         <h2>View/Delete Wallpapers</h2>
     </div>
     <div class="main">
+        <div class="filter-options">
+            <label for="filter-type">Filter by:</label>
+            <select id="filter-type">
+                <option value="all">All Wallpapers</option>
+                <option value="admin">Admin Uploaded</option>
+                <option value="creator">Creator Uploaded</option>
+            </select>
+        </div>
         <div class="wallpapers">
             <div class="wallpaper-row">
                 {% for wallpaper in wallpapers %}
-                <div class="wallpaper-box" style="border: 5px solid orange; box-shadow: 0 0 10px white; padding: 15px; margin: 10px; background-color: #fff; width: 23%; display: inline-block;">
+                <div class="wallpaper-box" style="border: 5px solid orange; box-shadow: 0 0 10px white; padding: 15px; margin: 10px; background-color: #fff; width: 23%; display: inline-block;" data-uploader-type="{% if wallpaper.user.is_superuser %}admin{% else %}creator{% endif %}">
                     <div class="wallpaper-image">
                         <a href="{{ wallpaper.wallpaper_image.url }}" data-lightbox="wallpapers" data-title="{{ wallpaper.title }}">
                             <img src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}" style="max-width: 100%; height: auto;">
@@ -98,6 +105,7 @@
     <img src="" alt="Wallpaper" id="overlay-image">
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     function openOverlay(imageUrl) {
         document.getElementById('overlay-image').src = imageUrl;
@@ -107,5 +115,21 @@
     function closeOverlay() {
         document.getElementById('overlay').style.display = 'none';
     }
+
+    $(document).ready(function () {
+        $('#filter-type').change(function () {
+            var selectedFilter = $(this).val();
+
+            // Show or hide wallpapers based on the filter
+            $('.wallpaper-box').each(function () {
+                var uploaderType = $(this).data('uploader-type');
+                if (selectedFilter === 'all' || uploaderType === selectedFilter) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+    });
 </script>
 {% endblock %}
