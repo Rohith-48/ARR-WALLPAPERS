@@ -37,7 +37,7 @@
         
         .btn {
             color: #fff;
-            background: linear-gradient(to top, #B576F6, #C18CF8);
+            background: linear-gradient(to top, #e81e1e, #ff3c00);
             padding: 8px 20px;
             border-radius: 2px;
             margin: 15px 0;
@@ -80,7 +80,7 @@
         }
         
         .logo h1 {
-            color: #B577F6;
+            color: #ff0000;
             font-family: "Righteous";
             font-size: 40px;
         }
@@ -114,7 +114,7 @@
         }
         
         .side-nav ul li:hover {
-            background-color: #B576F6;
+            background-color: #ff0000;
             color: #fff;
         }
         
@@ -163,7 +163,7 @@
             font-size: 18px;
             cursor: pointer;
             color: #fff;
-            background-color: #B576F6;
+            background-color: #ff0000;
         }
         
         .right-part ul {
@@ -200,7 +200,7 @@
             width: 7px;
             height: 7px;
             border-radius: 20px;
-            background-color: #B576F6;
+            background-color: #ff0000;
         }
         
         
@@ -221,7 +221,7 @@
         }
         
         .main_contant .bread-crumbs ul li span {
-            color: #8C31EB;
+            color: #ff0000;
             margin-right: 10px;
             font-size: 30px;
         }
@@ -400,7 +400,7 @@
             border-radius: 50%;
         }
         input:checked + .slider {
-            background-color: #B576F6;
+            background-color: #ff0000;
         }
         input:checked + .slider:before {
             transform: translateX(26px);
@@ -439,7 +439,7 @@ body.dark-mode .sidebar-nav ul li {
 }
 
 body.dark-mode .sidebar-nav ul li:hover {
-    background-color: #B576F6;
+    background-color: #ff0000;
     color: #fff;
 }
 
@@ -452,7 +452,7 @@ body.dark-mode .sidebar-nav ul li span {
 }
 
 body.dark-mode .logo h1 {
-    color: #B577F6;
+    color: #ff0000;
 }
 
 body.dark-mode .profile .name-pos h5 {
@@ -464,7 +464,7 @@ body.dark-mode .right-part ul li span {
 }
 
 body.dark-mode .right-part ul li.notifiaction span::before {
-    background-color: #B576F6;
+    background-color: #ff0000;
 }
 
 /* Add this CSS code to your <style> section or external stylesheet */
@@ -650,8 +650,11 @@ body.dark-mode .user-table tbody tr:hover {
     
     <div class="sidebar-nav">
         <div class="logo">
-            <a href="#">
-                <h1>Admin Dashboard</h1>
+            <a href="">
+                <div style="text-align: center;">
+                    <img src="{% static 'image-asset/admin-icon.png' %}" style="width: 110px; height: 110px;">
+                </div>
+                <h1>Admin</h1>
             </a>
             <a href="#">
                 <img src="{% static '#'%}">
@@ -671,6 +674,10 @@ body.dark-mode .user-table tbody tr:hover {
             <ul>
                 <li>
                     <span><i class="fas fa-home"></i></span>
+                    <a href="{% url 'index' %}">Home</a>
+                </li>
+                <li>
+                    <span><i class="fas fa-users"></i></span>
                     <a href="{% url 'admin_dashboard' %}">Manage Users</a>
                 </li>
                 <li>
