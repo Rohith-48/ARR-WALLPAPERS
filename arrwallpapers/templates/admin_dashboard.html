@@ -629,7 +629,9 @@ body.dark-mode .user-table tbody tr:hover {
     padding: 5px 10px;
     cursor: pointer;
 }
-
+.sidebar-nav.hide .logo a {
+    display: block;
+}
 /* Responsive styles */
 @media screen and (max-width: 767px) {
     .wallpaper-box {
@@ -811,11 +813,12 @@ body.dark-mode .user-table tbody tr:hover {
 
         $(document).ready(function(){
             $(".bar").click(function(){
-            $(".sidebar-nav").toggleClass("hide")
-            $("header , .main_contant").toggleClass("slide-left")
-        })
+                $(".sidebar-nav").toggleClass("hide");
+                $("header , .main_contant").toggleClass("slide-left");
+                $(".sidebar-nav.hide .logo a").toggle(); 
+            });
         });
-
+        
 
     </script>
   <!-- Replace the previous script block with this one -->
