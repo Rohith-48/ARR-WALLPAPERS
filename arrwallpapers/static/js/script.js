@@ -114,3 +114,42 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 })
+
+// const password1Input = document.getElementById('password1');
+//         const password2Input = document.getElementById('password2');
+//         const password1Validation = document.getElementById('password1-validation');
+//         const password2Validation = document.getElementById('password2-validation');
+     
+//         function validatePassword() {
+//             const password1 = password1Input.value;
+//             const password2 = password2Input.value;
+        
+//             password1Validation.textContent = '';
+//             password2Validation.textContent = '';
+//             if (password1.length < 8) {
+//                 password1Validation.textContent = 'Password must be at least 8 characters long';
+//                 return false;
+//             }
+//             if (!/[A-Z]/.test(password1)) {
+//                 password1Validation.textContent = 'Password must contain at least one uppercase letter';
+//                 return false;
+//             }
+//             if (!/[a-z]/.test(password1)) {
+//                 password1Validation.textContent = 'Password must contain at least one lowercase letter';
+//                 return false;
+//             }
+//             if (!/\d/.test(password1)) {
+//                 password1Validation.textContent = 'Password must contain at least one digit';
+//                 return false;
+//             }
+        
+//             if (password1 !== password2) {
+//                 password2Validation.textContent = 'Passwords do not match';
+//                 return false;
+//             }
+        
+//             return true;
+//         }
+//         password1Input.addEventListener('input', validatePassword);
+//         password2Input.addEventListener('input', validatePassword);
+        

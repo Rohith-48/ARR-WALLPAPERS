@@ -158,7 +158,6 @@ def view_delete_wallpaper(request):
         wallpaper_id = request.POST.get('wallpaper_id')
         wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
         wallpaper.delete()
-        # Optionally, you can add a success message using messages framework
         return redirect('view_delete_wallpaper')
     
     # Retrieve the list of wallpapers

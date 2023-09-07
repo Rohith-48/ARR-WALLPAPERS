@@ -181,6 +181,9 @@ img.google-img{
             opacity: 0.6;
             color: #232836;
         }
+        .validation-message {
+            color: red;
+        }
 
         @media screen and (max-width: 400px) {
             .form {
@@ -270,6 +273,7 @@ img.google-img{
 
      <script src="{% static 'js\script.js'%}"></script>
      <script>
+
         document.addEventListener('DOMContentLoaded', function () {
             const confirmPasswordInput = document.getElementById("password2"); // Get the confirmation password input
             const passwordInput = document.querySelector(".password");
