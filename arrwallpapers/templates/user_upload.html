@@ -27,13 +27,19 @@
             </div>
             
             <div class="form-field">
-                <label for="tags" style="color: rgb(255, 255, 255);">Tags:</label>
-                <select id="tags" name="tags" multiple style="background-color: rgba(255, 255, 255, 0.955); color: rgb(0, 0, 0);">
-                    {% for tag in tags %}
-                        <option value="{{ tag.id }}">{{ tag.name }}</option>
+                <label for="tags" style="color: rgb(255, 255, 255);">Tags (comma-separated):</label>
+                <input type="text" id="tags" name="tags" placeholder="e.g., tag1, tag2, tag3" style="background-color: rgba(255, 255, 255, 0.955); color: rgb(0, 0, 0);">
+            </div>
+            
+            <div class="form-field">
+                <label for="category" style="color: rgb(255, 255, 255);">Category:</label>
+                <select id="category" name="category" style="background-color: rgba(255, 255, 255, 0.955); color: rgb(0, 0, 0);">
+                    {% for category_key, category_value in categories %}
+                        <option value="{{ category_key }}">{{ category_value }}</option>
                     {% endfor %}
                 </select>
             </div>
+            
 
             <div class="form-field">
                 <label for="wallpaper_file" style="color: rgb(255, 255, 255);">Choose File:</label>

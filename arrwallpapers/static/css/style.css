@@ -6649,6 +6649,7 @@ background-color: black;
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  margin-top: 20px;
 }
 .slider .social-link p {
   font-family: 'Dosis', sans-serif;

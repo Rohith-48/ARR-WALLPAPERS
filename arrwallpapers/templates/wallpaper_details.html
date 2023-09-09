@@ -1,0 +1,67 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<style>
+    .custom-button {
+        background-color: blue;
+        color: white;
+        font-weight: bold;
+        border-radius: 10px;
+        padding: 10px 20px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .custom-button:hover {
+        background-color: darkblue;
+        text-decoration: none;
+    }
+
+    .wallpaper-container {
+        background-color: black;
+        color: white;
+        padding: 50px;
+        text-align: center;
+    }
+
+    .wallpaper-info {
+        margin-bottom: 20px;
+    }
+
+    .wallpaper-title {
+        font-size: 24px;
+        font-weight: bold;
+        text-align: left;
+    }
+
+    .wallpaper-description {
+        font-size: 18px;
+        text-align: left;
+    }
+
+    .wallpaper-image {
+        max-width: 600px;
+        height: 300px;
+        margin: 0 auto;
+        display: block;
+        margin-left: 10px;
+    }
+</style>
+
+<div class="wallpaper-container">
+    <div class="container">
+        <div class="row wallpaper-info">
+            <div class="col-md-12 text-center">
+                <h2 class="wallpaper-title">{{ wallpaper.title }}</h2>
+                <p class="wallpaper-description">{{ wallpaper.description }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <img src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}" class="img-fluid wallpaper-image">
+                <a href="{{ wallpaper.wallpaper_image.url }}" download class="btn btn-primary custom-button">Download Wallpaper</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

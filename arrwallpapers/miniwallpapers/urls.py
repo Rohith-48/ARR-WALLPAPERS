@@ -23,7 +23,10 @@ urlpatterns=[
         
     path('user_upload/', views.user_upload, name='user_upload'),
     path('user_edit/', views.user_edit_wallpaper, name='user_edit'),
-    path('view_delete_userwallpaper/', views.view_delete_wallpapers, name='view_delete_userwallpaper'),            ]
+    path('view_delete_userwallpaper/', views.view_delete_userwallpaper, name='view_delete_userwallpaper'),     
+           
+    path('wallpaper/<int:wallpaper_id>/', views.wallpaper_details, name='wallpaper_details'),
+                  ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

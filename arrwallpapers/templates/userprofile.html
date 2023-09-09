@@ -10,6 +10,8 @@
 	<link rel="profile" href="#">
     <!--Google Font-->
     <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600' />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
 	<link rel="icon" type="image-asset/png" href="{% static '\image-asset\icon.png'%}">
 	<!-- Mobile specific meta -->
 	<meta name=viewport content="width=device-width, initial-scale=1">
@@ -146,7 +148,7 @@
 							{% url 'userprofile' as userprofile_url %}
 							{% url 'user_upload' as user_upload_url %}
 							{% url 'user_edit' as user_edit_url %}
-							{% url 'view_delete_wallpapers' as view_delete_wallpapers_url %}
+							{% url 'view_delete_userwallpaper' as view_delete_userwallpaper_url %}
 							<nav>
 								<ul class="navigation">
 									<li><a href="{% url 'index' %}">Home</a></li>
@@ -303,6 +305,13 @@
 <script src="{% static 'js\plugins.js'%}"></script>
 <script src="{% static 'js\plugins2.js'%}"></script>
 <script src="{% static 'js\custom.js'%}"></script>
+<script>
+    lightbox.option({
+        'resizeDuration': 1000,
+        'wrapAround': true
+    });
+</script>
+
 </body>
 
 </html>

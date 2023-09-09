@@ -28,12 +28,19 @@
             </div>
             
             <div class="form-field dark-mode-text">
-                <label for="tags">Tags:</label>
-                <select id="tags" name="tags" multiple>
-                    {% for tag in tags %}
-                        <option value="{{ tag.id }}">{{ tag.name }}</option>
+                <label for="category">Category:</label>
+                <select id="category" name="category">
+                    {% for category_key, category_value in categories %}
+                        <option value="{{ category_key }}">{{ category_value }}</option>
                     {% endfor %}
                 </select>
+            </div>
+            
+            
+            
+            <div class="form-field dark-mode-text">
+                <label for="tags">Tags:</label>
+                <input type="text" id="tags" name="tags" placeholder="Add tags separated by '','">
             </div>
 
             <div class="form-field dark-mode-text">

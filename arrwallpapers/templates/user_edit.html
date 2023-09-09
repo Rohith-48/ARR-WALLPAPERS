@@ -6,7 +6,6 @@
         display: flex;
         flex-wrap: wrap;
         gap: 20px;
-        justify-content: center;
     }
 
     .wallpaper-card {
@@ -141,12 +140,11 @@
             </div>
             <div class="tags-section">
                 <h3 style="color: white;">All Tags:</h3>
-                <div class="tag-selection">
-                    {% for tag in all_tags %}
-                    <input type="checkbox" class="tag-checkbox" id="tag_{{ tag.id }}" name="tags" value="{{ tag.id }}">
-                    <label class="tag-label" for="tag_{{ tag.id }}">{{ tag.name }}</label>
-                    {% endfor %}
+                <div class="form-field">
+                    <label for="tags" style="color: white;">Tags (comma-separated):</label>
+                    <input type="text" id="tags" name="tags" placeholder="e.g., tag1, tag2, tag3" style="color: black; background-color: white;">
                 </div>
+                
             </div>
             <button type="submit" class="update-button" onclick="showUpdateSuccessMessage()">Update Wallpaper</button>
         </form>

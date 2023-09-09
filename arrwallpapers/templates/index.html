@@ -11,6 +11,8 @@
     <!--Google Font-->
     <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600' />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 	<link rel="icon" type="image-asset/png" href="{% static '\image-asset\icon.png'%}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
@@ -22,67 +24,102 @@
 	<link rel="stylesheet" href="{% static 'css\plugins.css'%}">
 	<link rel="stylesheet" href="{% static 'css\style.css'%}">
 	<style>
-		.wallpaper-row {
-			display: flex;
-			margin-bottom: 20px;
-		}
-		
-		.wallpaper-details {
-			padding-top: 10px;
-		}
-		
-		.wallpaper-details h3 {
-			font-size: 18px;
-			margin: 0;
-			margin-bottom: 10px;
-			color: blue;
-			font-weight: bold;
-		}
-		
-		.wallpaper-details p {
-			margin: 0;
-			margin-bottom: 5px;
-		}
-		
-		.download-button {
-			padding: 10px 25px;
-			margin: 0px 10px;
-			background-color: rgb(244, 0, 0);
-			text-decoration: none;
-			color: #ffffff;
-			border-radius: 5px;
-		}
-		
-		.download-button:hover {
-			background-color: rgb(0, 151, 233);
-		}
-
-
-		.wallpapers {
-			display: flex;
-			flex-wrap: wrap;
-			justify-content: space-between;
-		}
-	
-		.wallpaper-box {
-			border: 5px solid orange;
-			box-shadow: 0 0 10px white;
-			padding: 15px;
-			margin: 15px;
-			background-color: #fff;
-			flex-basis: calc(33.33% - 30px);
-			box-sizing: border-box;
-			margin-bottom: 20px;
-		}
 		.wallpaper-image img {
-			max-width: 100%;
-			max-height: 200px; /* Adjust this as needed */
+			max-width: 100%; 
+			height: 250px; 
+			width: 377px;
 		}
+.wallpaper-box {
+    position: relative; 
+    overflow: hidden;
 	
+}
+.wallpaper-row{
+	display: flex;
+}
+.wallpaper-image{
+	margin: 10px 10px;
+	border-radius: 5px;
+}
+.wallpaper-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+	height: auto; 
+	width: auto;
+    background: rgba(158, 155, 155, 0.067); 
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 0; 
+    transition: opacity 0.3s ease;
+	border: white;
+}
+
+.wallpaper-overlay h3 {
+    margin: 10px;
+    font-size: 18px;
+    font-weight: bold;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.tags{
+	position: absolute;
+	bottom: 0;
+	color: white;
+	
+}
+.tag{
+	background: rgba(0, 0, 0, 0.5);
+	border-radius: 2px;
+}
+.wallpaper-overlay .tags {
+    margin: 10px;
+    text-align: center;
+}
+
+.wallpaper-overlay .like-button {
+    margin: 10px;
+    padding: 5px 10px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+	
+}
+
+.wallpaper-box:hover .wallpaper-overlay {
+    opacity: 1;
+}
+
+.like-button {
+	background-color: transparent; 
+	border: none; 
+	cursor: pointer; 
+	font-size: 16px; 
+	padding: 5px 10px; 
+	display: flex;
+	align-items: center;
+	position: absolute;
+	top: 0;
+	right: 0;
+  }
+  
+  .like-button i {
+	margin-right: 5px; 
+  }
+  
+  .like-button:hover {
+	color: #ff0000; 
+  }
 	</style>
 </head>
 <body>
-	{% block content %}
 <!-- BEGIN | Header -->
 <header class="ht-header">
 	<div class="container">
@@ -209,6 +246,8 @@
 				<a href="#"><i class="ion-social-googleplus"></i></a>
 				<a href="#"><i class="ion-social-youtube"></i></a>
 			</div>
+
+			{% block content %}
 	    	<div  class="slick-multiItemSlider">
 	    		<div class="movie-item">
 	    			<div class="mv-img">
@@ -325,39 +364,42 @@
 <div class="wall-item">
     <div class="container">
         <div class="row ipad-width">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <div class="title-hd">
-                    <h2 style="color: rgb(255, 255, 255); font-weight: bold;">WALLPAPERS</h2>
+                    <h2 style="color: rgb(255, 255, 255); font-weight: bold">WALLPAPERS</h2>
                     <a href="#" class="viewall">View all <i class="ion-ios-arrow-right"></i></a>
                 </div>
                 <div class="wallpapers">
-                    <div class="wallpaper-row">
-                        {% for wallpaper in wallpapers %}
-                        <div class="wallpaper-box">
-                            <a href="{{ wallpaper.wallpaper_image.url }}" data-lightbox="wallpapers" data-title="{{ wallpaper.title }}">
-                                <div class="wallpaper-image">
-                                    <img src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}">
-                                </div>
-                            </a>
-                            <div class="wallpaper-details">
-                                <h3 style="color: blue; font-weight: bold;">{{ wallpaper.title }}</h3>
-                                <p style="margin-bottom: 10px; color: black; letter-spacing: 1px;">{{ wallpaper.description }}</p>
-                                <p style="color: black;">Uploaded by: {{ wallpaper.user.username }}</p>
-                                <p style="color: black;">Uploader type: {% if wallpaper.user.is_superuser %}Admin{% else %}Creator{% endif %}</p>
-								<p style="color: black;">Uploaded on: {{ wallpaper.upload_date|date:"F j, Y g:i A" }}</p>
-
-
-                                <p style="color: black;">{% if wallpaper.price == 0 %}Free{% else %}${{ wallpaper.price }}{% endif %}</p>
-                                <div style="margin-top: 25px; text-align: center;">
-                                    <a href="{{ wallpaper.wallpaper_image.url }}" download class="download-button">Download</a>
-                                </div>
-                            </div>
-                        </div>
-                        {% if forloop.counter|divisibleby:3 and not forloop.last %}
-                            </div><div class="wallpaper-row">
-                        {% endif %}
-                        {% endfor %}
-                    </div>
+						<div class="wallpaper-row">
+							{% for wallpaper in wallpapers %}
+							<div class="wallpaper-box">
+								<a href="{% url 'wallpaper_details' wallpaper.id %}" data-lightbox="wallpapers" data-title="{{ wallpaper.title }}">
+									<div class="wallpaper-image">
+										<img src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}">
+										<div class="wallpaper-details">
+											<div class="wallpaper-overlay">
+												<h3>{{ wallpaper.title }}</h3>
+												<div class="like-button-container">
+													<button class="like-button"><i class="fas fa-heart"></i></button>
+												</div>
+											</div>
+											<p class="tags">
+												{% for tag in wallpaper.tags.all %}
+													<span class="tag">{{ tag.name }}</span>
+												{% endfor %}
+											</p>
+										</div>
+									</div>
+								</a>
+							</div>
+							
+						
+							{% if forloop.counter|divisibleby:4 and not forloop.last %}
+								</div><div class="wallpaper-row">
+							{% endif %}
+							{% endfor %}
+						</div>
+						
                 </div>
             </div>
         </div>
@@ -365,7 +407,7 @@
 </div>
 
 
-
+{% endblock %}
 <!--end of latest new v1 section-->
 <!-- footer section-->
 <footer class="ht-footer">
@@ -429,7 +471,6 @@
 <script src="{% static 'js\plugins.js'%}"></script>
 <script src="{% static 'js\plugins2.js'%}"></script>
 <script src="{% static 'js\custom.js'%}"></script>
-{% endblock %}
 </body>
 
 </html>

@@ -11,18 +11,29 @@ class UserProfileDoc(models.Model):
     
 from django.db import models
 from django.contrib.auth.models import User
-
-class Category(models.Model):
-    name = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.name
+from django.core.exceptions import ValidationError
 
 class Tag(models.Model):
     name = models.CharField(max_length=50)
+    hashtag = models.CharField(max_length=50, default='default_hashtag') 
 
     def __str__(self):
-        return self.name
+        return f'#{self.name}'
+
+class Category(models.Model):
+    CATEGORY_CHOICES = [
+        ('superhero', 'Superhero'),
+        ('nature', 'Nature'),
+        ('wildlife', 'Wildlife'),
+        ('cars', 'Cars'),
+        ('bikes', 'Bikes'),
+        ('ai_arts', 'AI Arts'),
+    ]
+
+    name = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='others')
+
+    def __str__(self):
+        return self.get_name_display()
 
 class WallpaperCollection(models.Model):
     WALLPAPER_PRICE_CHOICES = [
@@ -43,10 +54,6 @@ class WallpaperCollection(models.Model):
         default='path_to_default_image.jpg',
     )
 
-# Add default categories and tags
-# Category.objects.get_or_create(name='hd')
-# Category.objects.get_or_create(name='4k')
-
-Tag.objects.get_or_create(name='superhero')
-Tag.objects.get_or_create(name='nature')
-Tag.objects.get_or_create(name='amoled')
+    def clean(self):
+        if self.tags.count() > 4:
+            raise ValidationError("A wallpaper can have a maximum of 4 tags.")

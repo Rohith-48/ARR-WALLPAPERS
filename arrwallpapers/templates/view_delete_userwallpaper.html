@@ -173,13 +173,14 @@
 </div>
 
 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+
 <script>
     lightbox.option({
         'resizeDuration': 1000,
         'wrapAround': true
     });
-
     function openOverlay(imageUrl) {
         document.getElementById('overlay-image').src = imageUrl;
         document.getElementById('overlay').style.display = 'flex';
