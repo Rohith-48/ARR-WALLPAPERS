@@ -6,7 +6,7 @@
         background-color: blue;
         color: white;
         font-weight: bold;
-        border-radius: 10px;
+        border-radius: 5px;
         padding: 10px 20px;
         text-decoration: none;
         transition: background-color 0.3s ease;
@@ -28,7 +28,7 @@
     }
 
     .premium-button:hover {
-        background-color: darkorange; /* Change the hover background color to dark orange */
+        background-color: darkorange; 
         text-decoration: none;
     }
 
@@ -67,24 +67,97 @@
         font-weight: bold;
         margin-top: 10px;
     }
-</style>
 
+    .resize-crop-form {
+        margin-top: 20px;
+        text-align: center;
+        display: flex;
+    }
+
+    .resize-crop-inputcrop {
+        width: 100px;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+
+span{
+    height: 50px;
+    width: 9px;
+    margin-top: 10px;
+}
+    .download-icon {
+        font-size: 24px;
+        color: rgb(255, 255, 255);
+        margin-left: 10px;
+        cursor: pointer;
+        background-color: blue;
+        padding: 10px;
+        height: 50px;
+    }
+    #download-for-my-screen {
+        background-color: blue;
+        color: white;
+        font-weight: bold;
+        border-radius: 5px;
+        padding: 10px 20px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+    #download-for-my-screen:hover {
+        background-color: darkblue;
+        text-decoration: none;
+    }
+    .resize{
+        display: flex;
+        flex-direction: column;
+
+    }
+    .resize-crop{
+        display: flex;
+    }
+    .aligntext{
+        text-align: left;
+    }
+</style>
 <div class="wallpaper-container">
     <div class="container">
-        <div class="row wallpaper-info">
-            <div class="col-md-12 text-center">
+        <div class="row wallpaper-info ">
+            <div class="col-md-12 text-center ">
                 <h2 class="wallpaper-title">{{ wallpaper.title }}</h2>
                 <p class="wallpaper-description">{{ wallpaper.description }}</p>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12 text-center">
-                <img src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}" class="img-fluid wallpaper-image">
+                <div class="">
+                <img id="wallpaper-image" src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}" class="img-fluid wallpaper-image">
+                </div>
                 {% if wallpaper.price == 'paid' %}
                 <a href="{% url 'subscribe_page' %}" class="btn btn-primary premium-button">Premium Download</a>
-
                 {% else %}
-                    <a href="{{ wallpaper.wallpaper_image.url }}" download class="btn btn-primary custom-button">Download Wallpaper</a>
+
+
+                <div class="">
+                <a href="{{ wallpaper.wallpaper_image.url }}" download class="btn btn-primary custom-button">Download Original Wallpaper</a>
+                <a id="download-for-my-screen" class="btn btn-primary custom-button">Download for My Screen</a>
+            </div>
+                <!-- Add the resize and crop form -->
+                <form class="resize-crop-form d-flex">
+                    <div class="resize">
+                    <div> <p style="color: white;" class="aligntext">Resize & Crop Wallpapers:</p></div>
+                    <div class="resize-crop">
+                    <input type="number" id="width" class="resize-crop-inputcrop" placeholder="Width">
+                   <span>x</span>
+                    <input type="number" id="height" class="resize-crop-inputcrop" placeholder="Height">
+                    <i class="fas fa-download download-icon" id="download-resized-wallpaper"></i></div>
+                </div>
+                </form>
+
                 {% endif %}
             </div>
         </div>
@@ -95,4 +168,60 @@
         </div>
     </div>
 </div>
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    var screenWidth = window.screen.width;
+    var screenHeight = window.screen.height;
+    var originalImageUrl = "{{ wallpaper.wallpaper_image.url }}";
+    var stretchedImage = new Image();
+    stretchedImage.onload = function () {
+        var canvas = document.createElement("canvas");
+        canvas.width = screenWidth;
+        canvas.height = screenHeight;
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(stretchedImage, 0, 0, screenWidth, screenHeight);
+        var stretchedImageDataURL = canvas.toDataURL("image/jpeg");
+        var downloadStretchedButton = document.getElementById("download-for-my-screen");
+        downloadStretchedButton.href = stretchedImageDataURL;
+        downloadStretchedButton.download = "stretched_wallpaper.jpg";
+        var buttonText = "Download for My Screen " + screenWidth + "x" + screenHeight + "px";
+        downloadStretchedButton.textContent = buttonText;
+    };
+    stretchedImage.src = originalImageUrl;
+
+    // Get the elements for width, height, and the download icon
+    var widthInput = document.getElementById("width");
+    var heightInput = document.getElementById("height");
+    var downloadIcon = document.getElementById("download-resized-wallpaper");
+
+    // Add a click event listener to the download icon
+    downloadIcon.addEventListener("click", function () {
+        var customWidth = parseInt(widthInput.value);
+        var customHeight = parseInt(heightInput.value);
+
+        // Ensure both width and height are valid numbers
+        if (!isNaN(customWidth) && !isNaN(customHeight) && customWidth > 0 && customHeight > 0) {
+            var canvas = document.createElement("canvas");
+            canvas.width = customWidth;
+            canvas.height = customHeight;
+            var ctx = canvas.getContext("2d");
+            ctx.drawImage(stretchedImage, 0, 0, customWidth, customHeight);
+            var resizedImageDataURL = canvas.toDataURL("image/jpeg");
+
+            // Create a temporary link element to trigger the download
+            var downloadLink = document.createElement("a");
+            downloadLink.href = resizedImageDataURL;
+            downloadLink.download = "resized_wallpaper.jpg";
+            downloadLink.click();
+        } else {
+            // Handle invalid input (e.g., show an error message)
+            alert("Please enter valid width and height values.");
+        }
+    });
+});
+</script>
 {% endblock %}
