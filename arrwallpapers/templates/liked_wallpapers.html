@@ -1,0 +1,12 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<div class="liked-wallpapers">
+    <h2>Liked Wallpapers</h2>
+    <ul>
+        {% for wallpaper in liked_wallpapers %}
+            <li>{{ wallpaper.title }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

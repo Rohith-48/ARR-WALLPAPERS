@@ -14,6 +14,10 @@ def index(request):
     return render(request, 'index.html', {'wallpapers': wallpapers})
 
 
+def subscribe_page(request):
+    return render(request, 'subscribe_page.html')
+
+
 def wallpaper_details(request, wallpaper_id):
     wallpaper = get_object_or_404(WallpaperCollection, pk=wallpaper_id)
     return render(request, 'wallpaper_details.html', {'wallpaper': wallpaper})
@@ -127,7 +131,9 @@ def Premium_signup(request):
     return render(request, 'Premium_signup.html')
 
 
-from .models import Category
+from django.shortcuts import render, redirect
+from .models import WallpaperCollection, Category, Tag
+
 def upload_wallpaper(request):
     if request.method == 'POST':
         title = request.POST['title']
@@ -135,12 +141,15 @@ def upload_wallpaper(request):
         description = request.POST['description']
         wallpaper_file = request.FILES['wallpaper_file']
         user = request.user
-        category_name = request.POST['category']  # Get category name from the form
-        tags_names = request.POST.getlist('tags')
+        category_name = request.POST['category']  
+        tags_input = request.POST.get("tags")  
 
-        category, created = Category.objects.get_or_create(name=category_name)  # Get or create category
-        tags = Tag.objects.filter(name__in=tags_names)
-
+        tags_names = [tag.strip() for tag in tags_input.split(",")]
+        new_tags = []
+        for tag_name in tags_names:
+            tag, created = Tag.objects.get_or_create(name=tag_name)
+            new_tags.append(tag)
+        category, created = Category.objects.get_or_create(name=category_name)
         wallpaper = WallpaperCollection.objects.create(
             title=title,
             price=price,
@@ -149,15 +158,13 @@ def upload_wallpaper(request):
             category=category,
             wallpaper_image=wallpaper_file
         )
-        wallpaper.tags.set(tags)
-
+        wallpaper.tags.set(new_tags)
         return redirect('upload_wallpaper')
     else:
         categories = Category.CATEGORY_CHOICES
         tags = Tag.objects.all()
         upload_successful = True
         return render(request, 'upload_wallpaper.html', {'categories': categories, 'tags': tags, 'upload_successful': upload_successful})
-
 
 
 
@@ -236,7 +243,7 @@ def user_upload(request):
         return redirect("user_upload")
     else:
         tags = Tag.objects.all()
-        categories = Category.CATEGORY_CHOICES  # Assuming you have CATEGORY_CHOICES defined in your Category model
+        categories = Category.CATEGORY_CHOICES
 
     context = {
         "tags": tags,
@@ -296,3 +303,31 @@ def view_delete_userwallpaper(request):
         'wallpapers': wallpapers,
     }
     return render(request, 'view_delete_userwallpaper.html', context)
+
+
+
+
+
+# def search_wallpapers(request):
+#     # Get the search query from the request
+#     query = request.GET.get('q', '')
+
+#     # Perform the search based on the title field
+#     wallpapers = WallpaperCollection.objects.filter(title__icontains=query)
+
+#     context = {
+#         'wallpapers': wallpapers,
+#         'query': query,
+#     }
+
+#     return render(request, 'search_wallpapers.html', context)
+
+from django.shortcuts import render
+import json
+
+def liked_wallpapers(request):
+    # Get the liked wallpapers from cookies
+    liked_wallpapers_cookie = request.COOKIES.get('likedWallpapers', '[]')
+    liked_wallpapers = json.loads(liked_wallpapers_cookie)
+
+    return render(request, 'liked_wallpapers.html', {'liked_wallpapers': liked_wallpapers})

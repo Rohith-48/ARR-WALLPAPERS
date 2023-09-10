@@ -23,6 +23,7 @@ class Tag(models.Model):
 class Category(models.Model):
     CATEGORY_CHOICES = [
         ('superhero', 'Superhero'),
+        ('movie', 'Movie'),
         ('nature', 'Nature'),
         ('wildlife', 'Wildlife'),
         ('cars', 'Cars'),

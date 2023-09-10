@@ -17,6 +17,21 @@
         text-decoration: none;
     }
 
+    .premium-button {
+        background-color: orange;
+        color: white;
+        font-weight: bold;
+        border-radius: 10px;
+        padding: 10px 20px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .premium-button:hover {
+        background-color: darkorange; /* Change the hover background color to dark orange */
+        text-decoration: none;
+    }
+
     .wallpaper-container {
         background-color: black;
         color: white;
@@ -46,6 +61,12 @@
         display: block;
         margin-left: 10px;
     }
+
+    .uploader-info {
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
 </style>
 
 <div class="wallpaper-container">
@@ -59,7 +80,17 @@
         <div class="row">
             <div class="col-md-12 text-center">
                 <img src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}" class="img-fluid wallpaper-image">
-                <a href="{{ wallpaper.wallpaper_image.url }}" download class="btn btn-primary custom-button">Download Wallpaper</a>
+                {% if wallpaper.price == 'paid' %}
+                <a href="{% url 'subscribe_page' %}" class="btn btn-primary premium-button">Premium Download</a>
+
+                {% else %}
+                    <a href="{{ wallpaper.wallpaper_image.url }}" download class="btn btn-primary custom-button">Download Wallpaper</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row uploader-info">
+            <div class="col-md-12 text-center">
+                Uploaded by: {{ wallpaper.user.username }}
             </div>
         </div>
     </div>
