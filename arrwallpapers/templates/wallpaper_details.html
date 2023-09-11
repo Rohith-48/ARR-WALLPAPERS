@@ -25,6 +25,9 @@
         padding: 10px 20px;
         text-decoration: none;
         transition: background-color 0.3s ease;
+        width: 200px;
+        height: 60px;
+        margin-left: -150px;
     }
 
     .premium-button:hover {
@@ -33,10 +36,13 @@
     }
 
     .wallpaper-container {
-        background-color: black;
+        background-color: rgb(30, 30, 30);
         color: white;
         padding: 50px;
         text-align: center;
+        width: auto;
+        
+
     }
 
     .wallpaper-info {
@@ -55,12 +61,14 @@
     }
 
     .wallpaper-image {
-        max-width: 600px;
-        height: 300px;
+        width: 400px;
+        height:auto;
         margin: 0 auto;
         display: block;
         margin-left: 10px;
     }
+
+    
 
     .uploader-info {
         font-size: 16px;
@@ -123,52 +131,95 @@ span{
     .aligntext{
         text-align: left;
     }
+    #flex{
+        display: flex;
+        gap: 30px;
+        
+    }
+
+
+    @media (min-width: 768px) {
+        .wallpaper-container {
+            padding: 100px;
+        }
+        .wallpaper-title {
+            font-size: 36px;
+        }
+        .wallpaper-description {
+            font-size: 24px;
+        }
+        .wallpaper-image {
+            width: 60%;
+            max-width: 600px;
+            height: auto;
+        }
+    }
+
+    @media (max-width: 767px) {
+        .wallpaper-container {
+            padding: 20px;
+        }
+        .wallpaper-title {
+            font-size: 24px;
+        }
+        .wallpaper-description {
+            font-size: 16px;
+        }
+        .wallpaper-image {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+        }
+        .premium-button{
+            height: 80px;
+        }
+    }
 </style>
 <div class="wallpaper-container">
     <div class="container">
-        <div class="row wallpaper-info ">
-            <div class="col-md-12 text-center ">
+        <div class="row wallpaper-info">
+            <div class="col-md-12 text-center">
                 <h2 class="wallpaper-title">{{ wallpaper.title }}</h2>
                 <p class="wallpaper-description">{{ wallpaper.description }}</p>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12 text-center">
-                <div class="">
-                <img id="wallpaper-image" src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}" class="img-fluid wallpaper-image">
+                <div id="flex">
+                    <div class="">
+                        <img id="wallpaper-image" src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}" class="img-fluid wallpaper-image">
+                    </div>
+                    {% if wallpaper.price == 'paid' %}
+                    <a href="{% url 'subscribe_page' %}" class="btn btn-primary premium-button">Download<br>Premium Download</a>
+                    {% else %}
+                    <div class="">
+                        <a id="download-for-my-screen" class="btn btn-primary custom-button">Download for My Screen</a><br><br><br>
+                        <a href="{{ wallpaper.wallpaper_image.url }}" download class="btn btn-primary custom-button">Download Original Wallpaper</a><br><br>
+                        <form class="resize-crop-form d-flex">
+                            <div class="resize">
+                                <div>
+                                    <p style="color: white;" class="aligntext">Resize & Crop Wallpapers:</p>
+                                </div>
+                                <div class="resize-crop">
+                                    <input type="number" id="width" class="resize-crop-inputcrop" placeholder="Width">
+                                    <span>x</span>
+                                    <input type="number" id="height" class="resize-crop-inputcrop" placeholder="Height">
+                                    <i class="fas fa-download download-icon" id="download-resized-wallpaper"></i>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    {% endif %}
                 </div>
-                {% if wallpaper.price == 'paid' %}
-                <a href="{% url 'subscribe_page' %}" class="btn btn-primary premium-button">Premium Download</a>
-                {% else %}
-
-
-                <div class="">
-                <a href="{{ wallpaper.wallpaper_image.url }}" download class="btn btn-primary custom-button">Download Original Wallpaper</a>
-                <a id="download-for-my-screen" class="btn btn-primary custom-button">Download for My Screen</a>
-            </div>
-                <!-- Add the resize and crop form -->
-                <form class="resize-crop-form d-flex">
-                    <div class="resize">
-                    <div> <p style="color: white;" class="aligntext">Resize & Crop Wallpapers:</p></div>
-                    <div class="resize-crop">
-                    <input type="number" id="width" class="resize-crop-inputcrop" placeholder="Width">
-                   <span>x</span>
-                    <input type="number" id="height" class="resize-crop-inputcrop" placeholder="Height">
-                    <i class="fas fa-download download-icon" id="download-resized-wallpaper"></i></div>
-                </div>
-                </form>
-
-                {% endif %}
             </div>
         </div>
         <div class="row uploader-info">
-            <div class="col-md-12 text-center">
+            <div class="col-md-12 text-center" style="text-align: left;">
                 Uploaded by: {{ wallpaper.user.username }}
             </div>
         </div>
     </div>
 </div>
-
 
 
 
