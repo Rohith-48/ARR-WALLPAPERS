@@ -9,99 +9,90 @@
 	<meta name="author" content="">
 	<link rel="profile" href="#">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!--Google Font-->
-    <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600' />
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
-	
-
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-	<link rel="icon" type="image-asset/png" href="{% static '\image-asset\icon.png'%}">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
 	<!-- Mobile specific meta -->
 	<meta name=viewport content="width=device-width, initial-scale=1">
 	<meta name="format-detection" content="telephone-no">
+    <!--Google Font-->
+    <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600' />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+
+	<link rel="icon" type="image-asset/png" href="{% static '\image-asset\icon.png'%}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
 
 	<!-- CSS files -->
 	<link rel="stylesheet" href="{% static 'css\plugins.css'%}">
 	<link rel="stylesheet" href="{% static 'css\style.css'%}">
 	<style>
-		.wallpaper-image img {
-			
-    	width: 110%;
-    	height: 150px;
+		.wallpapers {
+			margin: 0 auto;
+			column-count: 3; 
+			column-gap: 15px; 
 		}
-.wallpaper-box {
-    position: relative; 
-    overflow: hidden;
-	
-}
-.wallpaper-row{
-	display: flex;
-}
-.wallpaper-image{
-	margin: 10px 10px;
-	border-radius: 5px;
-}
+		
+		.wallpaper-box {
+			margin: 0 0 15px 0;
+			width: 100%; 
+			break-inside: avoid-column;
+			position: relative;
+		}
+		
+		.wallpaper-image img {
+			width: 100%; 
+			height: auto;
+			border-radius: 5px;
+		}
 .wallpaper-overlay {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-	height: auto; 
-	width: auto;
-    background: rgba(158, 155, 155, 0.067); 
+	background: rgba(158, 155, 155, 0.067); 
     color: white;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    opacity: 0; 
+    opacity: 0;
     transition: opacity 0.3s ease;
-	border: white;
+    border: white;
 }
 
 .wallpaper-overlay h3 {
     margin: 10px;
     font-size: 18px;
     font-weight: bold;
-	position: absolute;
-	top: 0;
-	left: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
-.tags{
-	position: absolute;
-	bottom: 0;
-	color: white;
-	
+
+.tags {
+    position: absolute;
+    bottom: 0;
+    color: white;
 }
-.tag{
-	background: rgba(0, 0, 0, 0.5);
-	border-radius: 2px;
+
+.tag {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 2px;
 }
-.wallpaper-overlay .tags {
+
+.like-button-container {
     margin: 10px;
     text-align: center;
 }
 
-.wallpaper-overlay .like-button {
-    margin: 10px;
+.like-button {
     padding: 5px 10px;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-	
-}
-
-.wallpaper-box:hover .wallpaper-overlay {
-    opacity: 1;
-}
-
-.like-button {
-	display: flex;
+    display: flex;
     justify-content: center;
     align-items: center;
     position: absolute;
@@ -109,21 +100,20 @@
     right: 0;
     width: 28px;
     height: 28px;
-    border-radius: 8px;
-    background-color: rgba(8,25,43,0.65);
-    color: #fca120;
+    background-color: rgba(8, 25, 43, 0.65);
+    color: #ffffff;
     z-index: 1;
 }
-  
-  .like-button i {
-	margin-right: 5px; 
-  }
-  
-  .like-button:hover {
-	color: #ff0000; 
-  }
+
+.like-button i {
+    margin-right: 5px;
+}
+
+.like-button:hover {
+    color: #ff0000;
+}
 .premium-icon {
-	display: flex;
+    display: flex;
     justify-content: center;
     align-items: center;
     position: absolute;
@@ -132,36 +122,30 @@
     width: 28px;
     height: 28px;
     border-radius: 8px;
-    background-color: rgba(8,25,43,0.65);
+    background-color: rgba(8, 25, 43, 0.65);
     color: #fca120;
     z-index: 1;
 }
-
+.wallpaper-box:hover .wallpaper-overlay {
+    opacity: 1;
+}
 @media (max-width: 768px) {
-    /* Adjust the layout for mobile screens */
-    .wallpaper-row {
-        flex-direction: column; /* Display images one by one */
-    }
-    .wallpaper-image img {
-        width: 100%; /* Full width for mobile screens */
-        height: auto;
-    }
-    .wallpaper-box {
-        margin: 10px 0; /* Add some spacing between images */
-    }
-    .wallpaper-overlay {
-        width: 100%; /* Full width for mobile screens */
-        height: auto;
-    }
-    .like-button {
-        top: 10px;
-        right: 10px; /* Adjust the position of the like button */
-    }
-    .premium-icon {
-        top: 10px;
-        right: 10px; /* Adjust the position of the premium icon */
+    .wallpapers {
+        column-count: 2; 
     }
 }
+
+@media (max-width: 576px) {
+    .wallpapers {
+        column-count: 1; 
+    }
+}
+@media (max-width: 767px) {
+    .mobile-margin {
+        margin-bottom: 10px; 
+    }
+}
+
 
 	</style>
 </head>
@@ -262,7 +246,7 @@
 							<li><a href="{% url 'logout'%}">LOG OUT ({{ user.username }})</a></li>
 						{% else %}
 							<li><a href="{% url 'login'%}">LOG IN</a></li>
-							<li class="btn signup"><a href="{% url 'Premium_signup'%}">Subscribe</a></li>
+							<li class="btn premium mobile-margin"><a href="{% url 'Premium_signup'%}">Subscribe</a></li>
 							<li class="btn signup"><a href="{% url 'signup'%}">SIGN UP</a></li>
 						{% endif %}
 					</ul>
@@ -416,43 +400,37 @@
                     <a href="#" class="viewall">View all <i class="ion-ios-arrow-right"></i></a>
                 </div>
                 <div class="wallpapers">
-						<div class="wallpaper-row">
+					<div class="grid-sizer"></div> <!-- Masonry requires a grid-sizer element -->
 					{% for wallpaper in wallpapers %}
-						<div class="wallpaper-box">
-							<a href="{% url 'wallpaper_details' wallpaper.id %}" data-lightbox="wallpapers" data-title="{{ wallpaper.title }}">
-								<div class="wallpaper-image">
-									<img src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}">
-									<div class="wallpaper-details">
-										{% if wallpaper.price == 'paid' %}
-												<div class="premium-icon">
-												<i class="fas fa-crown"></i>
-												</div>
-												{% endif %}
-										<div class="wallpaper-overlay">
-											<h3>{{ wallpaper.title }}</h3>
-
-											
-
-											<div class="like-button-container">
-												<button class="like-button"><i class="fas fa-heart"></i></button>
-											</div>
-										</div>
-										<p class="tags">
-											{% for tag in wallpaper.tags.all %}
-												<span class="tag">{{ tag.name }}</span>
-											{% endfor %}
-										</p>
+					<div class="wallpaper-box">
+						<a href="{% url 'wallpaper_details' wallpaper.id %}" data-lightbox="wallpapers" data-title="{{ wallpaper.title }}">
+							<div class="wallpaper-image">
+								<img src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}">
+								<div class="wallpaper-details">
+									{% if wallpaper.price == 'paid' %}
+									<div class="premium-icon">
+										<i class="fas fa-crown"></i>
 									</div>
+									{% endif %}
+									<div class="wallpaper-overlay">
+										<h3>{{ wallpaper.title }}</h3>
+										<div class="like-button-container">
+											<button class="like-button"><i class="fas fa-heart"></i></button>
+										</div>
+									</div>
+									<p class="tags">
+										{% for tag in wallpaper.tags.all %}
+										<span class="tag">{{ tag.name }}</span>
+										{% endfor %}
+									</p>
 								</div>
-							</a>
-						</div>
-						{% if forloop.counter|divisibleby:4 and not forloop.last %}
-							</div><div class="wallpaper-row">
-						{% endif %}
-						{% endfor %}
-
-						</div>
-						
+							</div>
+						</a>
+					</div>
+					
+					{% endfor %}
+				</div>
+				
                 </div>
             </div>
         </div>
@@ -525,6 +503,31 @@
 <script src="{% static 'js\plugins.js'%}"></script>
 <script src="{% static 'js\plugins2.js'%}"></script>
 <script src="{% static 'js\custom.js'%}"></script>
+
+
+<script>
+    lightbox.option({
+        'resizeDuration': 200,
+        'wrapAround': true
+    });
+</script>
+
+
+<script>
+	// Initialize Masonry after the document is ready
+$(document).ready(function () {
+    var $wallpapers = $('.wallpapers');
+    $wallpapers.imagesLoaded(function () { 
+        $wallpapers.masonry({
+            itemSelector: '.wallpaper-box',
+            columnWidth: '.grid-sizer',
+            percentPosition: true,
+            gutter: 10 
+        });
+    });
+});
+
+</script>
 <!-- Add this JavaScript function to your HTML -->
 <!-- <script>
 	function likeWallpaper(wallpaperId, title) {

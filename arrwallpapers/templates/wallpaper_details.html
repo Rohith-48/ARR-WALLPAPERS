@@ -2,6 +2,66 @@
 
 {% block content %}
 <style>
+    .title-description-container {
+        background-color: rgb(0, 0, 0);
+        color: white;
+        padding: 20px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    /* Title styling */
+    .wallpaper-title {
+        font-size: 36px;
+        font-weight: bold;
+        text-align: left;
+    }
+
+    /* Description styling */
+    .wallpaper-description {
+        font-size: 18px;
+        text-align: left;
+        margin-top: 10px;
+    }
+
+    /* Wallpaper container */
+    .wallpaper-container {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+        background: black;
+    }
+
+    .wallpaper-image-container {
+        max-width: 60%;
+        flex-grow: 1;
+        background: black;
+        background-color: rgb(21, 21, 21);
+        color: white;
+        padding: 20px;
+        text-align: center;
+        margin-bottom: auto;
+    }
+
+    /* Wallpaper image styling */
+    .wallpaper-image {
+        max-width: 100%;
+        max-height: 100%;
+        height: auto;
+        width: auto;
+    }
+
+    /* Customization container */
+    .customization-container {
+        background-color: rgb(0, 0, 0);
+        color: white;
+        padding: 20px;
+        text-align: center;
+        border-radius: 5px;
+        max-width: 35%;
+    }
+
     .custom-button {
         background-color: blue;
         color: white;
@@ -10,6 +70,16 @@
         padding: 10px 20px;
         text-decoration: none;
         transition: background-color 0.3s ease;
+        margin-bottom: 10px;
+        display: block;
+        
+    }
+    #premiumbtn{
+        background-color: rgb(255, 182, 47);
+    }
+    #premiumbtn:hover{
+        background-color: orange;
+        color: white;
     }
 
     .custom-button:hover {
@@ -17,65 +87,41 @@
         text-decoration: none;
     }
 
-    .premium-button {
-        background-color: orange;
-        color: white;
-        font-weight: bold;
-        border-radius: 10px;
-        padding: 10px 20px;
-        text-decoration: none;
-        transition: background-color 0.3s ease;
-        width: 200px;
-        height: 60px;
-        margin-left: -150px;
-    }
-
-    .premium-button:hover {
-        background-color: darkorange; 
-        text-decoration: none;
-    }
-
-    .wallpaper-container {
-        background-color: rgb(30, 30, 30);
-        color: white;
-        padding: 50px;
-        text-align: center;
-        width: auto;
-        
-
-    }
-
-    .wallpaper-info {
-        margin-bottom: 20px;
-    }
-
-    .wallpaper-title {
-        font-size: 24px;
-        font-weight: bold;
-        text-align: left;
-    }
-
-    .wallpaper-description {
-        font-size: 18px;
-        text-align: left;
-    }
-
-    .wallpaper-image {
-        width: 400px;
-        height:auto;
-        margin: 0 auto;
-        display: block;
-        margin-left: 10px;
-    }
-
-    
-
+    /* Username styling */
     .uploader-info {
         font-size: 16px;
         font-weight: bold;
         margin-top: 10px;
+        text-align: left;
     }
 
+    #show-resolutions-button {
+        margin-left: 50px;
+    }
+
+    .resize{
+        display: flex;
+        flex-direction: column;
+
+    }
+    .resize-crop{
+        display: flex;
+    }
+
+    .download-icon {
+        font-size: 24px;
+        color: rgb(255, 255, 255);
+        margin-left: 10px;
+        cursor: pointer;
+        background-color: blue;
+        padding: 10px;
+        height: 50px;
+    }
+    span{
+        height: 50px;
+        width: 9px;
+        margin-top: 10px;
+    }
     .resize-crop-form {
         margin-top: 20px;
         text-align: center;
@@ -91,218 +137,125 @@
         margin-left: 5px;
         margin-right: 5px;
     }
-
-span{
-    height: 50px;
-    width: 9px;
-    margin-top: 10px;
-}
-    .download-icon {
-        font-size: 24px;
-        color: rgb(255, 255, 255);
-        margin-left: 10px;
-        cursor: pointer;
-        background-color: blue;
-        padding: 10px;
-        height: 50px;
-    }
-    #download-for-my-screen {
-        background-color: blue;
-        color: white;
-        font-weight: bold;
-        border-radius: 5px;
-        padding: 10px 20px;
-        text-decoration: none;
-        transition: background-color 0.3s ease;
-    }
-
-    #download-for-my-screen:hover {
-        background-color: darkblue;
-        text-decoration: none;
-    }
-    .resize{
-        display: flex;
-        flex-direction: column;
-
-    }
-    .resize-crop{
-        display: flex;
-    }
     .aligntext{
         text-align: left;
     }
-    #flex{
-        display: flex;
-        gap: 30px;
-    
 
-    }
-    #show-resolutions-button{
-        display: flex;
-        justify-content: center;
-        right: 300px;
-        position: absolute;
+    /* Media queries for responsive design */
 
-    }
-    .middle{
-        cursor: pointer;
-    }
-    .resmac{
-
-       display: inline-flex;
-    }
-    .res{
-
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-    .center{
-        display: flex;
-        justify-content: center;
-    }
-
-.resolution-list{
-    margin-top: px;
-}
-
-#arrow-icon {
-    transition: transform 0.3s ease;
-    margin-left: 10px;
-}
-
-#show-resolutions-button.clicked #arrow-icon {
-    transform: rotate(180deg);
-}
-
-    @media (min-width: 768px) {
+    /* Large screens */
+    @media (min-width: 1200px) {
         .wallpaper-container {
-            padding: 100px;
+            flex-direction: row;
         }
-        .wallpaper-title {
-            font-size: 36px;
+        .wallpaper-image-container {
+            max-width: 60%;
         }
-        .wallpaper-description {
-            font-size: 24px;
-        }
-        .wallpaper-image {
-            width: 60%;
-            max-width: 600px;
-            height: auto;
+        .customization-container {
+            max-width: 35%;
         }
     }
 
+    /* Medium screens */
+    @media (max-width: 1199px) {
+        .wallpaper-container {
+            flex-direction: column;
+        }
+        .wallpaper-image-container {
+            max-width: 100%;
+        }
+        .customization-container {
+            max-width: 100%;
+        }
+    }
+
+    /* Small screens */
     @media (max-width: 767px) {
-        .wallpaper-container {
-            padding: 20px;
-        }
         .wallpaper-title {
             font-size: 24px;
         }
         .wallpaper-description {
             font-size: 16px;
         }
-        .wallpaper-image {
-            width: 100%;
-            max-width: 100%;
-            height: auto;
+        .wallpaper-image-container {
+            padding: 10px;
         }
-        .premium-button{
-            height: 80px;
+        .customization-container {
+            padding: 10px;
         }
     }
 </style>
-<div class="wallpaper-container">
-    <div class="container">
-        <div class="row wallpaper-info">
-            <div class="col-md-12 text-center">
-                <h2 class="wallpaper-title">{{ wallpaper.title }}</h2>
-                <p class="wallpaper-description">{{ wallpaper.description }}</p>
-            </div>
+
+<div class="container">
+    <!-- Title and description container -->
+    <div class="title-description-container">
+        <h2 class="wallpaper-title">{{ wallpaper.title }}</h2>
+        <p class="wallpaper-description">{{ wallpaper.description }}</p>
+    </div>
+    
+    <!-- Wallpaper and customization container -->
+    <div class="wallpaper-container">
+        <!-- Container for wallpaper image -->
+        <div class="wallpaper-image-container">
+            <img src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}" class="wallpaper-image">
+               <!-- Username container -->
+    <div class="uploader-info" style="color: white;">
+        Uploaded by: {{ wallpaper.user.username }}
+    </div>
         </div>
-        <div class="row">
-            <div class="col-md-12 text-center">
-                <div id="flex">
-                    <div class="">
-                        <img id="wallpaper-image" src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}" class="img-fluid wallpaper-image">
+        <div class="customization-container">
+            {% if wallpaper.price == 'paid' %}
+            <a href="{% url 'subscribe_page' %}" class="btn btn-primary custom-button" id="premiumbtn">Download<br>Go Premium</a>
+            {% else %}
+            <a id="download-for-my-screen" class="btn btn-primary custom-button">Download for My Screen</a><br><br><br>
+            <a href="{{ wallpaper.wallpaper_image.url }}" download class="btn btn-primary custom-button">Download Original Wallpaper</a><br><br>
+            <form class="resize-crop-form d-flex">
+                <div class="resize">
+                    <div>
+                        <p style="color: white;"class="aligntext">Resize & Crop Wallpapers:</p>
                     </div>
-                    {% if wallpaper.price == 'paid' %}
-                    <a href="{% url 'subscribe_page' %}" class="btn btn-primary premium-button">Download<br>Go Premium</a>
-                    {% else %}
-                    <div class="">
-                        <a id="download-for-my-screen" class="btn btn-primary custom-button">Download for My Screen</a><br><br><br>
-                        <a href="{{ wallpaper.wallpaper_image.url }}" download class="btn btn-primary custom-button">Download Original Wallpaper</a><br><br>
-                        <form class="resize-crop-form d-flex">
-                            <div class="resize">
-                                <div>
-                                    <p style="color: white;" class="aligntext">Resize & Crop Wallpapers:</p>
-                                </div>
-                                <div class="resize-crop">
-                                    <input type="number" id="width" class="resize-crop-inputcrop" placeholder="Width">
-                                    <span>x</span>
-                                    <input type="number" id="height" class="resize-crop-inputcrop" placeholder="Height">
-                                    <i class="fas fa-download download-icon" id="download-resized-wallpaper"></i>
-                                </div>
-                                
+                    <div class="resize-crop">
+                        <input type="number" id="width" class="resize-crop-inputcrop" placeholder="Width">
+                        <span>x</span>
+                        <input type="number" id="height" class="resize-crop-inputcrop" placeholder="Height">
+                        <i class="fas fa-download download-icon" id="download-resized-wallpaper"></i>
+                    </div>
+                </div>
+            </form><br><br>
+            <button id="show-resolutions-button" class="btn btn-primary custom-button">
+                Select Resolution and Download
+                <i class="fas fa-caret-down" id="arrow-icon"></i>
+            </button>
+            <div class="resolution-list" style="display: none;">
+               
+                <h4>PC(720P, 1080P, 2K, 4K, 5K):</h4>
+                <ul>
+                    <a class="middle"><li data-resolution="1366x768">1366x768</li></a>
+                    <a class="middle"><li data-resolution="1920x1080">1920x1080</li></a>
+                    <a class="middle"><li data-resolution="1440x900">1440x900</li></a>
+                    <!-- Add more resolution options here -->
+                </ul>
+                <h4>iMac:</h4>
+                <ul class="center">
+                    <div class="res">
+                        <div class="resmac">
+                            <div>iMac 21.5" LED-backlit:</div>
+                            <div>
+                                <a class="middle"><li data-resolution="1920x1080"> 1920x1080</li></a>
                             </div>
-                            
-                        </form><br><br>
-                        <button id="show-resolutions-button" class="btn btn-primary custom-button">
-                            Select Resolution and Download
-                            <i class="fas fa-caret-down" id="arrow-icon"></i>
-                        </button>
-                        
-                
-                        <div class="resolution-list" style="display: none;">
-                            <br>
-                            <br><h4>PC(720P, 1080P, 2K, 4K, 5K):</h4>
-                            <ul>
-                                <a class="middle"><li data-resolution="1366x768">1366x768</li></a>
-                                <a class="middle"><li data-resolution="1920x1080">1920x1080</li></a>
-                                <a class="middle"><li data-resolution="1440x900">1440x900</li></a>
-                                <!-- Add more resolution options here -->
-                            </ul>
-                        
-                            <h4>iMac:</h4>
-                            <ul class="center">
-                
-                                <div class="res">
-                
-                                    <div class="resmac">
-                
-                                        <div>iMac 21.5" LED-backlit:</div>
-                                        <div>
-                                            <a class="middle"><li data-resolution="1920x1080"> 1920x1080</li></a>
-                                        </div>
-                                      
-                    
-                                    </div>
-                                    <div class="resmac">
-                                        <div>iMac 21.5" Retina 4K:</div>
-                                        <div>
-                                            <a class="middle"><li data-resolution="4096x2304"> 4096x2304</li></a>
-                                        </div>
-                                        
-                    
-                                      </div>
-                
-                                </div>
-                            </ul>
-                        
+                        </div>
+                        <div class="resmac">
+                            <div>iMac 21.5" Retina 4K:</div>
+                            <div>
+                                <a class="middle"><li data-resolution="4096x2304"> 4096x2304</li></a>
+                            </div>
                         </div>
                     </div>
-                    
-                    {% endif %}
-                </div>
+                </ul>
             </div>
+            {% endif %}
         </div>
-        <div class="row uploader-info">
-            <div class="col-md-12 text-center" style="text-align: left;">
-                Uploaded by: {{ wallpaper.user.username }}
-            </div>
-        </div>
-
-    </div>        
+    </div>
 </div>
 
 <script>
