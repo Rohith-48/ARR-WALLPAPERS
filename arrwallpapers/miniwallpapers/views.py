@@ -24,6 +24,8 @@ def wallpaper_details(request, wallpaper_id):
 
 
 
+
+
 def signup(request):
     if request.method == "POST":
         username = request.POST['username']
@@ -331,3 +333,9 @@ def liked_wallpapers(request):
     liked_wallpapers = json.loads(liked_wallpapers_cookie)
 
     return render(request, 'liked_wallpapers.html', {'liked_wallpapers': liked_wallpapers})
+
+
+
+
+
+

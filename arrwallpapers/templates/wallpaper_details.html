@@ -134,9 +134,46 @@ span{
     #flex{
         display: flex;
         gap: 30px;
-        
+    
+
+    }
+    #show-resolutions-button{
+        display: flex;
+        justify-content: center;
+        right: 300px;
+        position: absolute;
+
+    }
+    .middle{
+        cursor: pointer;
+    }
+    .resmac{
+
+       display: inline-flex;
+    }
+    .res{
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .center{
+        display: flex;
+        justify-content: center;
     }
 
+.resolution-list{
+    margin-left: 450px;
+}
+
+#arrow-icon {
+    transition: transform 0.3s ease;
+    margin-left: 10px;
+}
+
+#show-resolutions-button.clicked #arrow-icon {
+    transform: rotate(180deg);
+}
 
     @media (min-width: 768px) {
         .wallpaper-container {
@@ -218,61 +255,182 @@ span{
                 Uploaded by: {{ wallpaper.user.username }}
             </div>
         </div>
-    </div>
+
+        <button id="show-resolutions-button" class="btn btn-primary custom-button">
+            Select Resolution and Download
+            <i class="fas fa-caret-down" id="arrow-icon"></i>
+        </button>
+        
+
+        <div class="resolution-list" style="display: none;">
+            <br>
+            <br><h4>PC(720P, 1080P, 2K, 4K, 5K):</h4>
+            <ul>
+                <a class="middle"><li data-resolution="1366x768">1366x768</li></a>
+                <a class="middle"><li data-resolution="1920x1080">1920x1080</li></a>
+                <a class="middle"><li data-resolution="1440x900">1440x900</li></a>
+                <!-- Add more resolution options here -->
+            </ul>
+        
+            <h4>iMac:</h4>
+            <ul class="center">
+
+                <div class="res">
+
+                    <div class="resmac">
+
+                        <div>iMac 21.5" LED-backlit:</div>
+                        <div>
+                            <a class="middle"><li data-resolution="1920x1080"> 1920x1080</li></a>
+                        </div>
+                      
+    
+                    </div>
+                    <div class="resmac">
+                        <div>iMac 21.5" Retina 4K:</div>
+                        <div>
+                            <a class="middle"><li data-resolution="4096x2304"> 4096x2304</li></a>
+                        </div>
+                        
+    
+                      </div>
+
+                </div>
+            </ul>
+        
+        </div>
+
+
+
+
+
+
+
+        
+    </div>        
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var showResolutionsButton = document.getElementById("show-resolutions-button");
+        var resolutionList = document.querySelector(".resolution-list");
+    
+        showResolutionsButton.addEventListener("click", function () {
+            if (resolutionList.style.display === "none") {
+                resolutionList.style.display = "block";
+                showResolutionsButton.textContent = "Select Resolution and Download";
+                document.getElementById("arrow-icon").classList.remove("up"); // Remove the "up" class
+            } else {
+                resolutionList.style.display = "none";
+                showResolutionsButton.textContent = "Select Resolution and Download";
+                document.getElementById("arrow-icon").classList.add("up"); // Add the "up" class
+            }
+        });
+    
+        resolutionList.addEventListener("click", function (event) {
+            if (event.target.nodeName === "LI") {
+                var selectedResolution = event.target.getAttribute("data-resolution");
+    
+                if (selectedResolution.includes("x")) {
+                    var resolutionParts = selectedResolution.split("x");
+                    var customWidth = parseInt(resolutionParts[0]);
+                    var customHeight = parseInt(resolutionParts[1]);
+    
+                    if (!isNaN(customWidth) && !isNaN(customHeight) && customWidth > 0 && customHeight > 0) {
+                        var canvas = document.createElement("canvas");
+                        var ctx = canvas.getContext("2d");
+                        var image = new Image();
+    
+                        // Load the original image
+                        image.onload = function () {
+                            canvas.width = customWidth;
+                            canvas.height = customHeight;
+                            ctx.drawImage(image, 0, 0, customWidth, customHeight);
+                            var resizedImageDataURL = canvas.toDataURL("image/jpeg");
+                            var downloadLink = document.createElement("a");
+                            downloadLink.href = resizedImageDataURL;
+                            downloadLink.download = "wallpaper_" + selectedResolution + ".jpg";
+                            downloadLink.click();
+                        };
+                        image.src = "{{ wallpaper.wallpaper_image.url }}";
+                    }
+                } else {
+                    var downloadLink = document.createElement("a");
+                    downloadLink.href = "{{ wallpaper.wallpaper_image.url }}";
+                    downloadLink.download = "wallpaper_" + selectedResolution + ".jpg";
+                    downloadLink.click();
+                }
+            }
+        });
+    });
+    
+    
+</script>
 
 
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    var screenWidth = window.screen.width;
-    var screenHeight = window.screen.height;
-    var originalImageUrl = "{{ wallpaper.wallpaper_image.url }}";
-    var stretchedImage = new Image();
-    stretchedImage.onload = function () {
-        var canvas = document.createElement("canvas");
-        canvas.width = screenWidth;
-        canvas.height = screenHeight;
-        var ctx = canvas.getContext("2d");
-        ctx.drawImage(stretchedImage, 0, 0, screenWidth, screenHeight);
-        var stretchedImageDataURL = canvas.toDataURL("image/jpeg");
-        var downloadStretchedButton = document.getElementById("download-for-my-screen");
-        downloadStretchedButton.href = stretchedImageDataURL;
-        downloadStretchedButton.download = "stretched_wallpaper.jpg";
-        var buttonText = "Download for My Screen " + screenWidth + "x" + screenHeight + "px";
-        downloadStretchedButton.textContent = buttonText;
-    };
-    stretchedImage.src = originalImageUrl;
-
-    // Get the elements for width, height, and the download icon
-    var widthInput = document.getElementById("width");
-    var heightInput = document.getElementById("height");
-    var downloadIcon = document.getElementById("download-resized-wallpaper");
-
-    // Add a click event listener to the download icon
-    downloadIcon.addEventListener("click", function () {
-        var customWidth = parseInt(widthInput.value);
-        var customHeight = parseInt(heightInput.value);
-
-        // Ensure both width and height are valid numbers
-        if (!isNaN(customWidth) && !isNaN(customHeight) && customWidth > 0 && customHeight > 0) {
+    document.addEventListener("DOMContentLoaded", function () {
+        var originalImageUrl = "{{ wallpaper.wallpaper_image.url }}";
+        var stretchedImage = new Image();
+        stretchedImage.onload = function () {
             var canvas = document.createElement("canvas");
-            canvas.width = customWidth;
-            canvas.height = customHeight;
             var ctx = canvas.getContext("2d");
-            ctx.drawImage(stretchedImage, 0, 0, customWidth, customHeight);
-            var resizedImageDataURL = canvas.toDataURL("image/jpeg");
-
-            // Create a temporary link element to trigger the download
-            var downloadLink = document.createElement("a");
-            downloadLink.href = resizedImageDataURL;
-            downloadLink.download = "resized_wallpaper.jpg";
-            downloadLink.click();
-        } else {
-            // Handle invalid input (e.g., show an error message)
-            alert("Please enter valid width and height values.");
-        }
+    
+            // Determine the aspect ratios
+            var sourceAspectRatio = stretchedImage.width / stretchedImage.height;
+            var screenWidth = window.screen.width;
+            var screenHeight = window.screen.height;
+            var targetAspectRatio = screenWidth / screenHeight;
+    
+            var sourceWidth, sourceHeight, sourceX, sourceY;
+    
+            if (sourceAspectRatio > targetAspectRatio) {
+                sourceWidth = stretchedImage.height * targetAspectRatio;
+                sourceHeight = stretchedImage.height;
+                sourceX = (stretchedImage.width - sourceWidth) / 2;
+                sourceY = 0; // Keep the top portion of the image
+            } else {
+                sourceWidth = stretchedImage.width;
+                sourceHeight = stretchedImage.width / targetAspectRatio;
+                sourceX = 0;
+                sourceY = (stretchedImage.height - sourceHeight) / 2;
+            }
+    
+            canvas.width = screenWidth;
+            canvas.height = screenHeight;
+            ctx.drawImage(stretchedImage, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, screenWidth, screenHeight);
+    
+            var croppedImageDataURL = canvas.toDataURL("image/jpeg");
+            var downloadStretchedButton = document.getElementById("download-for-my-screen");
+            downloadStretchedButton.href = croppedImageDataURL;
+            downloadStretchedButton.download = "yourScreen_wallpaper.jpg";
+            var buttonText = "Download for My Screen " + screenWidth + "x" + screenHeight + "px";
+            downloadStretchedButton.textContent = buttonText;
+        };
+        stretchedImage.src = originalImageUrl;
+    
+        var widthInput = document.getElementById("width");
+        var heightInput = document.getElementById("height");
+        var downloadIcon = document.getElementById("download-resized-wallpaper");
+        downloadIcon.addEventListener("click", function () {
+            var customWidth = parseInt(widthInput.value);
+            var customHeight = parseInt(heightInput.value);
+            if (!isNaN(customWidth) && !isNaN(customHeight) && customWidth > 0 && customHeight > 0) {
+                var canvas = document.createElement("canvas");
+                var ctx = canvas.getContext("2d");
+                ctx.drawImage(stretchedImage, 0, 0, customWidth, customHeight);
+                var resizedImageDataURL = canvas.toDataURL("image/jpeg");
+                var downloadLink = document.createElement("a");
+                downloadLink.href = resizedImageDataURL;
+                downloadLink.download = "resized_wallpaper.jpg";
+                downloadLink.click();
+            } else {
+                alert("Please enter valid width and height values.");
+            }
+        });
     });
-});
 </script>
+
+    
 {% endblock %}
