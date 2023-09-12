@@ -163,7 +163,7 @@ span{
     }
 
 .resolution-list{
-    margin-left: 450px;
+    margin-top: px;
 }
 
 #arrow-icon {
@@ -227,7 +227,7 @@ span{
                         <img id="wallpaper-image" src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}" class="img-fluid wallpaper-image">
                     </div>
                     {% if wallpaper.price == 'paid' %}
-                    <a href="{% url 'subscribe_page' %}" class="btn btn-primary premium-button">Download<br>Premium Download</a>
+                    <a href="{% url 'subscribe_page' %}" class="btn btn-primary premium-button">Download<br>Go Premium</a>
                     {% else %}
                     <div class="">
                         <a id="download-for-my-screen" class="btn btn-primary custom-button">Download for My Screen</a><br><br><br>
@@ -243,9 +243,55 @@ span{
                                     <input type="number" id="height" class="resize-crop-inputcrop" placeholder="Height">
                                     <i class="fas fa-download download-icon" id="download-resized-wallpaper"></i>
                                 </div>
+                                
                             </div>
-                        </form>
+                            
+                        </form><br><br>
+                        <button id="show-resolutions-button" class="btn btn-primary custom-button">
+                            Select Resolution and Download
+                            <i class="fas fa-caret-down" id="arrow-icon"></i>
+                        </button>
+                        
+                
+                        <div class="resolution-list" style="display: none;">
+                            <br>
+                            <br><h4>PC(720P, 1080P, 2K, 4K, 5K):</h4>
+                            <ul>
+                                <a class="middle"><li data-resolution="1366x768">1366x768</li></a>
+                                <a class="middle"><li data-resolution="1920x1080">1920x1080</li></a>
+                                <a class="middle"><li data-resolution="1440x900">1440x900</li></a>
+                                <!-- Add more resolution options here -->
+                            </ul>
+                        
+                            <h4>iMac:</h4>
+                            <ul class="center">
+                
+                                <div class="res">
+                
+                                    <div class="resmac">
+                
+                                        <div>iMac 21.5" LED-backlit:</div>
+                                        <div>
+                                            <a class="middle"><li data-resolution="1920x1080"> 1920x1080</li></a>
+                                        </div>
+                                      
+                    
+                                    </div>
+                                    <div class="resmac">
+                                        <div>iMac 21.5" Retina 4K:</div>
+                                        <div>
+                                            <a class="middle"><li data-resolution="4096x2304"> 4096x2304</li></a>
+                                        </div>
+                                        
+                    
+                                      </div>
+                
+                                </div>
+                            </ul>
+                        
+                        </div>
                     </div>
+                    
                     {% endif %}
                 </div>
             </div>
@@ -256,57 +302,6 @@ span{
             </div>
         </div>
 
-        <button id="show-resolutions-button" class="btn btn-primary custom-button">
-            Select Resolution and Download
-            <i class="fas fa-caret-down" id="arrow-icon"></i>
-        </button>
-        
-
-        <div class="resolution-list" style="display: none;">
-            <br>
-            <br><h4>PC(720P, 1080P, 2K, 4K, 5K):</h4>
-            <ul>
-                <a class="middle"><li data-resolution="1366x768">1366x768</li></a>
-                <a class="middle"><li data-resolution="1920x1080">1920x1080</li></a>
-                <a class="middle"><li data-resolution="1440x900">1440x900</li></a>
-                <!-- Add more resolution options here -->
-            </ul>
-        
-            <h4>iMac:</h4>
-            <ul class="center">
-
-                <div class="res">
-
-                    <div class="resmac">
-
-                        <div>iMac 21.5" LED-backlit:</div>
-                        <div>
-                            <a class="middle"><li data-resolution="1920x1080"> 1920x1080</li></a>
-                        </div>
-                      
-    
-                    </div>
-                    <div class="resmac">
-                        <div>iMac 21.5" Retina 4K:</div>
-                        <div>
-                            <a class="middle"><li data-resolution="4096x2304"> 4096x2304</li></a>
-                        </div>
-                        
-    
-                      </div>
-
-                </div>
-            </ul>
-        
-        </div>
-
-
-
-
-
-
-
-        
     </div>        
 </div>
 
@@ -363,10 +358,7 @@ span{
             }
         });
     });
-    
-    
 </script>
-
 
 
 <script>
@@ -432,5 +424,4 @@ span{
     });
 </script>
 
-    
 {% endblock %}
