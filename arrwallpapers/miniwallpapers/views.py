@@ -27,6 +27,8 @@ def wallpaper_details(request, wallpaper_id):
 
 
 
+
+
 from django.contrib import messages
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
@@ -338,18 +340,25 @@ def view_delete_userwallpaper(request):
 
 #     return render(request, 'search_wallpapers.html', context)
 
-from django.shortcuts import render
+# views.py
+# views.py
+# views.py
 import json
+from django.http import JsonResponse
+from django.urls import reverse
+from .models import WallpaperCollection
 
 def liked_wallpapers(request):
-    # Get the liked wallpapers from cookies
-    liked_wallpapers_cookie = request.COOKIES.get('likedWallpapers', '[]')
-    liked_wallpapers = json.loads(liked_wallpapers_cookie)
+    # Get the liked wallpaper IDs from the cookie
+    liked_wallpaper_ids = json.loads(request.COOKIES.get("likedWallpapers")) or []
 
-    return render(request, 'liked_wallpapers.html', {'liked_wallpapers': liked_wallpapers})
+    # Retrieve the liked wallpapers from your database and create a list of dictionaries
+    liked_wallpapers_data = []
+    for wallpaper_id in liked_wallpaper_ids:
+        wallpaper = WallpaperCollection.objects.get(id=wallpaper_id)
+        liked_wallpapers_data.append({
+            'title': wallpaper.title,
+            'image_url': request.build_absolute_uri(wallpaper.wallpaper_image.url),  # Build absolute image URL
+        })
 
-
-
-
-
-
+    return JsonResponse({'likedWallpapers': liked_wallpapers_data})

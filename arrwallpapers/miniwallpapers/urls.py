@@ -41,7 +41,6 @@ urlpatterns=[
     
     
     
-    
     ]
 
 if settings.DEBUG:

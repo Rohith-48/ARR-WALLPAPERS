@@ -1,12 +1,85 @@
 {% extends 'index.html' %}
 
 {% block content %}
-<div class="liked-wallpapers">
-    <h2>Liked Wallpapers</h2>
-    <ul>
+<style>
+    .container {
+        background-color: rgb(0, 0, 0);
+    }
+
+    .liked-wallpaper {
+        margin-bottom: 20px;
+    }
+
+    .liked-wallpaper img {
+        max-width: 100%;
+        height: auto;
+    }
+</style>
+<div class="container">
+    <h1>Liked Wallpapers</h1>
+    <!-- Liked Wallpapers Section -->
+    <section id="liked-wallpapers-section">
         {% for wallpaper in liked_wallpapers %}
-            <li>{{ wallpaper.title }}</li>
+        <div class="liked-wallpaper">
+            <h2>{{ wallpaper.title }}</h2>
+            <!-- Use the image URL to display the image -->
+            <img src="{{ wallpaper.image_url }}" alt="{{ wallpaper.title }}">
+        </div>
         {% endfor %}
-    </ul>
+    </section>
 </div>
+
+<script>
+    // Function to get a cookie by name
+    function getCookie(name) {
+        var value = "; " + document.cookie;
+        var parts = value.split("; " + name + "=");
+        if (parts.length == 2) return parts.pop().split(";").shift();
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Retrieve the liked wallpaper IDs from the cookie
+        var likedWallpaperIds = JSON.parse(getCookie("likedWallpapers")) || [];
+
+        if (likedWallpaperIds.length === 0) {
+            // Display a message if no wallpapers are liked
+            var messageElement = document.createElement("p");
+            messageElement.textContent = "You haven't liked any wallpapers yet.";
+            document.getElementById("liked-wallpapers-section").appendChild(messageElement);
+        } else {
+            // Make an AJAX request to fetch the liked wallpaper data from your 'liked_wallpapers' page
+            fetch("/liked_wallpapers/?likedWallpapers=" + JSON.stringify(likedWallpaperIds))
+                .then(response => response.json())
+                .then(data => {
+                    if (data.likedWallpapers.length === 0) {
+                        // Display a message if no liked wallpapers are found
+                        var messageElement = document.createElement("p");
+                        messageElement.textContent = "No liked wallpapers found.";
+                        document.getElementById("liked-wallpapers-section").appendChild(messageElement);
+                    } else {
+                        // Create a container for liked wallpapers
+                        var likedWallpapersContainer = document.createElement("div");
+                        likedWallpapersContainer.id = "liked-wallpapers-container";
+                        document.getElementById("liked-wallpapers-section").appendChild(likedWallpapersContainer);
+
+                        // Loop through the liked wallpapers and display them
+                        data.likedWallpapers.forEach(function (wallpaper) {
+                            var wallpaperElement = document.createElement("div");
+                            wallpaperElement.className = "liked-wallpaper";
+                            wallpaperElement.innerHTML = `
+                                <h2>${wallpaper.title}</h2>
+                                <!-- Use the image URL to display the image -->
+                                <img src="${wallpaper.image_url}" alt="${wallpaper.title}">
+                            `;
+                            likedWallpapersContainer.appendChild(wallpaperElement);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+    });
+</script>
+
 {% endblock %}
