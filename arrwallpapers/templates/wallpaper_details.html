@@ -140,10 +140,14 @@
     .aligntext{
         text-align: left;
     }
+    .middle{
+        cursor: pointer;
+    }
+    .resmac{
 
-    /* Media queries for responsive design */
-
-    /* Large screens */
+        display: inline-flex;
+     }
+   
     @media (min-width: 1200px) {
         .wallpaper-container {
             flex-direction: row;
@@ -278,7 +282,6 @@
         resolutionList.addEventListener("click", function (event) {
             if (event.target.nodeName === "LI") {
                 var selectedResolution = event.target.getAttribute("data-resolution");
-    
                 if (selectedResolution.includes("x")) {
                     var resolutionParts = selectedResolution.split("x");
                     var customWidth = parseInt(resolutionParts[0]);
@@ -312,7 +315,6 @@
         });
     });
 </script>
-
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -354,27 +356,57 @@
             downloadStretchedButton.textContent = buttonText;
         };
         stretchedImage.src = originalImageUrl;
-    
-        var widthInput = document.getElementById("width");
-        var heightInput = document.getElementById("height");
-        var downloadIcon = document.getElementById("download-resized-wallpaper");
-        downloadIcon.addEventListener("click", function () {
-            var customWidth = parseInt(widthInput.value);
-            var customHeight = parseInt(heightInput.value);
-            if (!isNaN(customWidth) && !isNaN(customHeight) && customWidth > 0 && customHeight > 0) {
-                var canvas = document.createElement("canvas");
-                var ctx = canvas.getContext("2d");
-                ctx.drawImage(stretchedImage, 0, 0, customWidth, customHeight);
-                var resizedImageDataURL = canvas.toDataURL("image/jpeg");
-                var downloadLink = document.createElement("a");
-                downloadLink.href = resizedImageDataURL;
-                downloadLink.download = "resized_wallpaper.jpg";
-                downloadLink.click();
-            } else {
-                alert("Please enter valid width and height values.");
-            }
-        });
+     
     });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var originalImageUrl = "{{ wallpaper.wallpaper_image.url }}";
+        var stretchedImage = new Image();
+    
+        stretchedImage.onload = function () {
+            var downloadIcon = document.getElementById("download-resized-wallpaper");
+            var widthInput = document.getElementById("width");
+            var heightInput = document.getElementById("height");
+    
+            downloadIcon.addEventListener("click", function () {
+                var customWidth = parseInt(widthInput.value);
+                var customHeight = parseInt(heightInput.value);
+    
+                if (!isNaN(customWidth) && !isNaN(customHeight) && customWidth > 0 && customHeight > 0) {
+                    var canvas = document.createElement("canvas");
+                    var ctx = canvas.getContext("2d");
+    
+                    // Calculate the new dimensions while preserving the aspect ratio
+                    var aspectRatio = stretchedImage.width / stretchedImage.height;
+                    var newWidth, newHeight;
+    
+                    if (customWidth / customHeight > aspectRatio) {
+                        newWidth = customHeight * aspectRatio;
+                        newHeight = customHeight;
+                    } else {
+                        newWidth = customWidth;
+                        newHeight = customWidth / aspectRatio;
+                    }
+    
+                    canvas.width = newWidth;
+                    canvas.height = newHeight;
+                    ctx.drawImage(stretchedImage, 0, 0, stretchedImage.width, stretchedImage.height, 0, 0, newWidth, newHeight);
+    
+                    var resizedImageDataURL = canvas.toDataURL("image/jpeg");
+                    var downloadLink = document.createElement("a");
+                    downloadLink.href = resizedImageDataURL;
+                    downloadLink.download = "resized_wallpaper.jpg";
+                    downloadLink.click();
+                } else {
+                    alert("Please enter valid width and height values.");
+                }
+            });
+        };
+    
+        stretchedImage.src = originalImageUrl;
+    });
+    
 </script>
 
 {% endblock %}
