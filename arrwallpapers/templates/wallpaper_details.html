@@ -363,36 +363,47 @@
     document.addEventListener("DOMContentLoaded", function () {
         var originalImageUrl = "{{ wallpaper.wallpaper_image.url }}";
         var stretchedImage = new Image();
-    
+
         stretchedImage.onload = function () {
             var downloadIcon = document.getElementById("download-resized-wallpaper");
             var widthInput = document.getElementById("width");
             var heightInput = document.getElementById("height");
-    
+
             downloadIcon.addEventListener("click", function () {
                 var customWidth = parseInt(widthInput.value);
                 var customHeight = parseInt(heightInput.value);
-    
+
                 if (!isNaN(customWidth) && !isNaN(customHeight) && customWidth > 0 && customHeight > 0) {
                     var canvas = document.createElement("canvas");
                     var ctx = canvas.getContext("2d");
-    
-                    // Calculate the new dimensions while preserving the aspect ratio
-                    var aspectRatio = stretchedImage.width / stretchedImage.height;
+
+                    // Calculate the aspect ratio of the original image
+                    var originalAspectRatio = stretchedImage.width / stretchedImage.height;
+
+                    // Calculate the aspect ratio of the user's custom dimensions
+                    var customAspectRatio = customWidth / customHeight;
+
                     var newWidth, newHeight;
-    
-                    if (customWidth / customHeight > aspectRatio) {
-                        newWidth = customHeight * aspectRatio;
-                        newHeight = customHeight;
+                    var offsetX = 0;
+                    var offsetY = 0;
+
+                    if (originalAspectRatio > customAspectRatio) {
+                        // Original image is wider than user's custom dimensions (landscape)
+                        newWidth = stretchedImage.height * customAspectRatio;
+                        newHeight = stretchedImage.height;
+                        offsetX = (stretchedImage.width - newWidth) / 2;
                     } else {
-                        newWidth = customWidth;
-                        newHeight = customWidth / aspectRatio;
+                        // Original image is taller than user's custom dimensions (portrait)
+                        newWidth = stretchedImage.width;
+                        newHeight = stretchedImage.width / customAspectRatio;
+                        offsetY = (stretchedImage.height - newHeight) / 2;
                     }
-    
-                    canvas.width = newWidth;
-                    canvas.height = newHeight;
-                    ctx.drawImage(stretchedImage, 0, 0, stretchedImage.width, stretchedImage.height, 0, 0, newWidth, newHeight);
-    
+
+                    canvas.width = customWidth;
+                    canvas.height = customHeight;
+
+                    ctx.drawImage(stretchedImage, offsetX, offsetY, newWidth, newHeight, 0, 0, customWidth, customHeight);
+
                     var resizedImageDataURL = canvas.toDataURL("image/jpeg");
                     var downloadLink = document.createElement("a");
                     downloadLink.href = resizedImageDataURL;
@@ -403,10 +414,11 @@
                 }
             });
         };
-    
+
         stretchedImage.src = originalImageUrl;
     });
-    
 </script>
+
+
 
 {% endblock %}

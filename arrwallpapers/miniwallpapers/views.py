@@ -7,10 +7,9 @@ from django.contrib.auth import authenticate, login
 from .models import Category, Tag, UserProfileDoc, WallpaperCollection
 from django.shortcuts import get_object_or_404, redirect
 
-# from .models import Creatorauth
 
 def index(request):
-    wallpapers = WallpaperCollection.objects.select_related('user').prefetch_related('tags').all()
+    wallpapers = WallpaperCollection.objects.select_related('user').prefetch_related('tags').order_by('id')
     return render(request, 'index.html', {'wallpapers': wallpapers})
 
 
@@ -19,12 +18,18 @@ def subscribe_page(request):
 
 
 def wallpaper_details(request, wallpaper_id):
-    wallpaper = get_object_or_404(WallpaperCollection, pk=wallpaper_id)
+    wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
+    wallpaper.view_count += 1
+    wallpaper.save()
     return render(request, 'wallpaper_details.html', {'wallpaper': wallpaper})
 
 
 
 
+
+from django.contrib import messages
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 def signup(request):
     if request.method == "POST":
@@ -35,12 +40,19 @@ def signup(request):
         uploaded_files = request.FILES.getlist('portfolio')  # Get the uploaded files
 
         if password1 == password2:
+            try:
+                validate_email(email)  # Validate the email using Django's email validation
+            except ValidationError:
+                messages.error(request, 'Invalid email address')
+                messages.error(request, 'Cannot Register')
+                return redirect('signup')
+
             if User.objects.filter(username=username).exists():
-                messages.info(request, 'Username Taken')
+                messages.error(request, 'Username Taken')
                 return redirect('signup')
 
             elif User.objects.filter(email=email).exists():
-                messages.info(request, 'Email already exists')
+                messages.error(request, 'Email already exists')
                 return redirect('signup')
 
             else:
@@ -52,14 +64,16 @@ def signup(request):
                     unique_filename = str(uuid.uuid4()) + os.path.splitext(uploaded_file.name)[1]
                     user_profile.portfolio.save(unique_filename, uploaded_file)
                 
-                messages.info(request, 'Your Account has been Created... Wait for Admins Approval')
+                messages.success(request, 'Your Account has been Created... Wait for Admins Approval')
                 return redirect('login')
 
         else:
-            messages.info(request, 'Passwords do not match')
+            messages.error(request, 'Passwords do not match')
+            messages.error(request, 'Cannot Register')
             return redirect('signup')
 
     return render(request, "signup.html")
+
 
 
 
