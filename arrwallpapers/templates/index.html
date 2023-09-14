@@ -555,7 +555,7 @@
 	</div>
 	<div class="ft-copyright">
 		<div class="ft-left">
-			<p><a target="_blank" href="">ARR WALLPAPERS</a></p>
+			<p><a target="_blank" href="">© ARR WALLPAPERS</a></p>
 		</div>
 		<div class="backtotop">
 			<p><a href="#" id="back-to-top">Back to top  <i class="ion-ios-arrow-thin-up"></i></a></p>
@@ -644,80 +644,6 @@ $(document).ready(function () {
 		return null;
 	}
 </script>
-
-
-<!-- Add this JavaScript function to your HTML -->
-<!-- <script>
-	function likeWallpaper(wallpaperId, title) {
-		// Check if the wallpaper is already liked
-		if (!isWallpaperLiked(wallpaperId)) {
-			// If not liked, add it to cookies
-			addLikedWallpaperToCookies(wallpaperId, title);
-		} else {
-			// If already liked, remove it from cookies (unlike)
-			removeLikedWallpaperFromCookies(wallpaperId);
-		}
-	}
-	
-	function isWallpaperLiked(wallpaperId) {
-		// Check if the wallpaper ID exists in cookies
-		const likedWallpapers = getLikedWallpapersFromCookies();
-		return likedWallpapers.includes(wallpaperId);
-	}
-	
-	function addLikedWallpaperToCookies(wallpaperId, title) {
-		// Get the current liked wallpapers from cookies
-		const likedWallpapers = getLikedWallpapersFromCookies();
-	
-		// Add the new liked wallpaper to the list
-		likedWallpapers.push({ id: wallpaperId, title: title });
-	
-		// Update the cookies
-		document.cookie = `likedWallpapers=${JSON.stringify(likedWallpapers)}`;
-	
-		// You can also update the UI to indicate that the wallpaper is liked
-		// For example, change the button color
-		updateLikeButtonUI(wallpaperId, true);
-	}
-	
-	function removeLikedWallpaperFromCookies(wallpaperId) {
-		// Get the current liked wallpapers from cookies
-		const likedWallpapers = getLikedWallpapersFromCookies();
-	
-		// Remove the wallpaper with the given ID
-		const updatedLikedWallpapers = likedWallpapers.filter((wallpaper) => wallpaper.id !== wallpaperId);
-	
-		// Update the cookies
-		document.cookie = `likedWallpapers=${JSON.stringify(updatedLikedWallpapers)}`;
-	
-		// You can also update the UI to indicate that the wallpaper is unliked
-		// For example, change the button color back to normal
-		updateLikeButtonUI(wallpaperId, false);
-	}
-	
-	function getLikedWallpapersFromCookies() {
-		const cookies = document.cookie.split(';');
-		const likedWallpapersCookie = cookies.find((cookie) => cookie.trim().startsWith('likedWallpapers='));
-		if (likedWallpapersCookie) {
-			const likedWallpapersString = likedWallpapersCookie.split('=')[1];
-			return JSON.parse(likedWallpapersString);
-		}
-		return [];
-	}
-	
-	function updateLikeButtonUI(wallpaperId, isLiked) {
-		// Update the UI of the like button based on isLiked value
-		const likeButton = document.querySelector(`.like-button[data-wallpaper-id="${wallpaperId}"]`);
-		if (isLiked) {
-			// Liked state UI (e.g., change button color)
-			likeButton.classList.add('liked');
-		} else {
-			// Not liked state UI (e.g., revert button color)
-			likeButton.classList.remove('liked');
-		}
-	}
-	</script> -->
-	
 </body>
 
 </html>

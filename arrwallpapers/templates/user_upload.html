@@ -3,23 +3,23 @@
 {% block content %}
 <div class="content_table">
     <div class="title">
-         <h2 style="color: white;">Upload Wallpaper</h2>
+         <h2 style="color: rgb(0, 0, 0); text-align:center">Upload Wallpaper</h2>
     </div>
     <div class="upload-form">
         <form method="post" enctype="multipart/form-data" action="{% url 'user_upload' %}">
             {% csrf_token %}
             <div class="form-field">
-                <label for="title" style="color: white;">Title:</label>
+                <label for="title" style="color: rgb(0, 0, 0);">Title:</label>
                 <input type="text" id="title" name="title" required style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">
             </div>
             
             <div class="form-field">
-                <label for="description" style="color: rgb(255, 255, 255);">Description:</label>
+                <label for="description" style="color: rgb(0, 0, 0);">Description:</label>
                 <textarea id="description" name="description" rows="4" required style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);"></textarea>
             </div>
             
             <div class="form-field">
-                <label for="price" style="color: rgb(255, 255, 255);">Price:</label>
+                <label for="price" style="color: rgb(0, 0, 0);">Price:</label>
                 <select id="price" name="price" style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">
                     <option value="free">Free</option>
                     <option value="paid">Paid</option>
@@ -27,12 +27,12 @@
             </div>
             
             <div class="form-field">
-                <label for="tags" style="color: rgb(255, 255, 255);">Tags (comma-separated):</label>
+                <label for="tags" style="color: rgb(0, 0, 0);">Tags (comma-separated):</label>
                 <input type="text" id="tags" name="tags" placeholder="e.g., tag1, tag2, tag3" style="background-color: rgba(255, 255, 255, 0.955); color: rgb(0, 0, 0);">
             </div>
             
             <div class="form-field">
-                <label for="category" style="color: rgb(255, 255, 255);">Category:</label>
+                <label for="category" style="color: rgb(0, 0, 0);">Category:</label>
                 <select id="category" name="category" style="background-color: rgba(255, 255, 255, 0.955); color: rgb(0, 0, 0);">
                     {% for category_key, category_value in categories %}
                         <option value="{{ category_key }}">{{ category_value }}</option>
@@ -42,7 +42,7 @@
             
 
             <div class="form-field">
-                <label for="wallpaper_file" style="color: rgb(255, 255, 255);">Choose File:</label>
+                <label for="wallpaper_file" style="color: rgb(0, 0, 0);">Choose File:</label>
                 <input type="file" id="wallpaper_file" name="wallpaper_file" accept="image/*" required style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">
             </div>
             
@@ -70,6 +70,7 @@
         padding: 75px;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        
     }
 
     .form-field {

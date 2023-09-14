@@ -133,8 +133,22 @@ def logout(request):
     auth.logout(request)
     return redirect("index")
 
-def userprofile(request): 
-    return render(request, 'userprofile.html')
+
+from django.contrib.auth.decorators import login_required
+@login_required
+def user_profile(request):
+    user_profile = UserProfileDoc.objects.get(user=request.user)
+
+    if request.method == 'POST':
+        uploaded_avatar = request.FILES.get('avatar')  # Get the uploaded file
+        if uploaded_avatar:
+            user_profile.avatar = uploaded_avatar  # Update the user's avatar with the uploaded file
+            user_profile.save()
+            # Redirect to the profile page or another appropriate page
+            return redirect('userprofile')
+
+    return render(request, 'userprofile.html', {'user_profile': user_profile})
+
 
 def forgot_password(request):
     return render(request, 'forgot_password.html')
