@@ -151,17 +151,30 @@
 	display:flex;
     flex-direction: column;
 }
+.custombtn{
+
+	position: absolute;
+	right: 10px;
+	height: 30px;
+	width: 30px;
+	cursor: pointer;
+	
+}
 
 .view-count i {
     margin-right: 5px;
 
 }
-
+.top-search{
+	position: relative;
+}
 .view-count span {
     display: inline-block;
     vertical-align: middle;
 }
-
+#search-form{
+	width: 100%;
+}
 
 @media (max-width: 768px) {
     .wallpapers {
@@ -287,17 +300,24 @@
 				</div>
 			<!-- /.navbar-collapse -->
 	    </nav>
-	    
-	    <!-- top search form -->
-	    <div class="top-search">
-	    	<select>
-				<option value="united">Search</option>
-				<option value="saab">Search with Image</option>
-			</select>
-			<input type="text" placeholder="Search for a Wallpaper, Superheros, nature etc. that you are looking for">
-	    </div>
+		<div class="top-search">
+			<form method="GET" id="search-form">
+				<input type="text" id="search-input" name="q" placeholder="Search for a Wallpaper, Superheros, nature etc. that you are looking for" value="{{ query|default:"" }}">
+			</form>
+			<img class="custombtn" id="search-image" src="{% static 'image-asset/topsearch.png'%}">
+		</div>	
+		 
 	</div>
 </header>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#search-image').on('click', function () {
+            $('#search-form').submit(); // Submit the form when the image is clicked
+        });
+    });
+</script>
+
 <!-- END | Header -->
 
 <div class="slider wall-item">

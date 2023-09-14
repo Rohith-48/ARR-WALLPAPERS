@@ -7,29 +7,6 @@ from django.contrib.auth import authenticate, login
 from .models import Category, Tag, UserProfileDoc, WallpaperCollection
 from django.shortcuts import get_object_or_404, redirect
 
-
-def index(request):
-    wallpapers = WallpaperCollection.objects.select_related('user').prefetch_related('tags').order_by('id')
-    return render(request, 'index.html', {'wallpapers': wallpapers})
-
-
-def subscribe_page(request):
-    return render(request, 'subscribe_page.html')
-
-
-def wallpaper_details(request, wallpaper_id):
-    wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
-    wallpaper.view_count += 1
-    wallpaper.save()
-    return render(request, 'wallpaper_details.html', {'wallpaper': wallpaper})
-
-
-
-
-
-
-
-from django.contrib import messages
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
@@ -76,6 +53,25 @@ def signup(request):
 
     return render(request, "signup.html")
 
+
+def index(request):
+    query = request.GET.get('q')
+    wallpapers = WallpaperCollection.objects.select_related('user').prefetch_related('tags').order_by('id')
+    if query:
+        wallpapers = wallpapers.filter(title__icontains=query)
+    return render(request, 'index.html', {'wallpapers': wallpapers, 'query': query})
+
+
+
+def subscribe_page(request):
+    return render(request, 'subscribe_page.html')
+
+
+def wallpaper_details(request, wallpaper_id):
+    wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
+    wallpaper.view_count += 1
+    wallpaper.save()
+    return render(request, 'wallpaper_details.html', {'wallpaper': wallpaper})
 
 
 
@@ -141,17 +137,22 @@ def userprofile(request):
     return render(request, 'userprofile.html')
 
 def forgot_password(request):
-    # Handle form submission here (sending password reset email, etc.)
-    # Implement your forgot password logic here if needed
     return render(request, 'forgot_password.html')
 
+
 def Premium_signup(request):
-    return render(request, 'Premium_signup.html')
+    return render(request, 'PremiumUserPage/Premium_signup.html')
+
+
+def premiumuserpage(request):
+    return render(request, 'PremiumUserPage/premiumuserpage.html')
+
+def paymentform(request):
+    return render(request, 'paymentform.html')
 
 
 from django.shortcuts import render, redirect
 from .models import WallpaperCollection, Category, Tag
-
 def upload_wallpaper(request):
     if request.method == 'POST':
         title = request.POST['title']
@@ -325,24 +326,6 @@ def view_delete_userwallpaper(request):
 
 
 
-
-# def search_wallpapers(request):
-#     # Get the search query from the request
-#     query = request.GET.get('q', '')
-
-#     # Perform the search based on the title field
-#     wallpapers = WallpaperCollection.objects.filter(title__icontains=query)
-
-#     context = {
-#         'wallpapers': wallpapers,
-#         'query': query,
-#     }
-
-#     return render(request, 'search_wallpapers.html', context)
-
-# views.py
-# views.py
-# views.py
 import json
 from django.http import JsonResponse
 from django.urls import reverse

@@ -28,16 +28,16 @@ urlpatterns=[
      path('reset/done/',auth_views.PasswordResetCompleteView.as_view(),name='password_reset_complete'),
 
 
-
     path('user_upload/', views.user_upload, name='user_upload'),
     path('user_edit/', views.user_edit_wallpaper, name='user_edit'),
     path('view_delete_userwallpaper/', views.view_delete_userwallpaper, name='view_delete_userwallpaper'),  
        
            
     path('wallpaper/<int:wallpaper_id>/', views.wallpaper_details, name='wallpaper_details'),
-    # path('search/', views.search_wallpapers, name='search_wallpapers'),
     path('liked_wallpapers/', views.liked_wallpapers, name='liked_wallpapers'),
     path('subscribe_page/', views.subscribe_page, name='subscribe_page'),
+    path('premiumuserpage/', views.premiumuserpage, name='premiumuserpage'),
+    path('paymentform', views.paymentform, name='paymentform'),
     
     
     

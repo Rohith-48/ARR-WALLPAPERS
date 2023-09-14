@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Form</title>
+    <style>
+        body {
+            font-family: Roboto, Open Sans, Segoe UI, sans-serif;
+            background-color: black;
+        }
+        
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #e1e3e5;
+            border-radius: 10px;
+            box-shadow: 0px 1px 2px #e1e3e5;
+            margin-top: 200px;
+        }
+        
+        .payment-form {
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .card-element {
+            border: 1px solid #e1e3e5;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        
+        .subscription-selection {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        .subscription-button {
+            flex-grow: 1;
+            background-color: #ffffff;
+            border: 1px solid #e1e3e5;
+            border-radius: 5px;
+            padding: 15px 25px;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        
+        .subscription-button:hover {
+            background-color: #f6f6f7;
+            color: #717f87;
+        }
+        
+        .subscription-plans {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .subscription-plan {
+            background-color: #ffffff;
+            border: 1px solid #e1e3e5;
+            border-radius: 10px;
+            box-shadow: 0px 1px 2px #e1e3e5;
+        }
+        
+        .subscription-header {
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .subscription-type {
+            background-color: #f6f6f7;
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 12px;
+            font-weight: bold;
+        }
+        
+        .subscription-details {
+            padding: 25px;
+        }
+        
+        .subscription-name {
+            font-weight: bold;
+            font-size: 19px;
+        }
+        
+        .subscription-price {
+            font-weight: bold;
+            font-size: 50px;
+        }
+        
+        .subscription-info {
+            font-weight: medium;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        
+        .subscription-actions {
+            padding: 25px;
+        }
+    
+        
+        .pay-button {
+            background-color: #0079ff;
+            border-radius: 5px;
+            padding: 15px 25px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-left: 300px;
+        }
+        
+        .pay-button:hover {
+            background-color: #008cff;
+        }
+        
+        .success-message {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .success-message h2 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00153b;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form class="payment-form">
+            <div class="form-group">
+                <label for="card-element">Card Information:</label>
+                <div id="card-element" class="card-element"></div>
+            </div>
+
+            <div class="subscription-selection">
+                <button class="subscription-button">Monthly</button>
+                <button class="subscription-button">Annual</button>
+            </div>
+
+            
+
+            <button class="pay-button">Pay</button>
+        </form>
+
+        <!-- <div class="success-message">
+            <h2>You just bought a news subscription. Congratulations, this is the best decision of your life!</h2>
+        </div> -->
+    </div>
+</body>
+</html>
