@@ -18,40 +18,40 @@ def signup(request):
         password2 = request.POST['password2']
         uploaded_files = request.FILES.getlist('portfolio')  # Get the uploaded files
 
-        if password1 == password2:
-            try:
-                validate_email(email)  # Validate the email using Django's email validation
-            except ValidationError:
-                messages.error(request, 'Invalid email address')
-                messages.error(request, 'Cannot Register')
-                return redirect('signup')
+        try:
+            if password1 != password2:
+                raise ValidationError('Passwords do not match')
+
+            validate_email(email)  # Validate the email using Django's email validation
 
             if User.objects.filter(username=username).exists():
-                messages.error(request, 'Username Taken')
-                return redirect('signup')
+                raise ValidationError('Username Taken')
 
-            elif User.objects.filter(email=email).exists():
-                messages.error(request, 'Email already exists')
-                return redirect('signup')
+            if User.objects.filter(email=email).exists():
+                raise ValidationError('Email already exists')
 
-            else:
-                user = User.objects.create_user(username=username, password=password1, email=email)
-                user_profile = UserProfileDoc(user=user, is_approved=False)  # Set is_approved to False
-                user_profile.save()
+            user = User.objects.create_user(username=username, password=password1, email=email)
+            user_profile = UserProfileDoc(user=user, is_approved=False)  # Set is_approved to False
+            user_profile.save()
 
-                for uploaded_file in uploaded_files:
-                    unique_filename = str(uuid.uuid4()) + os.path.splitext(uploaded_file.name)[1]
-                    user_profile.portfolio.save(unique_filename, uploaded_file)
-                
-                messages.success(request, 'Your Account has been Created... Wait for Admins Approval')
-                return redirect('login')
+            for uploaded_file in uploaded_files:
+                # Check if the uploaded file has a valid PDF extension
+                if not uploaded_file.name.endswith('.pdf'):
+                    raise ValidationError('Invalid file format. Please upload a PDF file.')
 
-        else:
-            messages.error(request, 'Passwords do not match')
+                unique_filename = str(uuid.uuid4()) + '.pdf'
+                user_profile.portfolio.save(unique_filename, uploaded_file)
+
+            messages.success(request, 'Your Account has been Created... Wait for Admins Approval')
+            return redirect('login')
+        
+        except ValidationError as e:
+            messages.error(request, str(e))
             messages.error(request, 'Cannot Register')
             return redirect('signup')
 
     return render(request, "signup.html")
+
 
 
 def index(request):
@@ -129,6 +129,8 @@ def admin_dashboard(request):
         return redirect('login')
 
 
+from django.views.decorators.cache import never_cache
+@never_cache
 def logout(request):
     auth.logout(request)
     return redirect("index")
@@ -171,7 +173,10 @@ def paymentform(request):
 
 
 from django.shortcuts import render, redirect
+from django.core.exceptions import ValidationError
 from .models import WallpaperCollection, Category, Tag
+ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'webp', 'svg', 'ico', 'jfif', 'pjpeg', 'pjp', 'avif']
+
 def upload_wallpaper(request):
     if request.method == 'POST':
         title = request.POST['title']
@@ -179,8 +184,8 @@ def upload_wallpaper(request):
         description = request.POST['description']
         wallpaper_file = request.FILES['wallpaper_file']
         user = request.user
-        category_name = request.POST['category']  
-        tags_input = request.POST.get("tags")  
+        category_name = request.POST['category']
+        tags_input = request.POST.get("tags")
 
         tags_names = [tag.strip() for tag in tags_input.split(",")]
         new_tags = []
@@ -188,6 +193,10 @@ def upload_wallpaper(request):
             tag, created = Tag.objects.get_or_create(name=tag_name)
             new_tags.append(tag)
         category, created = Category.objects.get_or_create(name=category_name)
+        extension = wallpaper_file.name.split('.')[-1].lower()
+        if extension not in ALLOWED_EXTENSIONS:
+            raise ValidationError('File must be an image with a valid extension (jpg, jpeg, png, gif, bmp, tiff, webp, svg, ico, jfif, pjpeg, pjp, avif).')
+
         wallpaper = WallpaperCollection.objects.create(
             title=title,
             price=price,
@@ -252,6 +261,10 @@ def update_wallpaper(request):
 
 
 
+from django.http import HttpResponseBadRequest
+from django.shortcuts import render, redirect
+from .models import WallpaperCollection, Category, Tag
+ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'webp', 'svg', 'ico', 'jfif', 'pjpeg', 'pjp', 'avif']
 def user_upload(request):
     if request.method == "POST":
         title = request.POST.get("title")
@@ -259,15 +272,14 @@ def user_upload(request):
         price = request.POST.get("price")
         user = request.user
         category_name = request.POST.get("category")
-        tags_input = request.POST.get("tags")  # Get tags as a comma-separated string
-
-        # Split the tags string into a list
+        tags_input = request.POST.get("tags")  
         tags_names = [tag.strip() for tag in tags_input.split(",")]
-
         category, created = Category.objects.get_or_create(name=category_name)
         tags = Tag.objects.filter(name__in=tags_names)
-
         wallpaper_image = request.FILES.get("wallpaper_file")
+        extension = wallpaper_image.name.split('.')[-1].lower()
+        if extension not in ALLOWED_EXTENSIONS:
+            return HttpResponseBadRequest("File must be an image with a valid extension (jpg, jpeg, png, gif, bmp, tiff, webp, svg, ico, jfif, pjpeg, pjp, avif).")
         wallpaper = WallpaperCollection.objects.create(
             title=title,
             description=description,
@@ -288,6 +300,7 @@ def user_upload(request):
         "categories": categories,
     }
     return render(request, "user_upload.html", context)
+
 
 
 

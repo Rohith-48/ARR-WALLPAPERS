@@ -234,8 +234,8 @@ img.google-img{
                     </div>
                     
                     <div class="field input-field">
-                        <p class="verification-text">Upload your portfolio or CV for verification.</p>
-                        <input type="file" name="portfolio" id="portfolio"  multiple accept=".pdf" placeholder="Upload PDF" class="file-input" required >
+                        <p class="verification-text">Upload your portfolio or CV for verification. (PDF only)</p>
+                        <input type="file" name="portfolio" id="portfolio" accept=".pdf" placeholder="Upload PDF" class="file-input" required>
                         <span class="validation-message" id="portfolio-validation"></span>
                     </div>
                     <div class="field button-field">
@@ -292,5 +292,23 @@ img.google-img{
         });
         
      </script>
+
+     <script>
+        document.getElementById('signup-form').addEventListener('submit', function (e) {
+            const portfolioInput = document.getElementById('portfolio');
+            const portfolioValidationMessage = document.getElementById('portfolio-validation');
+            const allowedExtensions = ['.pdf']; // Add allowed extensions here
+    
+            const fileName = portfolioInput.value.toLowerCase();
+            const fileExtension = fileName.substring(fileName.lastIndexOf('.'));
+    
+            if (allowedExtensions.indexOf(fileExtension) === -1) {
+                e.preventDefault(); // Prevent form submission
+                portfolioValidationMessage.textContent = 'Invalid file format. Please upload a PDF file.';
+            } else {
+                portfolioValidationMessage.textContent = ''; // Clear validation message
+            }
+        });
+    </script>
 </body>
 </html>

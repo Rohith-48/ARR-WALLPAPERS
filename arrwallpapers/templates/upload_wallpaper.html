@@ -7,7 +7,7 @@
     </div>
     <div class="upload-success-message" id="upload-success-message"></div>
     <div class="upload-form">
-        <form method="post" enctype="multipart/form-data" action="/upload_wallpaper/" onsubmit="showSuccessMessage()">
+        <form method="post" enctype="multipart/form-data" action="/upload_wallpaper/" onsubmit="return validateForm()">
             {% csrf_token %}
             <div class="form-field dark-mode-text">
                 <label for="title">Title:</label>
@@ -43,22 +43,56 @@
             
 
             <div class="form-field dark-mode-text">
-                <label for="wallpaper_file">Choose File:</label>
+                <label for="wallpaper_file">Choose File (Wallpaper only):</label>
                 <input type="file" id="wallpaper_file" name="wallpaper_file" accept="image/*" required>
             </div>
+            
             
             <button type="submit" class="upload-button">Upload Wallpaper</button>
         </form>
     </div>
 </div>
-
 <script>
-    function showSuccessMessage() {
+    function validateForm() {
+        var title = document.getElementById('title').value;
+        var price = document.getElementById('price').value;
+        var description = document.getElementById('description').value;
+        var wallpaperFile = document.getElementById('wallpaper_file').value;
+        var category = document.getElementById('category').value;
+        var tags = document.getElementById('tags').value;
         var successMessage = document.getElementById('upload-success-message');
+        if (title.trim() === '' || price.trim() === '' || description.trim() === '' || category.trim() === '' || tags.trim() === '' || wallpaperFile.trim() === '') {
+            alert('Please fill in all fields.');
+            return false;
+        }
+        var allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'webp', 'svg', 'ico', 'jfif', 'pjpeg', 'pjp', 'avif'];
+        var extension = wallpaperFile.split('.').pop().toLowerCase();
+        if (allowedExtensions.indexOf(extension) === -1) {
+            alert('File must be an image with a valid extension (jpg, jpeg, png, gif, bmp, tiff, webp, svg, ico, jfif, pjpeg, pjp, avif).');
+            return false;
+        }
         successMessage.innerHTML = '<div class="alert alert-success">Wallpaper uploaded successfully!</div>';
         successMessage.style.display = 'block';
+
+        return true; 
     }
+
+    document.getElementById('wallpaper_file').addEventListener('change', function () {
+        var wallpaperFile = document.getElementById('wallpaper_file').value;
+        var extension = wallpaperFile.split('.').pop().toLowerCase();
+        var successMessage = document.getElementById('upload-success-message');
+
+        // Clear any previous success message
+        successMessage.innerHTML = '';
+        successMessage.style.display = 'none';
+
+        if (allowedExtensions.indexOf(extension) === -1) {
+            alert('File must be an image with a valid extension (jpg, jpeg, png, gif, bmp, tiff, webp, svg, ico, jfif, pjpeg, pjp, avif).');
+            document.getElementById('wallpaper_file').value = '';
+        }
+    });
 </script>
+
 
 <style>
     .upload-form {
