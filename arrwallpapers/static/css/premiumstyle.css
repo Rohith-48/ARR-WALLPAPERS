@@ -61,6 +61,7 @@
   nav,
   section {
     display: block;
+    width: 97%;
   }
   
   body {

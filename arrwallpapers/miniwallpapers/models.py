@@ -6,6 +6,7 @@ class UserProfileDoc(models.Model):
     is_approved = models.BooleanField(default=False)
     portfolio = models.FileField(upload_to='portfolio/', blank=True, null=True)
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
+    about_me = models.TextField(blank=True)
     
     def __str__(self):
         return self.user.username

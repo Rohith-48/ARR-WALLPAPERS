@@ -138,16 +138,21 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def user_profile(request):
     user_profile = UserProfileDoc.objects.get(user=request.user)
+    user = request.user
 
     if request.method == 'POST':
-        uploaded_avatar = request.FILES.get('avatar')  # Get the uploaded file
+        user.first_name = request.POST.get('first_name')
+        user.last_name = request.POST.get('last_name')
+        user.save()
+        user_profile.about_me = request.POST.get('about_me')
+        uploaded_avatar = request.FILES.get('avatar')
         if uploaded_avatar:
-            user_profile.avatar = uploaded_avatar  # Update the user's avatar with the uploaded file
-            user_profile.save()
-            # Redirect to the profile page or another appropriate page
-            return redirect('userprofile')
+            user_profile.avatar = uploaded_avatar
 
-    return render(request, 'userprofile.html', {'user_profile': user_profile})
+        user_profile.save()
+        return redirect('userprofile')
+
+    return render(request, 'userprofile.html', {'user_profile': user_profile, 'user': user})
 
 
 def forgot_password(request):

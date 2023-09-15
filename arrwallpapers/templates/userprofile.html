@@ -5,11 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Creator profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css\premiumstyle.css'%}">
     <style>
 
+/* Default styles for larger screens */
 .navigation {
   list-style: none;
   padding: 0;
@@ -38,36 +40,65 @@
   background-color: yellow;
   color: #000;
 }
+
 .card-profile-image img.rounded-circle {
   border-radius: 50%;
-  width: 120px; 
-  height: 120px; 
+  width: 120px;
+  height: 120px;
 }
+
 .update-avatar-button {
-  background-color: #007bff; 
-  color: #fff; 
+  background-color: #007bff;
+  color: #fff;
   border: none;
   border-radius: 20px;
   padding: 10px 20px;
   cursor: pointer;
 }
+
 .choose-file-input {
   width: 100px;
-  margin-left: 140px; 
+  margin-left: 140px;
 }
+
 .update-avatar-button {
   background-color: #007bff;
-  color: #fff; 
+  color: #fff;
   border: none;
-  border-radius: 10px; 
-  padding: 15px;
+  border-radius: 10px;
+  padding: 5px;
   cursor: pointer;
   position: absolute;
-  height: 10px;
+  height: auto;
   width: 200px;
   margin-top: 50px;
   margin-left: -60px;
 }
+
+/* Media query for smaller screens, adjust styles as needed */
+@media (max-width: 768px) {
+  .navigation {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .nav-item1 {
+    margin: 10px;
+    padding: 10px 15px;
+  }
+
+  .card-profile-image img.rounded-circle {
+    width: 80px;
+    height: 80px;
+  }
+
+  .update-avatar-button {
+    padding: 5px 10px;
+    margin-top: 37px;
+    margin-left: -213px;
+  }
+}
+
     </style>
   </head>
 <body>
@@ -141,9 +172,9 @@
       <div class="container-fluid d-flex align-items-center">
         <div class="row">
           <div class="col-lg-7 col-md-10">
-					<h1 class="display-2 text-white">Hello, {{user.username}}</h1>
+					<h1 class="display-2 text-white">Hello, {{ user.first_name }} {{ user.last_name }}</h1>
             <p class="text-white mt-0 mb-5">This is your profile page. You can see the progress you've made with your work and manage your projects or assigned tasks</p>
-            <a href="#!" class="btn btn-info">Edit profile</a>
+            <a href="#!" class="btn btn-info">Edit Cover Picture</a>
           </div>
         </div>
       </div>
@@ -185,7 +216,7 @@
               
               </h3>
               <div class="h5 font-weight-300">
-                <i class="ni location_pin mr-2"></i>*****************
+                <i class="ni location_pin mr-2"></i>{{ user.email }}
               </div>
             </div>
             <div class="card-body pt-0 pt-md-4">
@@ -217,7 +248,6 @@
                   {% url 'view_delete_userwallpaper' as view_delete_userwallpaper_url %}
                 <nav>
                 <ul class="navigation row col-lg-12">
-                  <li class="nav-item1"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
                   <li class="nav-item1 {% if request.path == userprofile_url %}active{% endif %}"><a class="nav-link" href="{% url 'userprofile' %}">Profile</a></li>
                   <li class="nav-item1 {% if request.path == user_upload_url %}active{% endif %}"><a class="nav-link" href="{% url 'user_upload' %}">Upload Wallpapers</a></li>
                   <li class="nav-item1 {% if request.path == user_edit_url %}active{% endif %}"><a class="nav-link" href="{% url 'user_edit' %}">Edit Wallpapers</a></li>
@@ -248,37 +278,40 @@
             </div>
             {% block content %}
             <div class="card-body">
-              <form>
+              <form method="post" action="{% url 'userprofile' %}">
+                {% csrf_token %}
                 <h6 class="heading-small text-muted mb-4">User information</h6>
                 <div class="pl-lg-4">
                   <div class="row">
                     <div class="col-lg-6">
                       <div class="form-group focused">
                         <label class="form-control-label" for="input-username">Username</label>
-                        <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="Username" value="lucky.jesse">
-                      </div>
+                        <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="Username" value="{{ user.username }}" readonly>
+                    </div>
+                    
                     </div>
                     <div class="col-lg-6">
                       <div class="form-group">
                         <label class="form-control-label" for="input-email">Email address</label>
-                        <input type="email" id="input-email" class="form-control form-control-alternative" placeholder="jesse@example.com">
-                      </div>
+                        <input type="email" id="input-email" class="form-control form-control-alternative" placeholder="email" value="{{ user.email }}" readonly>
+                    </div>
+                    
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-lg-6">
-                      <div class="form-group focused">
-                        <label class="form-control-label" for="input-first-name">First name</label>
-                        <input type="text" id="input-first-name" class="form-control form-control-alternative" placeholder="First name" value="Lucky">
-                      </div>
+                        <div class="form-group focused">
+                            <label class="form-control-label" for="input-first-name">First name</label>
+                            <input type="text" id="input-first-name" name="first_name" class="form-control form-control-alternative" placeholder="Enter the first name" value="{{ user.first_name }}">
+                        </div>
                     </div>
                     <div class="col-lg-6">
-                      <div class="form-group focused">
-                        <label class="form-control-label" for="input-last-name">Last name</label>
-                        <input type="text" id="input-last-name" class="form-control form-control-alternative" placeholder="Last name" value="Jesse">
-                      </div>
+                        <div class="form-group focused">
+                            <label class="form-control-label" for="input-last-name">Last name</label>
+                            <input type="text" id="input-last-name" name="last_name" class="form-control form-control-alternative" placeholder="Enter the last name" value="{{ user.last_name }}">
+                        </div>
                     </div>
-                  </div>
+                </div>
                 </div>
                 <hr class="my-4">
                 <!-- Address -->
@@ -288,7 +321,7 @@
                     <div class="col-md-12">
                       <div class="form-group focused">
                         <label class="form-control-label" for="input-address">Address</label>
-                        <input id="input-address" class="form-control form-control-alternative" placeholder="Home Address" value="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09" type="text">
+                        <input id="input-address" class="form-control form-control-alternative" placeholder="Enter your Home Address" type="text">
                       </div>
                     </div>
                   </div>
@@ -296,13 +329,13 @@
                     <div class="col-lg-4">
                       <div class="form-group focused">
                         <label class="form-control-label" for="input-city">City</label>
-                        <input type="text" id="input-city" class="form-control form-control-alternative" placeholder="City" value="New York">
+                        <input type="text" id="input-city" class="form-control form-control-alternative" placeholder="Enter your City">
                       </div>
                     </div>
                     <div class="col-lg-4">
                       <div class="form-group focused">
                         <label class="form-control-label" for="input-country">Country</label>
-                        <input type="text" id="input-country" class="form-control form-control-alternative" placeholder="Country" value="United States">
+                        <input type="text" id="input-country" class="form-control form-control-alternative" placeholder="Enter your country">
                       </div>
                     </div>
                     <div class="col-lg-4">
@@ -317,11 +350,12 @@
                 <!-- Description -->
                 <h6 class="heading-small text-muted mb-4">About me</h6>
                 <div class="pl-lg-4">
-                  <div class="form-group focused">
-                    <label>About Me</label>
-                    <textarea rows="4" class="form-control form-control-alternative" placeholder="A few words about you ...">A beautiful Dashboard for Bootstrap 4. It is Free and Open Source.</textarea>
-                  </div>
+                    <div class="form-group focused">
+                        <label>About Me</label>
+                        <textarea rows="4" class="form-control form-control-alternative" name="about_me" placeholder="A few words about you ...">{{ user_profile.about_me }}</textarea>
+                    </div>
                 </div>
+                <button type="submit" class="btn btn-primary">Update Profile</button>
               </form>
             </div>
             {% endblock %}

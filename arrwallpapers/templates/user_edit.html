@@ -101,14 +101,14 @@
 </style>
 <div class="content_table">
     <div class="title">
-        <h2 style="color: white;">Update Wallpaper</h2>
+        <h2 style="color: rgb(0, 0, 0); text-align:center;">Update Wallpaper</h2>
     </div>
     {% if wallpapers %}
     <div class="update-form">
         <form method="post" action="{% url 'user_edit' %}">
             {% csrf_token %}
             <div class="form-field">
-                <label style="color: white;">Select Wallpaper:</label>
+                <label style="color: rgb(0, 0, 0);">Select Wallpaper:</label>
                 <div class="wallpaper-selection">
                     {% for wallpaper in wallpapers %}
                     <label class="wallpaper-card">
