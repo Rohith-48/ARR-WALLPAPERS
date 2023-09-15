@@ -1,4 +1,6 @@
-
+* {
+  scroll-behavior: smooth;
+}
 @media print {
   *,
   *:before,

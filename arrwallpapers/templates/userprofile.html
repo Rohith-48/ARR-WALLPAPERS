@@ -102,6 +102,7 @@
     </style>
   </head>
 <body>
+
   <div class="main-content">
     <!-- Top navbar -->
     <nav class="navbar navbar-top navbar-expand-md navbar-dark" id="navbar-main">
@@ -120,12 +121,13 @@
           </div>
         </form>
         <!-- User -->
+        
         <ul class="navbar-nav align-items-center d-none d-md-flex">
           <li class="nav-item dropdown">
             <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <div class="media align-items-center">
                 <span class="avatar avatar-sm rounded-circle">
-                  <img alt="User Avatar" src="{% if user_profile.avatar %}{{ user_profile.avatar.url }}{% else %}{% static 'path/to/placeholder_avatar.png' %}{% endif %}" class="rounded-circle" width="50px" height="50px">
+                  <img alt="User Avatar" src="{% if user_profile.avatar %}{{ user_profile.avatar.url }}{% else %}{% static 'image-asset/dp.jpg' %} {% endif %}" class="rounded-circle" width="50px" height="50px">
                 </span>
                 <div class="media-body ml-2 d-none d-lg-block">
                   {% if user.is_authenticated %}
@@ -187,15 +189,16 @@
             <div class="row justify-content-center">
               <div class="col-lg-3 order-lg-2">
                 <div class="card-profile-image">
+        
                   <a href="#">
                       {% if user_profile.avatar %}
                           <img src="{{ user_profile.avatar.url }}" class="rounded-circle">
                       {% else %}
-                          <img src="{% static 'path/to/placeholder_avatar.png' %}" class="rounded-circle">
+                          <img src="{% static 'image-asset/dp.jpg' %}" class="rounded-circle">
                       {% endif %}
                   </a>
               </div>
-              
+         
               <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <input type="file" name="avatar" accept="image/*" class="choose-file-input">
