@@ -129,11 +129,10 @@ def admin_dashboard(request):
         return redirect('login')
 
 
-from django.contrib.auth import logout as auth_logout 
-def logout(request):
-    auth_logout(request)  
-    return redirect("index")
-
+from django.contrib.auth import logout as django_logout
+def custom_logout(request):
+    django_logout(request)
+    return redirect('login')  
 
 
 from django.contrib.auth.decorators import login_required
