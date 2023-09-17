@@ -129,11 +129,11 @@ def admin_dashboard(request):
         return redirect('login')
 
 
-from django.views.decorators.cache import never_cache
-@never_cache
+from django.contrib.auth import logout as auth_logout 
 def logout(request):
-    auth.logout(request)
+    auth_logout(request)  
     return redirect("index")
+
 
 
 from django.contrib.auth.decorators import login_required
@@ -229,8 +229,6 @@ def view_delete_wallpaper(request):
 
 
 
-
-
 def update_wallpaper(request):
     if request.method == 'POST':
         selected_wallpaper_id = request.POST.get('selected_wallpaper')
@@ -261,11 +259,16 @@ def update_wallpaper(request):
 
 
 
-from django.http import HttpResponseBadRequest
+from django.contrib.auth import logout
 from django.shortcuts import render, redirect
-from .models import WallpaperCollection, Category, Tag
+from .models import WallpaperCollection, Category, Tag, UserProfileDoc
+from django.http import HttpResponseBadRequest
+
 ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'webp', 'svg', 'ico', 'jfif', 'pjpeg', 'pjp', 'avif']
+
+@login_required  
 def user_upload(request):
+    user_profile = UserProfileDoc.objects.get(user=request.user)
     if request.method == "POST":
         title = request.POST.get("title")
         description = request.POST.get("description")
@@ -290,7 +293,11 @@ def user_upload(request):
         )
         wallpaper.tags.set(tags)
 
-        return redirect("user_upload")
+        if 'avatar' in request.FILES:
+            avatar_image = request.FILES['avatar']
+            user_profile.avatar = avatar_image
+            user_profile.save()
+
     else:
         tags = Tag.objects.all()
         categories = Category.CATEGORY_CHOICES
@@ -298,50 +305,59 @@ def user_upload(request):
     context = {
         "tags": tags,
         "categories": categories,
+        "user_profile": user_profile,
     }
+
     return render(request, "user_upload.html", context)
 
 
-
-
+@login_required
 def user_edit_wallpaper(request):
+    user_profile = UserProfileDoc.objects.get(user=request.user)
     if request.method == "POST":
         selected_wallpaper_id = request.POST.get("selected_wallpaper")
         title = request.POST.get("title")
         description = request.POST.get("description")
-        tags_input = request.POST.get("tags") 
-        tags_list = [tag.strip() for tag in tags_input.split(",")] 
-        user = request.user
-
+        tags_input = request.POST.get("tags")
+        tags_list = [tag.strip() for tag in tags_input.split(",")]
         try:
-            wallpaper = WallpaperCollection.objects.get(id=selected_wallpaper_id, user=user)
-
+            wallpaper = WallpaperCollection.objects.get(id=selected_wallpaper_id, user=request.user)
             wallpaper.title = title
             wallpaper.description = description
             wallpaper.save()
-            tags = [Tag.objects.get_or_create(name=tag)[0] for tag in tags_list]
+            tags = Tag.objects.filter(name__in=tags_list)
             wallpaper.tags.set(tags)
 
             messages.success(request, "Wallpaper updated successfully")
         except WallpaperCollection.DoesNotExist:
             messages.error(request, "Wallpaper not found or you don't have permission to edit it")
-
-        return redirect("user_edit")
     else:
         wallpapers = WallpaperCollection.objects.filter(user=request.user)
         all_tags = Tag.objects.all()
 
-        context = {"wallpapers": wallpapers, "all_tags": all_tags}
-        return render(request, "user_edit.html", context)
-
+    context = {
+        "wallpapers": wallpapers,
+        "all_tags": all_tags,
+        "user_profile": user_profile,  
+    }
+    return render(request, "user_edit.html", context)
 
 
 from django.contrib.auth.decorators import login_required
-from .models import WallpaperCollection
+from .models import WallpaperCollection, UserProfileDoc
+from django.shortcuts import render, redirect
+
 @login_required
 def view_delete_userwallpaper(request):
     user = request.user
     wallpapers = WallpaperCollection.objects.filter(user=user)
+
+    # Fetch the user's profile with the avatar field
+    try:
+        user_profile = UserProfileDoc.objects.get(user=user)
+        avatar = user_profile.avatar
+    except UserProfileDoc.DoesNotExist:
+        avatar = None  # Handle the case when the profile doesn't exist
 
     if request.method == 'POST':
         wallpaper_id = request.POST.get('wallpaper_id')
@@ -352,8 +368,10 @@ def view_delete_userwallpaper(request):
 
     context = {
         'wallpapers': wallpapers,
+       "user_profile": user_profile,   # Include the avatar in the context
     }
     return render(request, 'view_delete_userwallpaper.html', context)
+
 
 
 
