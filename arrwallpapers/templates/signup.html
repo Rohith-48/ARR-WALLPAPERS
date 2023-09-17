@@ -194,7 +194,7 @@ img.google-img{
 .validation-message {
     display: none;
     color: red;
-    font-size: 14px;
+    font-size: 8px;
     margin-top: 0px;
 }
 .password-match-message {
@@ -310,5 +310,26 @@ img.google-img{
             }
         });
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const passwordInput = document.getElementById("password1");
+            const passwordValidationMessage = document.getElementById("password1-validation");
+    
+            passwordInput.addEventListener("input", function () {
+                const password = passwordInput.value;
+    
+                // Define a regular expression pattern for a strong password
+                const strongPasswordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    
+                if (strongPasswordPattern.test(password)) {
+                    passwordValidationMessage.textContent = ""; // Clear the message
+                } else {
+                    passwordValidationMessage.textContent = "Password must be at least 8 characters long and include at least one lowercase letter, one uppercase letter, one digit, and one special character.";
+                }
+            });
+        });
+    </script>
+    
 </body>
 </html>

@@ -143,11 +143,6 @@ document.addEventListener('DOMContentLoaded', function () {
 //                 return false;
 //             }
         
-//             if (password1 !== password2) {
-//                 password2Validation.textContent = 'Passwords do not match';
-//                 return false;
-//             }
-        
 //             return true;
 //         }
 //         password1Input.addEventListener('input', validatePassword);

@@ -643,6 +643,7 @@ body.dark-mode .user-table tbody tr:hover {
     </style>
 </head>
 <body>
+    {% if user.is_superuser %}
     <div class="dark-mode-toggle">
         <label class="switch">
             <input type="checkbox" id="darkModeToggle">
@@ -796,9 +797,11 @@ body.dark-mode .user-table tbody tr:hover {
                 {% endfor %}
             </tbody>
         </table>
+    
         {% endblock %}
     </div>
 </div>
+{% endif %}
 
 
         

@@ -103,6 +103,7 @@
     }
 </style>
 <div class="content_table">
+    {% if user.is_superuser %}
     <div class="title">
         <h2>Update Wallpaper</h2>
     </div>
@@ -157,6 +158,7 @@
             <button type="submit" class="update-button" onclick="showUpdateSuccessMessage()">Update Wallpaper</button>
         </form>
     </div>
+    {% endif %}
 
     
     <div id="update-success-message"></div>
