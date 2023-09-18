@@ -5,22 +5,23 @@
     <div class="title">
         {% if user.is_superuser %}
         <h2>Upload Wallpaper</h2>
+        {% endif %}
     </div>
     <div class="upload-success-message" id="upload-success-message"></div>
     <div class="upload-form">
         <form method="post" enctype="multipart/form-data" action="/upload_wallpaper/" onsubmit="return validateForm()">
             {% csrf_token %}
-            <div class="form-field dark-mode-text">
+            <div class="form-field">
                 <label for="title">Title:</label>
                 <input type="text" id="title" name="title" required>
             </div>
             
-            <div class="form-field dark-mode-text">
+            <div class="form-field">
                 <label for="description">Description:</label>
                 <textarea id="description" name="description" rows="4" required></textarea>
             </div>
             
-            <div class="form-field dark-mode-text">
+            <div class="form-field">
                 <label for="price">Price:</label>
                 <select id="price" name="price">
                     <option value="free">Free</option>
@@ -28,7 +29,7 @@
                 </select>
             </div>
             
-            <div class="form-field dark-mode-text">
+            <div class="form-field">
                 <label for="category">Category:</label>
                 <select id="category" name="category">
                     {% for category_key, category_value in categories %}
@@ -36,24 +37,22 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="form-field dark-mode-text">
+            
             <div class="form-field">
-                <label for="tags" style="color: rgb(0, 0, 0);">Tags (comma-separated):</label>
-                <input type="text" id="tags" name="tags" placeholder="e.g., tag1, tag2, tag3" style="background-color: rgba(255, 255, 255, 0.955); color: rgb(0, 0, 0);">
+                <label for="tags">Tags (comma-separated):</label>
+                <input type="text" id="tags" name="tags" placeholder="e.g., tag1, tag2, tag3">
             </div>
 
-            <div class="form-field dark-mode-text">
+            <div class="form-field">
                 <label for="wallpaper_file">Choose File (Wallpaper only):</label>
                 <input type="file" id="wallpaper_file" name="wallpaper_file" accept="image/*" required>
             </div>
             
-            
             <button type="submit" class="upload-button">Upload Wallpaper</button>
         </form>
-
-        {% endif %}
     </div>
 </div>
+
 <script>
     function validateForm() {
         var title = document.getElementById('title').value;
@@ -97,16 +96,70 @@
 
 
 <style>
-    .upload-form {
-        background-color: #f6f6f6;
-        padding: 75px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+.form-field {
+    margin-bottom: 20px;
+}
+header button {
+    margin-top: 5px;
+}
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
 
-    .form-field {
-        margin-bottom: 15px;
-    }
+input[type="text"],
+input[type="file"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-top: 5px;
+}
+
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: url("arrow-down.png") no-repeat right;
+    background-size: 20px;
+    padding-right: 30px;
+}
+
+/* Style the upload button */
+.upload-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Optional styles for the success message */
+.upload-success-message {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 20px;
+    display: none;
+}
+
+/* Optional styles for the title */
+.title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 24px;
+    color: #010101;
+}
 
     .upload-button {
         background-color: #007bff;
@@ -136,15 +189,51 @@
         color: white; /* Change to white */
         border: 1px solid #c3e6cb;
     }
-
-    /* Media query for dark mode */
     @media (prefers-color-scheme: dark) {
         .dark-mode-text label,
         .dark-mode-text input,
         .dark-mode-text select,
         .dark-mode-text textarea {
-            color: rgb(0, 0, 0); /* Set the text color for dark mode */
+            color: rgb(0, 0, 0); 
         }
+    }
+    .dark-mode {
+        background-color: #333; /* Dark background color */
+        color: #fff; /* White text color in dark mode */
+    }
+    
+    .dark-mode .form-field label {
+        color: #fff; /* White text color in dark mode */
+    }
+    .dark-mode h2 {
+        font-size: 24px;
+        color: #ffffff;
+    }
+    
+    .dark-mode input[type="text"],
+    .dark-mode input[type="file"],
+    .dark-mode select,
+    .dark-mode textarea {
+        background-color: #444; /* Darker background in dark mode */
+        color: #fff; /* White text color in dark mode */
+        border-color: #555; /* Slightly lighter border color in dark mode */
+    }
+
+    .dark-mode .upload-button {
+        background-color: #007bff; /* Adjust button color for dark mode */
+        color: #fff; /* White text color in dark mode */
+    }
+
+    .dark-mode .upload-success-message {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 20px;
+        display: none;
+    }
+    .dark-mode .title {
+        color: #fff; 
     }
 </style>
 {% endblock %}
