@@ -6,14 +6,23 @@
         background-color: rgb(0, 0, 0);
     }
 
-    .liked-wallpaper {
-        margin-bottom: 20px;
-    }
+.liked-wallpaper {
+    display: block; /* Make each liked wallpaper a block-level element */
+    margin-bottom: 20px; /* Add some space between liked wallpapers */
+}
 
-    .liked-wallpaper img {
-        max-width: 100%;
-        height: auto;
-    }
+/* Optional: Add styling for the liked wallpaper titles and images */
+.liked-wallpaper h2 {
+    font-size: 18px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.liked-wallpaper img {
+    max-width: 100%;
+    height: auto;
+}
+
 </style>
 <div class="container">
     <h1>Liked Wallpapers</h1>
@@ -42,34 +51,32 @@
         var likedWallpaperIds = JSON.parse(getCookie("likedWallpapers")) || [];
 
         if (likedWallpaperIds.length === 0) {
-            // Display a message if no wallpapers are liked
             var messageElement = document.createElement("p");
             messageElement.textContent = "You haven't liked any wallpapers yet.";
             document.getElementById("liked-wallpapers-section").appendChild(messageElement);
         } else {
-            // Make an AJAX request to fetch the liked wallpaper data from your 'liked_wallpapers' page
             fetch("/liked_wallpapers/?likedWallpapers=" + JSON.stringify(likedWallpaperIds))
                 .then(response => response.json())
                 .then(data => {
                     if (data.likedWallpapers.length === 0) {
-                        // Display a message if no liked wallpapers are found
                         var messageElement = document.createElement("p");
                         messageElement.textContent = "No liked wallpapers found.";
                         document.getElementById("liked-wallpapers-section").appendChild(messageElement);
                     } else {
-                        // Create a container for liked wallpapers
                         var likedWallpapersContainer = document.createElement("div");
                         likedWallpapersContainer.id = "liked-wallpapers-container";
                         document.getElementById("liked-wallpapers-section").appendChild(likedWallpapersContainer);
-
-                        // Loop through the liked wallpapers and display them
                         data.likedWallpapers.forEach(function (wallpaper) {
                             var wallpaperElement = document.createElement("div");
                             wallpaperElement.className = "liked-wallpaper";
                             wallpaperElement.innerHTML = `
+                            <div>
                                 <h2>${wallpaper.title}</h2>
+                            </div>
+                            <div>
                                 <!-- Use the image URL to display the image -->
                                 <img src="${wallpaper.image_url}" alt="${wallpaper.title}">
+                            </div>
                             `;
                             likedWallpapersContainer.appendChild(wallpaperElement);
                         });
