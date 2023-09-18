@@ -31,6 +31,7 @@ class Category(models.Model):
         ('cars', 'Cars'),
         ('bikes', 'Bikes'),
         ('ai_arts', 'AI Arts'),
+        ('others', 'Others'),
     ]
 
     name = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='others')
