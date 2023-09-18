@@ -265,16 +265,18 @@ from django.http import HttpResponseBadRequest
 
 ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'webp', 'svg', 'ico', 'jfif', 'pjpeg', 'pjp', 'avif']
 
-@login_required  
+@login_required
 def user_upload(request):
     user_profile = UserProfileDoc.objects.get(user=request.user)
+    categories = Category.CATEGORY_CHOICES  # Define categories outside the if-else block
+    
     if request.method == "POST":
         title = request.POST.get("title")
         description = request.POST.get("description")
         price = request.POST.get("price")
         user = request.user
         category_name = request.POST.get("category")
-        tags_input = request.POST.get("tags")  
+        tags_input = request.POST.get("tags")
         tags_names = [tag.strip() for tag in tags_input.split(",")]
         category, created = Category.objects.get_or_create(name=category_name)
         tags = Tag.objects.filter(name__in=tags_names)
@@ -299,7 +301,6 @@ def user_upload(request):
 
     else:
         tags = Tag.objects.all()
-        categories = Category.CATEGORY_CHOICES
 
     context = {
         "tags": tags,
@@ -308,6 +309,7 @@ def user_upload(request):
     }
 
     return render(request, "user_upload.html", context)
+
 
 
 @login_required
@@ -350,8 +352,6 @@ from django.shortcuts import render, redirect
 def view_delete_userwallpaper(request):
     user = request.user
     wallpapers = WallpaperCollection.objects.filter(user=user)
-
-    # Fetch the user's profile with the avatar field
     try:
         user_profile = UserProfileDoc.objects.get(user=user)
         avatar = user_profile.avatar
@@ -384,7 +384,6 @@ def liked_wallpapers(request):
     # Get the liked wallpaper IDs from the cookie
     liked_wallpaper_ids = json.loads(request.COOKIES.get("likedWallpapers")) or []
 
-    # Retrieve the liked wallpapers from your database and create a list of dictionaries
     liked_wallpapers_data = []
     for wallpaper_id in liked_wallpaper_ids:
         wallpaper = WallpaperCollection.objects.get(id=wallpaper_id)
