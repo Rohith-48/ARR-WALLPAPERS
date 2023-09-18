@@ -152,7 +152,7 @@
                         <div class="button-container">
                             <a href="#" class="view-button" onclick="openOverlay('{{ wallpaper.wallpaper_image.url }}')">View</a>
                             <button type="button" class="button delete-button" onclick="deleteWallpaper('{{ wallpaper.id }}')">Delete</button>
-                            <form id="delete-form-{{ wallpaper.id }}" method="post">
+                            <form id="delete-form-{{ wallpaper.id }}" method="post" action="{% url 'view_delete_wallpaper' %}" onsubmit="return confirmDelete('{{ wallpaper.title }}')">
                                 {% csrf_token %}
                                 <input type="hidden" name="wallpaper_id" value="{{ wallpaper.id }}">
                             </form>
@@ -207,6 +207,12 @@
         setTimeout(function() {
             deleteSuccessMessage.style.display = 'none';
         }, 10000);
+    }
+</script>
+<script>
+    function confirmDelete(wallpaperTitle) {
+        var confirmation = confirm("Are you sure you want to delete the wallpaper titled '" + wallpaperTitle + "'?");
+        return confirmation;
     }
 </script>
 {% endblock %}
