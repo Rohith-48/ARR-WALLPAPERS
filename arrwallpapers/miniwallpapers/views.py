@@ -372,24 +372,27 @@ def view_delete_userwallpaper(request):
     return render(request, 'view_delete_userwallpaper.html', context)
 
 
-
-
-
 import json
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
+from django.core.exceptions import ObjectDoesNotExist
 from .models import WallpaperCollection
 
+@csrf_exempt  # Use this decorator to disable CSRF protection for this view (for simplicity, consider enabling it in production)
 def liked_wallpapers(request):
     # Get the liked wallpaper IDs from the cookie
     liked_wallpaper_ids = json.loads(request.COOKIES.get("likedWallpapers")) or []
 
     liked_wallpapers_data = []
     for wallpaper_id in liked_wallpaper_ids:
-        wallpaper = WallpaperCollection.objects.get(id=wallpaper_id)
-        liked_wallpapers_data.append({
-            'title': wallpaper.title,
-            'image_url': request.build_absolute_uri(wallpaper.wallpaper_image.url),  # Build absolute image URL
-        })
+        try:
+            wallpaper = WallpaperCollection.objects.get(id=wallpaper_id)
+            liked_wallpapers_data.append({
+                'title': wallpaper.title,
+                'image_url': request.build_absolute_uri(wallpaper.wallpaper_image.url),  # Build absolute image URL
+            })
+        except ObjectDoesNotExist:
+            pass
 
     return JsonResponse({'likedWallpapers': liked_wallpapers_data})
