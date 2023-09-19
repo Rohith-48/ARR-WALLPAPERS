@@ -6,9 +6,11 @@ from django.contrib.auth.models import User, auth
 from django.contrib.auth import authenticate, login
 from .models import Category, Tag, UserProfileDoc, WallpaperCollection
 from django.shortcuts import get_object_or_404, redirect
-
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from django.contrib.auth.decorators import login_required  # Import this decorator
+from .models import UserProfileDoc
+
 
 def signup(request):
     if request.method == "POST":
@@ -16,13 +18,13 @@ def signup(request):
         email = request.POST['email']
         password1 = request.POST['password1']
         password2 = request.POST['password2']
-        uploaded_files = request.FILES.getlist('portfolio')  # Get the uploaded files
+        uploaded_files = request.FILES.getlist('portfolio')
 
         try:
             if password1 != password2:
                 raise ValidationError('Passwords do not match')
 
-            validate_email(email)  # Validate the email using Django's email validation
+            validate_email(email) 
 
             if User.objects.filter(username=username).exists():
                 raise ValidationError('Username Taken')
@@ -31,18 +33,17 @@ def signup(request):
                 raise ValidationError('Email already exists')
 
             user = User.objects.create_user(username=username, password=password1, email=email)
-            user_profile = UserProfileDoc(user=user, is_approved=False)  # Set is_approved to False
+            user_profile = UserProfileDoc(user=user, is_approved=False, is_creator=True) 
             user_profile.save()
 
             for uploaded_file in uploaded_files:
-                # Check if the uploaded file has a valid PDF extension
                 if not uploaded_file.name.endswith('.pdf'):
                     raise ValidationError('Invalid file format. Please upload a PDF file.')
 
                 unique_filename = str(uuid.uuid4()) + '.pdf'
                 user_profile.portfolio.save(unique_filename, uploaded_file)
 
-            messages.success(request, 'Your Account has been Created... Wait for Admins Approval')
+            messages.success(request, 'Your Account has been Created as a Creator')
             return redirect('login')
         
         except ValidationError as e:
@@ -52,6 +53,42 @@ def signup(request):
 
     return render(request, "signup.html")
 
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
+from .models import UserProfileDoc
+
+def Premium_signup(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        email = request.POST['email']
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+        try:
+            if password1 != password2:
+                raise ValidationError('Passwords do not match')
+            validate_email(email) 
+            if User.objects.filter(username=username).exists():
+                raise ValidationError('Username Taken')
+
+            if User.objects.filter(email=email).exists():
+                raise ValidationError('Email already exists')
+
+            user = User.objects.create_user(username=username, password=password1, email=email)
+            user_profile = UserProfileDoc(user=user, is_approved=True, is_premium=True) 
+            user_profile.save()
+
+            messages.success(request, 'Your Premium Account has been Created')
+            return redirect('login')
+
+        except ValidationError as e:
+            messages.error(request, str(e))
+            messages.error(request, 'Cannot Register')
+            return redirect('PremiumUserPage/Premium_signup')
+
+    return render(request, "PremiumUserPage/Premium_signup")
 
 
 def index(request):
@@ -75,20 +112,25 @@ def wallpaper_details(request, wallpaper_id):
 
 
 
+from django.shortcuts import render, redirect
+from django.contrib import messages, auth
+from .models import UserProfileDoc
+
 def login(request):
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
-
         user = auth.authenticate(username=username, password=password)
-
         if user is not None:
             if user.is_superuser or (hasattr(user, 'userprofiledoc') and user.userprofiledoc.is_approved):
                 auth.login(request, user)
                 if user.is_superuser:
                     return redirect('admin_dashboard')
                 else:
-                    return redirect('userprofile')
+                    if user.userprofiledoc.is_premium:
+                        return redirect('index')
+                    else:
+                        return redirect('userprofile')
             else:
                 messages.info(request, 'Your account is not approved yet. Please wait for admin approval.')
                 return redirect('login')
@@ -97,7 +139,7 @@ def login(request):
             return redirect('login')
     else:
         return render(request, "login.html")
-    
+
     
     
 
@@ -158,10 +200,6 @@ def user_profile(request):
 
 def forgot_password(request):
     return render(request, 'forgot_password.html')
-
-
-def Premium_signup(request):
-    return render(request, 'PremiumUserPage/Premium_signup.html')
 
 
 def premiumuserpage(request):

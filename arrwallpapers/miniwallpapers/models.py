@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 
 class UserProfileDoc(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    is_creator = models.BooleanField(default=False)  
+    is_premium = models.BooleanField(default=False) 
     is_approved = models.BooleanField(default=False)
     portfolio = models.FileField(upload_to='portfolio/', blank=True, null=True)
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)

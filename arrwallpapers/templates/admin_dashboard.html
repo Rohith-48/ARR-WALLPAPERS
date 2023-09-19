@@ -769,36 +769,68 @@ body.dark-mode .user-table tbody tr:hover {
             </thead>
             <tbody>
                 {% for user_profile in user_profiles %}
-                    <tr>
-                        <td>{{ user_profile.user.username }}</td>
-                        <td>{{ user_profile.user.email }}</td>
-                        <td>
-                            {% if user_profile.portfolio %}
-                                <a href="{{ user_profile.portfolio.url }}" target="_blank">View Portfolio</a>
-                            {% else %}
-                                N/A
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if user_profile.is_approved %}
-                                Approved
-                            {% else %}
-                                <form method="post" action="{% url 'approve_user' user_profile.user.id %}">
+                    {% if not user_profile.is_premium %} {# Filter out premium users #}
+                        <tr>
+                            <td>{{ user_profile.user.username }}</td>
+                            <td>{{ user_profile.user.email }}</td>
+                            <td>
+                                {% if user_profile.portfolio %}
+                                    <a href="{{ user_profile.portfolio.url }}" target="_blank">View Portfolio</a>
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if user_profile.is_approved %}
+                                    Approved
+                                {% else %}
+                                    <form method="post" action="{% url 'approve_user' user_profile.user.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit">Approve</button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="post" action="{% url 'delete_user' user_profile.user.id %}">
                                     {% csrf_token %}
-                                    <button type="submit">Approve</button>
+                                    <button type="submit" class="delete-button">Delete</button>
                                 </form>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <form method="post" action="{% url 'delete_user' user_profile.user.id %}">
-                                {% csrf_token %}
-                                <button type="submit" class="delete-button">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
+                    {% endif %}
                 {% endfor %}
             </tbody>
         </table>
+        
+<br><br>
+        <h2>Manage Subscribers</h2>
+            <table class="user-table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Delete User</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user_profile in user_profiles %}
+                    {% if user_profile.is_premium %} {# Filter premium users #}
+                        <tr>
+                            <td>{{ user_profile.user.username }}</td>
+                            <td>{{ user_profile.user.email }}</td>
+                            <td>
+                                <form method="post" action="{% url 'delete_user' user_profile.user.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="delete-button">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        
     
         {% endblock %}
     </div>

@@ -228,22 +228,27 @@
 							<a href="#page-top"></a>
 						</li>
 						<li class="dropdown first">
-						{% if user.is_authenticated %}
-    						{% if user.is_superuser %}
-       							 <a href="{% url 'admin_dashboard' %}" class="btn btn-default dropdown-toggle lv1">
-            							Dashboard <i class="" aria-hidden="true"></i>
-        							</a>
-    						{% else %}
-        				<a href="{% url 'userprofile' %}" class="btn btn-default dropdown-toggle lv1">
-           						 Dashboard <i class="" aria-hidden="true"></i>
-        					</a>
-    				{% endif %}
-						{% else %}
-    			<a href="{% url 'index' %}" class="btn btn-default dropdown-toggle lv1">
-        			Home <i class="" aria-hidden="true"></i>
-    				</a>
-			{% endif %}
+							{% if user.is_authenticated %}
+								{% if user.is_superuser %}
+									<a href="{% url 'admin_dashboard' %}" class="btn btn-default dropdown-toggle lv1">
+										Dashboard <i class="" aria-hidden="true"></i>
+									</a>
+								{% elif user.userprofiledoc.is_premium %}
+									<a href="{% url 'paymentform' %}" class="btn btn-default dropdown-toggle lv1">
+										Subscribe <i class="" aria-hidden="true"></i>
+									</a>
+								{% else %}
+									<a href="{% url 'userprofile' %}" class="btn btn-default dropdown-toggle lv1">
+										Dashboard <i class="" aria-hidden="true"></i>
+									</a>
+								{% endif %}
+							{% else %}
+								<a href="{% url 'index' %}" class="btn btn-default dropdown-toggle lv1">
+									Home <i class="" aria-hidden="true"></i>
+								</a>
+							{% endif %}
 						</li>
+						
 
 						<li class="dropdown first">
 							<a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">

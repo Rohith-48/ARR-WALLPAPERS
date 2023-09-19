@@ -207,7 +207,7 @@ a.google span{
         <div class="form login">
             <div class="form-content">
                 <header>Login</header>
-                <form id="login-form" method="POST" action="login">
+                <form id="login-form" method="POST" action="{% url 'login' %}">
                     {% csrf_token %}
                     <div class="field input-field">
                         <input type="text" name="username" id="username" placeholder="Username" class="input" required>
