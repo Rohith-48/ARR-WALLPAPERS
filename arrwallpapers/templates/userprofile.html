@@ -104,7 +104,7 @@
 <body>
 
   <div class="main-content">
-    {% if user.is_authenticated %}
+    {% if user.userprofiledoc.is_creator %}
     <!-- Top navbar -->
     <nav class="navbar navbar-top navbar-expand-md navbar-dark" id="navbar-main">
       <div class="container-fluid">

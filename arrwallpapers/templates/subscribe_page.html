@@ -59,6 +59,17 @@
             padding: 10px 0;
             margin: 0;
         }
+
+		.pricingTable .title1{
+            background:linear-gradient(to right, #ff6a1f,rgb(243, 115, 68));
+            font-size: 45px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 10px 0;
+            margin: 0;
+        }
+
+		
         .pricingTable .pricing-content{
             text-align: left;
             padding: 0;
@@ -142,19 +153,19 @@
 							<a href="#page-top"></a>
 						</li>
 						<li class="dropdown first">
-						{% if user.is_authenticated %}
+							{% if user.userprofiledoc.is_premium %}
     						{% if user.is_superuser %}
-       							 <a href="{% url 'admin_dashboard' %}" class="btn btn-default dropdown-toggle lv1">
-            							Dashboard <i class="fa fa-angle-down" aria-hidden="true"></i>
+       							 <a href="{% url 'admin_dashboard' %}">
+            							Dashboard <i aria-hidden="true"></i>
         							</a>
     						{% else %}
-        				<a href="{% url 'userprofile' %}" class="btn btn-default dropdown-toggle lv1">
-           						 Dashboard <i class="fa fa-angle-down" aria-hidden="true"></i>
+        				<a href="{% url 'premiumuserpage' %}">
+           						 Dashboard <i aria-hidden="true"></i>
         					</a>
     				{% endif %}
 						{% else %}
-    			<a href="{% url 'index' %}" class="btn btn-default dropdown-toggle lv1">
-        			Home <i class="fa fa-angle-down" aria-hidden="true"></i>
+    			<a href="{% url 'index' %}">
+        			Home <i aria-hidden="true"></i>
     				</a>
 			{% endif %}
 						</li>
@@ -186,18 +197,6 @@
 								<li><a href="#">Artist lists</a></li>
 							</ul>
 						</li>
-						<li class="dropdown first">
-							{% if user.is_authenticated %}
-								<a href="{% url 'userprofile' %}" class="btn btn-default lv1">
-									Upload
-								</a>
-							{% else %}
-								<a href="{% url 'login' %}" class="btn btn-default lv1">
-									Upload
-								</a>
-							{% endif %}
-						</li>
-						
 						<li class="dropdown first">
 							<a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
 							community <i class="fa fa-angle-down" aria-hidden="true"></i>
@@ -255,12 +254,38 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 col-sm-6">
+			<div class="col-md-4 col-sm-6">
+				<div class="pricingTable orange">
+					<div class="pricingTable-header">
+						<div class="price-value">
+							<span class="amount">$19.99</span>
+							<span class="duration">per month</span>
+						</div>
+						<h3 class="title1">Premium</h3>
+					</div>
+					<ul class="pricing-content">
+						<li>Unlimited downloads</li>
+						<li>Built-in Editor</li>
+						<li>Customize Wallpapers</li>
+						<li>Faster Download Speed</li>
+						<li>Download Premium Wallpaper</li>
+					</ul>
+					<div class="pricingTable-signup">
+						{% if user.is_authenticated and user.userprofiledoc.is_premium %}
+							<a href="{% url 'paymentform' %}">Subscribe Now</a>
+						{% else %}
+							<a href="{% url 'Premium_signup' %}">Subscribe Now</a>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-md-4 col-sm-6">
                 <div class="pricingTable green">
                     <div class="pricingTable-header">
                         <div class="price-value">
-                            <span class="amount">$19.99</span>
-                            <span class="duration">per month</span>
+                            <span class="amount">$100</span>
+                            <span class="duration">per Annual</span>
                         </div>
                         <h3 class="title">Premium</h3>
                     </div>
@@ -272,7 +297,12 @@
                         <li>Download Premium Wallpaper</li>
                     </ul>
                     <div class="pricingTable-signup">
-                        <a href="{% url 'Premium_signup'%}">Subscribe Now</a>
+						<div class="pricingTable-signup">
+							{% if user.is_authenticated and user.userprofiledoc.is_premium %}
+								<a href="{% url 'paymentform' %}">Subscribe Now</a>
+							{% else %}
+								<a href="{% url 'Premium_signup' %}">Subscribe Now</a>
+							{% endif %}
                     </div>
                 </div>
             </div>

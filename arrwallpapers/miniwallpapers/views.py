@@ -88,7 +88,7 @@ def Premium_signup(request):
             messages.error(request, 'Cannot Register')
             return redirect('PremiumUserPage/Premium_signup')
 
-    return render(request, "PremiumUserPage/Premium_signup")
+    return render(request, "PremiumUserPage/Premium_signup.html")
 
 
 def index(request):

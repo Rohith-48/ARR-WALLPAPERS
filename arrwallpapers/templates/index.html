@@ -234,7 +234,7 @@
 										Dashboard <i class="" aria-hidden="true"></i>
 									</a>
 								{% elif user.userprofiledoc.is_premium %}
-									<a href="{% url 'paymentform' %}" class="btn btn-default dropdown-toggle lv1">
+									<a href="{% url 'subscribe_page' %}" class="btn btn-default dropdown-toggle lv1">
 										Subscribe <i class="" aria-hidden="true"></i>
 									</a>
 								{% else %}
@@ -274,7 +274,7 @@
 							</ul>
 						</li>
 						<li class="dropdown first">
-							{% if user.is_authenticated %}
+							{% if user.userprofiledoc.is_creator %}
 								<a href="{% url 'userprofile' %}" class="btn btn-default lv1">
 									Upload
 								</a>
