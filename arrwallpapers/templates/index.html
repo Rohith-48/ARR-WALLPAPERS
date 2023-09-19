@@ -234,8 +234,8 @@
 										Dashboard <i class="" aria-hidden="true"></i>
 									</a>
 								{% elif user.userprofiledoc.is_premium %}
-									<a href="{% url 'subscribe_page' %}" class="btn btn-default dropdown-toggle lv1">
-										Subscribe <i class="" aria-hidden="true"></i>
+									<a href="{% url 'premiumuserpage' %}" class="btn btn-default dropdown-toggle lv1">
+										Dashboard <i class="" aria-hidden="true"></i>
 									</a>
 								{% else %}
 									<a href="{% url 'userprofile' %}" class="btn btn-default dropdown-toggle lv1">
@@ -278,12 +278,17 @@
 								<a href="{% url 'userprofile' %}" class="btn btn-default lv1">
 									Upload
 								</a>
+							{% elif user.userprofiledoc.is_premium %}
+								<a href="{% url 'subscribe_page' %}" class="btn btn-default lv1">
+									Subscribe
+								</a>
 							{% else %}
 								<a href="{% url 'login' %}" class="btn btn-default lv1">
 									Upload
 								</a>
 							{% endif %}
 						</li>
+						
 						
 						<li class="dropdown first">
 							<a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
