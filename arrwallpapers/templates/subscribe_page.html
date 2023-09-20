@@ -272,7 +272,7 @@
 					</ul>
 					<div class="pricingTable-signup">
 						{% if user.is_authenticated and user.userprofiledoc.is_premium %}
-							<a href="{% url 'paymentform' %}">Subscribe Now</a>
+						<a href="{% url 'paymentform' %}?amount=19">Subscribe Now</a>
 						{% else %}
 							<a href="{% url 'Premium_signup' %}">Subscribe Now</a>
 						{% endif %}
@@ -299,7 +299,8 @@
                     <div class="pricingTable-signup">
 						<div class="pricingTable-signup">
 							{% if user.is_authenticated and user.userprofiledoc.is_premium %}
-								<a href="{% url 'paymentform' %}">Subscribe Now</a>
+							<a href="{% url 'paymentform' %}?amount=100">Subscribe Now</a>
+
 							{% else %}
 								<a href="{% url 'Premium_signup' %}">Subscribe Now</a>
 							{% endif %}

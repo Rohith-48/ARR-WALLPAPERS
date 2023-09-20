@@ -1,4 +1,5 @@
 import os
+import razorpay
 import uuid
 from django.contrib import messages
 from django.shortcuts import render, redirect
@@ -202,11 +203,29 @@ def forgot_password(request):
     return render(request, 'forgot_password.html')
 
 
+@login_required
 def premiumuserpage(request):
-    return render(request, 'PremiumUserPage/premiumuserpage.html')
+    user = request.user
+    if request.method == 'POST':
+        user.first_name = request.POST.get('first_name', '')
+        user.last_name = request.POST.get('last_name', '')
+        user.save()
+        messages.success(request, 'Profile updated successfully.')
+        return redirect('premiumuserpage')
+    return render(request, 'PremiumUserPage/premiumuserpage.html', {'user': user})
 
-def paymentform(request):
-    return render(request, 'paymentform.html')
+
+
+
+from django.shortcuts import render
+from django.http import HttpRequest
+def paymentform_view(request: HttpRequest):
+    # Retrieve the amount from the query parameter
+    amount = request.GET.get('amount')
+
+    # Pass the amount to the template
+    return render(request, 'paymentform.html', {'amount': amount})
+
 
 
 from django.shortcuts import render, redirect

@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +7,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image-asset/png" href="{% static '\image-asset\icon.png'%}">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -199,10 +201,10 @@ form .btn{
         </div>
         
         <div class="expand-menu nav flex-column">
-        
+            <a href="{% url 'index'%}"><img class="logo" src="{% static '\image-asset\icon.png'%}" alt="" width="120" height="90"></a>
             <a href="#" class="nav-link active mt-auto"><i class="far fa-user-circle"></i> Profile</a>
                 <a href="#" class="nav-link"><i class="far fa-bell"></i> Notifications</a>
-                <a href="#" class="nav-link"><i class="far fa-file-alt"></i> Billing Info</a>
+                <a href="#" id="billingInfoLink" class="nav-link"><i class="far fa-file-alt"></i> Billing Info</a>
                 <a href="#" class="nav-link mb-auto"><i class="fas fa-cogs"></i> General</a>    
         
         </div>
@@ -241,52 +243,40 @@ form .btn{
                     
                     <div class="container">
                     
-                        <form>
-                    
+                        <form method="post">
+                            {% csrf_token %}
                             <div class="form-group">
-
-                                <label for=fullName>Full Name</label>
-                                <input type="text" class="form-control" id="fullName">
-
+                                <label for="username">Username (Read-only)</label>
+                                <input type="text" class="form-control" id="username" value="{{ user.username }}" readonly>
                             </div>
                             <div class="form-group">
-
-                                <label for=email>Email</label>
-                                <input type="email" class="form-control" id="email">
-
+                                <label for="first_name">First Name</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.first_name }}">
                             </div>
                             <div class="form-group">
-
-                                <label for=pass>Password</label>
-                                <input type="password" class="form-control" id="pass">
-
+                                <label for="last_name">Last Name</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user.last_name }}">
                             </div>
-                            <div class="form-group ">
-
-                                <label for=birthday>Birthday</label>
-                                <input type="date" class="form-control" id="birthday">
-
+                            <div class="form-group">
+                                <label for="email">Email (Read-only)</label>
+                                <input type="email" class="form-control" id="email" value="{{ user.email }}" readonly>
                             </div>
-                            
                             <div class="row mt-5">
-                            
                                 <div class="col">
-                                
-                                    <button type="button" class="btn btn-primary btn-block">Save Changes</button>
-                                
+                                    <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
                                 </div>
-                                
                                 <div class="col">
-                                
-                                    <button type="button" class="btn btn-default btn-block">Cancel</button>
-                                
+                                    <a href="" class="btn btn-default btn-block">Cancel</a>
                                 </div>
-                            
                             </div>
-
                         </form>
                     
                     </div>
+
+                    <div id="billingInfoForm" style="display: none;">
+                        <!-- Your Billing Info form content here -->
+                    </div>
+                    
                 
                 </div>
             
@@ -323,6 +313,22 @@ form .btn{
         })
         
     })
+</script>
+<script>
+    $(document).ready(function(){
+        // Select the link and billing info form by their IDs
+        var billingInfoLink = $('#billingInfoLink');
+        var billingInfoForm = $('#billingInfoForm');
+    
+        // Add a click event handler to the "Billing Info" link
+        billingInfoLink.on('click', function(e) {
+            e.preventDefault(); // Prevent the default link behavior
+    
+            // Toggle the visibility of the billing info form
+            billingInfoForm.slideToggle();
+        });
+    });
+    
 </script>
     
 </body>
