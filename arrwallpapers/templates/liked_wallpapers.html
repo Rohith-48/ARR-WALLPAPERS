@@ -3,36 +3,42 @@
 {% block content %}
 <style>
     .container {
-        background-color: rgb(0, 0, 0);
+        text-align: center;
+        max-width: 1200px;
+        margin: 0 auto;
     }
-
+    #liked-wallpapers-section {
+        display: flex;
+        flex-wrap: wrap; 
+    }
     .liked-wallpaper {
-        display: block; /* Make each liked wallpaper a block-level element */
-        margin-bottom: 20px; /* Add some space between liked wallpapers */
+        width: calc(25% - 10px); 
+        margin-bottom: 10px;
+        padding: 10px;
+        box-sizing: border-box;
+        text-align: center;
     }
-
-    /* Optional: Add styling for the liked wallpaper titles and images */
-    .liked-wallpaper h2 {
-        font-size: 18px;
-        margin-top: 10px;
-        margin-bottom: 5px;
+    .title {
+        color: white;
+        font-size: 14px;
     }
-
-    .liked-wallpaper img {
+    .wallpaper-image {
         max-width: 100%;
         height: auto;
     }
 </style>
 <div class="container">
-    <h1>Liked Wallpapers</h1>
+    <h1 style="color: white;">Liked Wallpapers</h1>
     <!-- Liked Wallpapers Section -->
     <section id="liked-wallpapers-section">
-        {% for wallpaper in liked_wallpapers %}
+        {% for wallpaper in wallpapers %}
         <div class="liked-wallpaper">
-            <h2>{{ wallpaper.title }}</h2>
-            <!-- Use the image URL to display the image -->
-            <img src="{{ request.build_absolute_uri(wallpaper.image_url) }}" alt="{{ wallpaper.title }}">
+            <h2 class="title">{{ wallpaper.title }}</h2>
+            <img src="{{ wallpaper.image_url }}" alt="{{ wallpaper.title }}" class="wallpaper-image">
         </div>
+        {% if forloop.counter|divisibleby:4 and not forloop.last %}
+        <div style="width: 100%; clear: both;"></div>
+        {% endif %}
         {% endfor %}
     </section>
 </div>

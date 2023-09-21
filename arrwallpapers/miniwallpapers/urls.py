@@ -38,7 +38,8 @@ urlpatterns=[
     path('liked_wallpapers/', views.liked_wallpapers, name='liked_wallpapers'),
     path('subscribe_page/', views.subscribe_page, name='subscribe_page'),
     path('premiumuserpage/', views.premiumuserpage, name='premiumuserpage'),
-     path('paymentform/', views.paymentform_view, name='paymentform'),
+     path('paymentform/', views.paymentform, name='paymentform'),
+     path('paymenthandler/', views.paymenthandler, name='paymenthandler'),
     
     ]
 

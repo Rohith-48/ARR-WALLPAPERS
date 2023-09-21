@@ -34,18 +34,31 @@
     </style>
 </head>
 <body>
-    <!-- Center the container -->
     <div class="container">
-        <!-- White container -->
         <div class="payment-container">
             <h1>Payment Amount</h1>
-            <p>The subscription amount is: ${{ amount }}</p>
-            
-            <!-- Pay button -->
-            <button class="pay-button">Pay Now</button>
-
-            <!-- Add your payment form here -->
+            <p>The subscription amount is: ₹{{ razorpay_amount }}</p>
+            <button class="pay-button" id="pay-btn">Pay Now</button>
         </div>
     </div>
 </body>
+   
+  <!-- Razorpay's Javascript code. -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    var options = {
+      key: "{{ razorpay_merchant_key }}",
+      amount: "{{ amount }}",
+      currency: "{{ currency }}",
+      name: "Dj Razorpay",
+      order_id: "{{ razorpay_order_id }}",
+      callback_url: "{{ callback_url }}",
+    };
+    var rzp1 = new Razorpay(options);
+    document.getElementById("pay-btn").onclick = function (e) {
+      rzp1.open();
+      e.preventDefault();
+    };
+  </script>
+</html>
 </html>

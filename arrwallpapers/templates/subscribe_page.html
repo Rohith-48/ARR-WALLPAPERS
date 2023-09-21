@@ -258,7 +258,7 @@
 				<div class="pricingTable orange">
 					<div class="pricingTable-header">
 						<div class="price-value">
-							<span class="amount">$19.99</span>
+							<span class="amount">₹200</span>
 							<span class="duration">per month</span>
 						</div>
 						<h3 class="title1">Premium</h3>
@@ -272,7 +272,7 @@
 					</ul>
 					<div class="pricingTable-signup">
 						{% if user.is_authenticated and user.userprofiledoc.is_premium %}
-						<a href="{% url 'paymentform' %}?amount=19">Subscribe Now</a>
+						<a href="{% url 'paymentform' %}?amount=200">Subscribe Now</a>
 						{% else %}
 							<a href="{% url 'Premium_signup' %}">Subscribe Now</a>
 						{% endif %}
@@ -284,7 +284,7 @@
                 <div class="pricingTable green">
                     <div class="pricingTable-header">
                         <div class="price-value">
-                            <span class="amount">$100</span>
+                            <span class="amount">₹1000</span>
                             <span class="duration">per Annual</span>
                         </div>
                         <h3 class="title">Premium</h3>
@@ -299,7 +299,7 @@
                     <div class="pricingTable-signup">
 						<div class="pricingTable-signup">
 							{% if user.is_authenticated and user.userprofiledoc.is_premium %}
-							<a href="{% url 'paymentform' %}?amount=100">Subscribe Now</a>
+							<a href="{% url 'paymentform' %}?amount=1000">Subscribe Now</a>
 
 							{% else %}
 								<a href="{% url 'Premium_signup' %}">Subscribe Now</a>

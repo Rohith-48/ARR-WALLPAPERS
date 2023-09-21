@@ -178,3 +178,4 @@ DEFAULT_FROM_EMAIL = 'mailtoshowvalidationok@gmail.com'
 
 RAZOR_KEY_ID = 'rzp_test_0zpOMoTxoYH2my'
 RAZOR_KEY_SECRET = '8CMU9Qg9plMX3mYD07IrUEu2'
+

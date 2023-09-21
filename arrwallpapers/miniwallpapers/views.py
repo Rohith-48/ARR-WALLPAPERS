@@ -215,16 +215,61 @@ def premiumuserpage(request):
     return render(request, 'PremiumUserPage/premiumuserpage.html', {'user': user})
 
 
+from django.conf import settings
+razorpay_client = razorpay.Client(
+    auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
 
-
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.http import HttpRequest
-def paymentform_view(request: HttpRequest):
-    # Retrieve the amount from the query parameter
-    amount = request.GET.get('amount')
+def paymentform(request: HttpRequest):
+    currency = 'INR'
+    amount = int(request.GET.get("amount")) * 100# Rs. 200
+ 
+    razorpay_order = razorpay_client.order.create(dict(amount=amount,
+                                                       currency=currency,
+                                                       payment_capture='0'))
+    razorpay_order_id = razorpay_order['id']
+    callback_url = '/paymenthandler/'
+ 
+    # we need to pass these details to frontend.
+    context = {}
+    context['razorpay_order_id'] = razorpay_order_id
+    context['razorpay_merchant_key'] = settings.RAZOR_KEY_ID
+    context['razorpay_amount'] = amount/100
+    context['currency'] = currency
+    context['callback_url'] = callback_url
+ 
+    return render(request, 'paymentform.html', context=context)
+ 
 
-    # Pass the amount to the template
-    return render(request, 'paymentform.html', {'amount': amount})
+@csrf_exempt
+def paymenthandler(request):
+    if request.method == "POST":
+        try:
+            payment_id = request.POST.get('razorpay_payment_id', '')
+            razorpay_order_id = request.POST.get('razorpay_order_id', '')
+            signature = request.POST.get('razorpay_signature', '')
+            params_dict = {
+                'razorpay_order_id': razorpay_order_id,
+                'razorpay_payment_id': payment_id,
+                'razorpay_signature': signature
+            }
+            result = razorpay_client.utility.verify_payment_signature(
+                params_dict)
+            if result is not None:
+                amount = 20000 
+                try:
+                    razorpay_client.payment.capture(payment_id, amount)
+                    return render(request, 'paymentsuccess.html')
+                except:
+                    return render(request, 'paymentfail.html')
+            else:
+                return render(request, 'paymentfail.html')
+        except:
+            return HttpResponseBadRequest()
+    else:
+        return HttpResponseBadRequest()
 
 
 
@@ -278,7 +323,6 @@ def view_delete_wallpaper(request):
         wallpaper.delete()
         return redirect('view_delete_wallpaper')
     
-    # Retrieve the list of wallpapers
     wallpapers = WallpaperCollection.objects.all()
     context = {'wallpapers': wallpapers}
     return render(request, 'view_delete_wallpaper.html', context)
@@ -442,6 +486,7 @@ def liked_wallpapers(request):
     liked_wallpaper_ids = json.loads(request.COOKIES.get("likedWallpapers")) or []
 
     liked_wallpapers_data = []
+    
     for wallpaper_id in liked_wallpaper_ids:
         try:
             wallpaper = WallpaperCollection.objects.get(id=wallpaper_id)
@@ -451,5 +496,5 @@ def liked_wallpapers(request):
             })
         except ObjectDoesNotExist:
             pass
-
-    return JsonResponse({'likedWallpapers': liked_wallpapers_data})
+    context = {"one": liked_wallpapers}
+    return render(request, 'liked_wallpapers.html',{'wallpapers':liked_wallpapers_data} )
