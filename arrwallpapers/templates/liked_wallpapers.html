@@ -29,7 +29,6 @@
 </style>
 <div class="container">
     <h1 style="color: white;">Liked Wallpapers</h1>
-    <!-- Liked Wallpapers Section -->
     <section id="liked-wallpapers-section">
         {% for wallpaper in wallpapers %}
         <div class="liked-wallpaper">
@@ -44,7 +43,6 @@
 </div>
 
 <script>
-    // Function to get a cookie by name
     function getCookie(name) {
         var value = "; " + document.cookie;
         var parts = value.split("; " + name + "=");
@@ -52,7 +50,6 @@
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-        // Retrieve the liked wallpaper IDs from the cookie
         var likedWallpaperIds = JSON.parse(getCookie("likedWallpapers")) || [];
 
         if (likedWallpaperIds.length === 0) {
