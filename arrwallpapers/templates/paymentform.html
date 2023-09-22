@@ -7,58 +7,109 @@
     <title>Payment Form</title>
     <link rel="icon" type="image-asset/png" href="{% static '\image-asset\icon.png'%}">
     <style>
-        .container {
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
             display: flex;
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .icon {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1;
+        }
+        .logo {
+            width: 120px;
+            height: 90px;
         }
         .payment-container {
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.1);
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); 
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .payment-container h1 {
+            margin: 0 0 20px;
+            font-size: 24px;
+        }
+        .payment-container p {
+            font-size: 18px;
         }
         .pay-button {
-            background: linear-gradient(to bottom, #0073e6, #005eb8); 
-            border: 1px solid #005eb8; 
+            background: linear-gradient(to bottom, #0073e6, #005eb8);
+            border: 1px solid #005eb8;
             color: #fff;
-            padding: 10px 20px; 
-            border-radius: 10px; 
+            padding: 10px 20px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 16px; 
+            font-size: 16px;
+            margin-top: 20px;
         }
         .pay-button:hover {
-            background: linear-gradient(to bottom, #005eb8, #0073e6); 
+            background: linear-gradient(to bottom, #005eb8, #0073e6);
+        }
+
+        /* Responsive styles */
+        @media screen and (max-width: 600px) {
+            .logo {
+                width: 80px;
+                height: 60px;
+            }
+            .icon {
+                top: 5px;
+                left: 5px;
+            }
+            .payment-container {
+                padding: 10px;
+            }
+            .payment-container h1 {
+                font-size: 20px;
+            }
+            .payment-container p {
+                font-size: 16px;
+            }
+            .pay-button {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="payment-container">
-            <h1>Payment Amount</h1>
-            <p>The subscription amount is: ₹{{ razorpay_amount }}</p>
-            <button class="pay-button" id="pay-btn">Pay Now</button>
-        </div>
+    <div class="icon">
+        <a href="{% url 'index' %}">
+            <img class="logo" src="{% static '\image-asset\icon.png' %}" alt="" width="120" height="120">
+        </a>
     </div>
+    <div class="payment-container">
+        <h1>Payment Amount</h1>
+        <p>The subscription amount is: ₹{{ razorpay_amount }}</p>
+        <button class="pay-button" id="pay-btn">Pay Now</button>
+    </div>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        var options = {
+            key: "{{ razorpay_merchant_key }}",
+            amount: "{{ amount }}",
+            currency: "{{ currency }}",
+            name: "Dj Razorpay",
+            order_id: "{{ razorpay_order_id }}",
+            callback_url: "{{ callback_url }}",
+        };
+        var rzp1 = new Razorpay(options);
+        document.getElementById("pay-btn").onclick = function (e) {
+            rzp1.open();
+            e.preventDefault();
+        };
+    </script>
 </body>
-   
-  <!-- Razorpay's Javascript code. -->
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-  <script>
-    var options = {
-      key: "{{ razorpay_merchant_key }}",
-      amount: "{{ amount }}",
-      currency: "{{ currency }}",
-      name: "Dj Razorpay",
-      order_id: "{{ razorpay_order_id }}",
-      callback_url: "{{ callback_url }}",
-    };
-    var rzp1 = new Razorpay(options);
-    document.getElementById("pay-btn").onclick = function (e) {
-      rzp1.open();
-      e.preventDefault();
-    };
-  </script>
-</html>
 </html>

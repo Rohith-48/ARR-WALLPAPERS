@@ -75,6 +75,25 @@
         display: block;
         
     }
+
+    .custom-button1 {
+        background-color: rgb(255, 115, 0);
+        color: white;
+        font-weight: bold;
+        border-radius: 5px;
+        padding: 10px 20px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+        margin-bottom: 10px;
+        display: block;
+        
+    }
+    .custom-button1:hover {
+        background-color: rgb(252, 152, 39);
+        color: white;
+        text-decoration: none;
+    }
+    
     #premiumbtn{
         background-color: rgb(255, 182, 47);
     }
@@ -115,6 +134,15 @@
         margin-left: 10px;
         cursor: pointer;
         background-color: blue;
+        padding: 10px;
+        height: 50px;
+    }
+    .download-icon1 {
+        font-size: 24px;
+        color: rgb(255, 255, 255);
+        margin-left: 10px;
+        cursor: pointer;
+        background-color: rgb(255, 115, 0);
         padding: 10px;
         height: 50px;
     }
@@ -214,56 +242,108 @@
         </div>
         <div class="customization-container">
             {% if wallpaper.price == 'paid' %}
-            <a href="{% url 'subscribe_page' %}" class="btn btn-primary custom-button" id="premiumbtn">Download<br>Go Premium</a>
-            {% else %}
-            <a id="download-for-my-screen" class="btn btn-primary custom-button">Download for My Screen</a><br><br><br>
-            <a href="{{ wallpaper.wallpaper_image.url }}" download class="btn btn-primary custom-button">Download Original Wallpaper</a><br><br>
-            <form class="resize-crop-form d-flex">
-                <div class="resize">
-                    <div>
-                        <p style="color: white;"class="aligntext">Resize & Crop Wallpapers:</p>
+                {% if user.is_authenticated %}
+                    {% if user.userprofiledoc.subscribed %}
+                        <a href="{{ wallpaper.wallpaper_image.url }}" download class="btn btn-primary custom-button1">Download 4k Wallpaper👑</a><br><br>
+                        <a id="download-for-my-screen" class="btn btn-primary custom-button1">Download for My Screen</a><br><br><br>
+                <form class="resize-crop-form d-flex">
+                    <div class="resize">
+                        <div>
+                            <p style="color: white;" class="aligntext">Resize & Crop Wallpapers:</p>
+                        </div>
+                        <div class="resize-crop">
+                            <input type="number" id="width" class="resize-crop-inputcrop" placeholder="Width">
+                            <span>x</span>
+                            <input type="number" id="height" class="resize-crop-inputcrop" placeholder="Height">
+                            <i class="fas fa-download download-icon1" id="download-resized-wallpaper"></i>
+                        </div>
                     </div>
-                    <div class="resize-crop">
-                        <input type="number" id="width" class="resize-crop-inputcrop" placeholder="Width">
-                        <span>x</span>
-                        <input type="number" id="height" class="resize-crop-inputcrop" placeholder="Height">
-                        <i class="fas fa-download download-icon" id="download-resized-wallpaper"></i>
-                    </div>
+                </form><br><br>
+                <button id="show-resolutions-button" class="btn btn-primary custom-button1">
+                    Select Resolution and Download
+                    <i class="fas fa-caret-down" id="arrow-icon"></i>
+                </button>
+                <div class="resolution-list" style="display: none;">
+                    <h4>PC(720P, 1080P, 2K, 4K, 5K):</h4>
+                    <ul>
+                        <a class="middle"><li data-resolution="1366x768">1366x768</li></a>
+                        <a class="middle"><li data-resolution="1920x1080">1920x1080</li></a>
+                        <a class="middle"><li data-resolution="1440x900">1440x900</li></a>
+                        <!-- Add more resolution options here -->
+                    </ul>
+                    <h4>iMac:</h4>
+                    <ul class="center">
+                        <div class="res">
+                            <div class="resmac">
+                                <div>iMac 21.5" LED-backlit:</div>
+                                <div>
+                                    <a class="middle"><li data-resolution="1920x1080"> 1920x1080</li></a>
+                                </div>
+                            </div>
+                            <div class="resmac">
+                                <div>iMac 21.5" Retina 4K:</div>
+                                <div>
+                                    <a class="middle"><li data-resolution="4096x2304"> 4096x2304</li></a>
+                                </div>
+                            </div>
+                        </div>
+                    </ul>
                 </div>
-            </form><br><br>
-            <button id="show-resolutions-button" class="btn btn-primary custom-button">
-                Select Resolution and Download
-                <i class="fas fa-caret-down" id="arrow-icon"></i>
-            </button>
-            <div class="resolution-list" style="display: none;">
-               
-                <h4>PC(720P, 1080P, 2K, 4K, 5K):</h4>
-                <ul>
-                    <a class="middle"><li data-resolution="1366x768">1366x768</li></a>
-                    <a class="middle"><li data-resolution="1920x1080">1920x1080</li></a>
-                    <a class="middle"><li data-resolution="1440x900">1440x900</li></a>
-                    <!-- Add more resolution options here -->
-                </ul>
-                <h4>iMac:</h4>
-                <ul class="center">
-                    <div class="res">
-                        <div class="resmac">
-                            <div>iMac 21.5" LED-backlit:</div>
-                            <div>
-                                <a class="middle"><li data-resolution="1920x1080"> 1920x1080</li></a>
-                            </div>
+                    {% else %}
+                        <a href="{% url 'subscribe_page' %}" class="btn btn-primary custom-button" id="premiumbtn">Download<br>Go Premium</a>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-primary custom-button" id="premiumbtn">Download<br>Go Premium</a>
+                {% endif %}
+            {% else %}
+                <a id="download-for-my-screen" class="btn btn-primary custom-button">Download for My Screen</a><br><br><br>
+                <a href="{{ wallpaper.wallpaper_image.url }}" download class="btn btn-primary custom-button">Download Original Wallpaper</a><br><br>
+                <form class="resize-crop-form d-flex">
+                    <div class="resize">
+                        <div>
+                            <p style="color: white;" class="aligntext">Resize & Crop Wallpapers:</p>
                         </div>
-                        <div class="resmac">
-                            <div>iMac 21.5" Retina 4K:</div>
-                            <div>
-                                <a class="middle"><li data-resolution="4096x2304"> 4096x2304</li></a>
-                            </div>
+                        <div class="resize-crop">
+                            <input type="number" id="width" class="resize-crop-inputcrop" placeholder="Width">
+                            <span>x</span>
+                            <input type="number" id="height" class="resize-crop-inputcrop" placeholder="Height">
+                            <i class="fas fa-download download-icon" id="download-resized-wallpaper"></i>
                         </div>
                     </div>
-                </ul>
-            </div>
+                </form><br><br>
+                <button id="show-resolutions-button" class="btn btn-primary custom-button">
+                    Select Resolution and Download
+                    <i class="fas fa-caret-down" id="arrow-icon"></i>
+                </button>
+                <div class="resolution-list" style="display: none;">
+                    <h4>PC(720P, 1080P, 2K, 4K, 5K):</h4>
+                    <ul>
+                        <a class="middle"><li data-resolution="1366x768">1366x768</li></a>
+                        <a class="middle"><li data-resolution="1920x1080">1920x1080</li></a>
+                        <a class="middle"><li data-resolution="1440x900">1440x900</li></a>
+                        <!-- Add more resolution options here -->
+                    </ul>
+                    <h4>iMac:</h4>
+                    <ul class="center">
+                        <div class="res">
+                            <div class="resmac">
+                                <div>iMac 21.5" LED-backlit:</div>
+                                <div>
+                                    <a class="middle"><li data-resolution="1920x1080"> 1920x1080</li></a>
+                                </div>
+                            </div>
+                            <div class="resmac">
+                                <div>iMac 21.5" Retina 4K:</div>
+                                <div>
+                                    <a class="middle"><li data-resolution="4096x2304"> 4096x2304</li></a>
+                                </div>
+                            </div>
+                        </div>
+                    </ul>
+                </div>
             {% endif %}
         </div>
+        
     </div>
 </div>
 

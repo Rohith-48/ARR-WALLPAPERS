@@ -271,8 +271,12 @@
 						<li>Download Premium Wallpaper</li>
 					</ul>
 					<div class="pricingTable-signup">
-						{% if user.is_authenticated and user.userprofiledoc.is_premium %}
-						<a href="{% url 'paymentform' %}?amount=200">Subscribe Now</a>
+						{% if user.is_authenticated %}
+							{% if user.userprofiledoc.subscribed %}
+								<a href="{% url 'index' %}">Subscribed</a>
+							{% else %}
+								<a href="{% url 'paymentform' %}?amount=200">Subscribe Now</a>
+							{% endif %}
 						{% else %}
 							<a href="{% url 'Premium_signup' %}">Subscribe Now</a>
 						{% endif %}
@@ -298,13 +302,18 @@
                     </ul>
                     <div class="pricingTable-signup">
 						<div class="pricingTable-signup">
-							{% if user.is_authenticated and user.userprofiledoc.is_premium %}
-							<a href="{% url 'paymentform' %}?amount=1000">Subscribe Now</a>
-
+							{% if user.is_authenticated %}
+								{% if user.userprofiledoc.subscribed %}
+									<a href="{% url 'index' %}">Subscribed</a>
+								{% else %}
+									<a href="{% url 'paymentform' %}?amount=1000">Subscribe Now</a>
+								{% endif %}
 							{% else %}
 								<a href="{% url 'Premium_signup' %}">Subscribe Now</a>
 							{% endif %}
-                    </div>
+						</div>
+						
+						
                 </div>
             </div>
         </div>
