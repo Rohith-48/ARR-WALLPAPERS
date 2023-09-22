@@ -41,7 +41,6 @@
         display: none;
     }
 
-  
     .tag-label {
         color: rgb(255, 255, 255);
         display: inline-block;
@@ -105,7 +104,7 @@
     </div>
     {% if wallpapers %}
     <div class="update-form">
-        <form method="post" action="{% url 'user_edit' %}">
+        <form method="post" action="{% url 'user_edit' %}" onsubmit="return validateForm()">
             {% csrf_token %}
             <div class="form-field">
                 <label style="color: rgb(0, 0, 0);">Select Wallpaper:</label>
@@ -146,7 +145,7 @@
                 </div>
                 
             </div>
-            <button type="submit" class="update-button" onclick="showUpdateSuccessMessage()">Update Wallpaper</button>
+            <button type="submit" class="update-button">Update Wallpaper</button>
         </form>
     </div>
     {% else %}
@@ -154,13 +153,25 @@
     {% endif %}
     <div id="update-success-message"></div>
 </div>
+
 <script>
-    function showUpdateSuccessMessage() {
-        var successMessage = document.getElementById('update-success-message');
-        successMessage.innerHTML = '<div class="alert alert-success" style="color: #3c763d; background-color: #dff0d8; border-color: #d6e9c6;">Wallpaper updated successfully!</div>';
-        setTimeout(function() {
-            successMessage.innerHTML = '';
-        }, 10000); 
+    function validateForm() {
+        var titleInput = document.getElementById('title').value.trim();
+        var descriptionInput = document.getElementById('description').value.trim();
+        var tagsInput = document.getElementById('tags').value.trim();
+
+        if (titleInput === '' || descriptionInput === '' || tagsInput === '') {
+            alert('Please fill in all fields.');
+            return false;
+        }
+
+        // Check for white spaces
+        if (/\S/.test(titleInput) && /\S/.test(descriptionInput) && /\S/.test(tagsInput)) {
+            return true;
+        } else {
+            alert('Fields cannot contain only white spaces.');
+            return false;
+        }
     }
 </script>
 

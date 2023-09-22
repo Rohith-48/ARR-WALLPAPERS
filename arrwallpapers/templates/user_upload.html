@@ -12,12 +12,12 @@
                 <label for="title" style="color: rgb(0, 0, 0);">Title:</label>
                 <input type="text" id="title" name="title" required style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">
             </div>
-            
+        
             <div class="form-field">
                 <label for="description" style="color: rgb(0, 0, 0);">Description:</label>
                 <textarea id="description" name="description" rows="4" required style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);"></textarea>
             </div>
-            
+        
             <div class="form-field">
                 <label for="price" style="color: rgb(0, 0, 0);">Price:</label>
                 <select id="price" name="price" style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">
@@ -25,12 +25,12 @@
                     <option value="paid">Paid</option>
                 </select>
             </div>
-            
+        
             <div class="form-field">
                 <label for="tags" style="color: rgb(0, 0, 0);">Tags (comma-separated):</label>
                 <input type="text" id="tags" name="tags" placeholder="e.g., tag1, tag2, tag3" style="background-color: rgba(255, 255, 255, 0.955); color: rgb(0, 0, 0);">
             </div>
-            
+        
             <div class="form-field">
                 <label for="category" style="color: rgb(0, 0, 0);">Category:</label>
                 <select id="category" name="category" style="background-color: rgba(255, 255, 255, 0.955); color: rgb(0, 0, 0);">
@@ -39,14 +39,30 @@
                     {% endfor %}
                 </select>
             </div>
-
+        
             <div class="form-field">
                 <label for="wallpaper_file" style="color: rgb(0, 0, 0);">Choose File:</label>
                 <input type="file" id="wallpaper_file" name="wallpaper_file" accept="image/*" required style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">
             </div>
-            
+        
             <button type="submit" class="upload-button">Upload Wallpaper</button>
         </form>
+        
+        <script>
+            function validateForm() {
+                var title = document.getElementById("title").value.trim();
+                var description = document.getElementById("description").value.trim();
+                var tags = document.getElementById("tags").value.trim();
+        
+                // Check if any of the fields contain only white spaces
+                if (title === "" || description === "" || tags === "") {
+                    alert("Fields cannot contain only white spaces.");
+                    return false; // Prevent form submission
+                }
+                return true; // Allow form submission
+            }
+        </script>
+        
     </div>
     <div class="upload-success-message" id="upload-success-message"></div>
 </div>

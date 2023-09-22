@@ -455,6 +455,9 @@ def user_upload(request):
 @login_required
 def user_edit_wallpaper(request):
     user_profile = UserProfileDoc.objects.get(user=request.user)
+    wallpapers = WallpaperCollection.objects.filter(user=request.user)  # Move this line here
+    all_tags = Tag.objects.all()  # Move this line here
+
     if request.method == "POST":
         selected_wallpaper_id = request.POST.get("selected_wallpaper")
         title = request.POST.get("title")
@@ -472,9 +475,6 @@ def user_edit_wallpaper(request):
             messages.success(request, "Wallpaper updated successfully")
         except WallpaperCollection.DoesNotExist:
             messages.error(request, "Wallpaper not found or you don't have permission to edit it")
-    else:
-        wallpapers = WallpaperCollection.objects.filter(user=request.user)
-        all_tags = Tag.objects.all()
 
     context = {
         "wallpapers": wallpapers,
@@ -482,6 +482,7 @@ def user_edit_wallpaper(request):
         "user_profile": user_profile,  
     }
     return render(request, "user_edit.html", context)
+
 
 
 from django.contrib.auth.decorators import login_required

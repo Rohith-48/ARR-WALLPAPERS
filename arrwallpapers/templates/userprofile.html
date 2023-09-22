@@ -21,26 +21,29 @@
 }
 
 .nav-item1 {
-  border: 2px solid #000;
-  border-radius: 25px;
-  margin: 10px 0;
+  border: 0;
+  border-radius: 5px;
+  margin: 10px;
   padding: 10px 20px;
   text-align: center;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
+  background-image: linear-gradient(to bottom, #0073e6, #005bbf);
+  color: rgb(255, 255, 255);
+  font-weight: bold;
 }
 
 .nav-item1:hover {
-  background-color: yellow;
-  color: #000;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  background-image: linear-gradient(to bottom, #005bbf, #0073e6);
+  transition: background-image 0.3s ease, color 0.3s ease;
 }
-
+.nav-link {
+  color: #ffffff;
+}
 .active {
-  background-color: yellow;
-  color: #000;
+  background-image: linear-gradient(to bottom, #005bbf, #0073e6);
+  color: white;
 }
-
 .card-profile-image img.rounded-circle {
   border-radius: 50%;
   width: 120px;
