@@ -222,32 +222,29 @@ def premiumuserpage(request):
 
 
 from django.conf import settings
-razorpay_client = razorpay.Client(
-    auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
-
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
+import razorpay
+from .models import UserProfileDoc
+
+razorpay_client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
+
 def paymentform(request: HttpRequest):
     currency = 'INR'
-    amount = int(request.GET.get("amount")) * 100# Rs. 200
- 
-    razorpay_order = razorpay_client.order.create(dict(amount=amount,
-                                                       currency=currency,
-                                                       payment_capture='0'))
+    amount = int(request.GET.get("amount")) * 100  # Rs. 200
+
+    razorpay_order = razorpay_client.order.create(dict(amount=amount, currency=currency, payment_capture='0'))
     razorpay_order_id = razorpay_order['id']
     callback_url = '/paymenthandler/'
- 
-    # we need to pass these details to frontend.
     context = {}
     context['razorpay_order_id'] = razorpay_order_id
     context['razorpay_merchant_key'] = settings.RAZOR_KEY_ID
-    context['razorpay_amount'] = amount/100
+    context['razorpay_amount'] = amount / 100
     context['currency'] = currency
     context['callback_url'] = callback_url
- 
+
     return render(request, 'paymentform.html', context=context)
- 
 
 @csrf_exempt
 def paymenthandler(request):
@@ -261,21 +258,22 @@ def paymenthandler(request):
                 'razorpay_payment_id': payment_id,
                 'razorpay_signature': signature
             }
-            result = razorpay_client.utility.verify_payment_signature(
-                params_dict)
+            result = razorpay_client.utility.verify_payment_signature(params_dict)
             if result is not None:
                 amount = 20000 
-                try:
-                    razorpay_client.payment.capture(payment_id, amount)
-                    return render(request, 'PremiumUserPage/successpage.html')
-                except:
-                    return render(request, 'PremiumUserPage/errorpage.html')
+                authenticated_user = request.user
+                user_profile = UserProfileDoc.objects.get(user=authenticated_user)
+                user_profile.subscribed = True
+                user_profile.save()
+                
+                return render(request, 'PremiumUserPage/successpage.html')
             else:
                 return render(request, 'PremiumUserPage/errorpage.html')
         except:
             return HttpResponseBadRequest()
     else:
         return HttpResponseBadRequest()
+
 
 
 
