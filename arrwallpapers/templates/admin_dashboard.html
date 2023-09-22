@@ -804,20 +804,22 @@ body.dark-mode .user-table tbody tr:hover {
         
 <br><br>
         <h2>Manage Subscribers</h2>
-            <table class="user-table">
+        <table class="user-table">
             <thead>
                 <tr>
                     <th>Username</th>
                     <th>Email</th>
+                    <th>Subscribed</th>
                     <th>Delete User</th>
                 </tr>
             </thead>
             <tbody>
                 {% for user_profile in user_profiles %}
-                    {% if user_profile.is_premium %} {# Filter premium users #}
+                    {% if user_profile.is_premium %}
                         <tr>
                             <td>{{ user_profile.user.username }}</td>
                             <td>{{ user_profile.user.email }}</td>
+                            <td>{% if user_profile.subscribed %} Yes {% else %} No {% endif %}</td>
                             <td>
                                 <form method="post" action="{% url 'delete_user' user_profile.user.id %}">
                                     {% csrf_token %}
@@ -830,8 +832,6 @@ body.dark-mode .user-table tbody tr:hover {
             </tbody>
         </table>
         
-        
-    
         {% endblock %}
     </div>
 </div>
@@ -841,8 +841,6 @@ body.dark-mode .user-table tbody tr:hover {
         
 
     </div>
-                                                
-       
     
     <script src="{% static 'js/adminjs.js'%}"></script>
 

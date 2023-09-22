@@ -179,17 +179,29 @@ def custom_logout(request):
 
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User 
 @login_required
 def user_profile(request):
     user_profile = UserProfileDoc.objects.get(user=request.user)
     user = request.user
 
     if request.method == 'POST':
-        user.first_name = request.POST.get('first_name')
-        user.last_name = request.POST.get('last_name')
-        user.save()
-        user_profile.about_me = request.POST.get('about_me')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        
+        if first_name and last_name:
+            user.first_name = first_name
+            user.last_name = last_name
+            user.save()
+
+        about_me = request.POST.get('about_me')
+        
+        # Check if about_me is provided and not empty
+        if about_me is not None and about_me.strip():
+            user_profile.about_me = about_me
+
         uploaded_avatar = request.FILES.get('avatar')
+        
         if uploaded_avatar:
             user_profile.avatar = uploaded_avatar
 
@@ -197,6 +209,7 @@ def user_profile(request):
         return redirect('userprofile')
 
     return render(request, 'userprofile.html', {'user_profile': user_profile, 'user': user})
+
 
 
 def forgot_password(request):
