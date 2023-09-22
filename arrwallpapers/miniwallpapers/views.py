@@ -153,10 +153,23 @@ def approve_user(request, user_id):
     else:
         return redirect('login')
 
+
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.models import User  
+from .models import UserProfileDoc, WallpaperCollection
+import os
+
 def delete_user(request, user_id):
     user_profile = get_object_or_404(UserProfileDoc, user__id=user_id)
+    if user_profile.portfolio:
+        storage, path = user_profile.portfolio.storage, user_profile.portfolio.path
+        storage.delete(path)
+    WallpaperCollection.objects.filter(user=user_profile.user).delete()
     user_profile.user.delete()
-    return redirect('admin_dashboard')  
+
+    return redirect('admin_dashboard')
+
+
 
 
 def admin_dashboard(request):
