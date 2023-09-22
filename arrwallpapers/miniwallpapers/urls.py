@@ -40,7 +40,9 @@ urlpatterns=[
     path('premiumuserpage/', views.premiumuserpage, name='premiumuserpage'),
      path('paymentform/', views.paymentform, name='paymentform'),
      path('paymenthandler/', views.paymenthandler, name='paymenthandler'),
-    
+
+    path('successpage/', views.successpage, name='successpage'),
+    path('errorpage/', views.errorpage, name='errorpage'),
     ]
 
 if settings.DEBUG:

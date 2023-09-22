@@ -203,6 +203,12 @@ def forgot_password(request):
     return render(request, 'forgot_password.html')
 
 
+def successpage(request):
+    return render(request, 'PremiumUserPage/successpage.html')
+
+def errorpage(request):
+    return render(request, 'PremiumUserPage/errorpage.html')
+
 @login_required
 def premiumuserpage(request):
     user = request.user
@@ -261,11 +267,11 @@ def paymenthandler(request):
                 amount = 20000 
                 try:
                     razorpay_client.payment.capture(payment_id, amount)
-                    return render(request, 'paymentsuccess.html')
+                    return render(request, 'PremiumUserPage/successpage.html')
                 except:
-                    return render(request, 'paymentfail.html')
+                    return render(request, 'PremiumUserPage/errorpage.html')
             else:
-                return render(request, 'paymentfail.html')
+                return render(request, 'PremiumUserPage/errorpage.html')
         except:
             return HttpResponseBadRequest()
     else:
