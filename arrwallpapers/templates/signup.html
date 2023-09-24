@@ -8,6 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css'>
     <link rel="icon" type="image-asset/png" href="{% static '\image-asset\icon.png'%}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bxslider/dist/jquery.bxslider.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bxslider/dist/jquery.bxslider.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
         * {
@@ -194,17 +196,19 @@ img.google-img{
             }
         }
 
-.validation-message {
-    display: none;
-    color: red;
-    font-size: 8px;
-    margin-top: 0px;
-}
-.password-match-message {
-    color: red;
-    margin-top: 10px;
-}
-
+        .validation-message {
+            font-size: 14px;
+            color: red;
+            margin-top: 5px;
+            display: block;
+        }
+        
+        .password-match-message {
+            font-size: 14px;
+            color: green;
+            margin-top: 5px;
+            display: block;
+        }
 
     </style>
 </head>
@@ -213,38 +217,43 @@ img.google-img{
         <div class="form signup">
             <div class="form-content">
                 <header>Signup</header>
-                <form id="signup-form" method="POST" enctype="multipart/form-data">
+                <form id="signup-form" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
                     {% csrf_token %}
                     <div class="field input-field">
-                        <input type="text" name="username" id="username" placeholder="Username" class="input" required>
+                        <input type="text" name="username" id="username" placeholder="Username" class="input" required oninput="validateUsername()">
                         <span class="validation-message" id="username-validation"></span>
                     </div>
                     <div class="field input-field">
-                        <input type="email" name="email" id="email" placeholder="Email" class="input" required>
+                        <input type="email" name="email" id="email" placeholder="Email" class="input" required oninput="validateEmail()">
                         <span class="validation-message" id="email-validation"></span>
                     </div>
-                    <i class='bx bx-hide eye-icon'></i>
                     <div class="field input-field">
-                        <input type="password" name="password1" id="password1" placeholder="Create password" class="password" required>
+                        <input type="text" name="phoneno" id="phoneno" placeholder="Phone Number" class="input" required oninput="validatePhoneNo()">
+                        <span class="validation-message" id="phoneno-validation"></span>
+                    </div>
+                    <i class='bx bx-hide eye-icon' id="togglePassword" onclick="togglePasswordVisibility()"></i>
+                    <div class="field input-field">
+                        <input type="password" name="password1" id="password1" placeholder="Create password" class="password" required oninput="validatePassword()">
                         <span class="validation-message" id="password1-validation"></span>
                     </div>
-    
+            
                     <div class="field input-field">
-                        <input type="password" name="password2" id="password2" placeholder="Confirm password" class="password" required>
-    
+                        <input type="password" name="password2" id="password2" placeholder="Confirm password" class="password" required oninput="validatePasswordMatch()">
                         <span class="validation-message" id="password2-validation"></span>
-                        <span class="password-match-message" id="password-match-message"></span> 
+                        <span class="password-match-message" id="password-match-message"></span>
                     </div>
-                    
+            
                     <div class="field input-field">
                         <p class="verification-text">Upload your portfolio or CV for verification. (PDF only)</p>
                         <input type="file" name="portfolio" id="portfolio" accept=".pdf" placeholder="Upload PDF" class="file-input" required>
                         <span class="validation-message" id="portfolio-validation"></span>
                     </div>
+            
                     <div class="field button-field">
                         <button type="submit">Signup</button>
                     </div>
                 </form>
+                
     
                 <div class="form-link">
                     <span>Already have an account? <a href="{% url 'login'%}" class="link login-link">Login</a></span>
@@ -275,26 +284,6 @@ img.google-img{
     </section>
 
      <script src="{% static 'js\script.js'%}"></script>
-     <script>
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const confirmPasswordInput = document.getElementById("password2"); 
-            const passwordInput = document.querySelector(".password");
-            const passwordMatchMessage = document.getElementById("password-match-message"); 
-        
-            confirmPasswordInput.addEventListener("input", function () {
-                const passwordInputValue = passwordInput.value;
-                const confirmPasswordValue = confirmPasswordInput.value;
-        
-                if (passwordInputValue === confirmPasswordValue) {
-                    passwordMatchMessage.textContent = ""; // Clear the message
-                } else {
-                    passwordMatchMessage.textContent = "Passwords do not match.";
-                }
-            });
-        });
-        
-     </script>
 
      <script>
         document.getElementById('signup-form').addEventListener('submit', function (e) {
@@ -314,25 +303,5 @@ img.google-img{
         });
     </script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const passwordInput = document.getElementById("password1");
-            const passwordValidationMessage = document.getElementById("password1-validation");
-    
-            passwordInput.addEventListener("input", function () {
-                const password = passwordInput.value;
-    
-                // Define a regular expression pattern for a strong password
-                const strongPasswordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    
-                if (strongPasswordPattern.test(password)) {
-                    passwordValidationMessage.textContent = ""; // Clear the message
-                } else {
-                    passwordValidationMessage.textContent = "Password must be at least 8 characters long and include at least one lowercase letter, one uppercase letter, one digit, and one special character.";
-                }
-            });
-        });
-    </script>
-    
 </body>
 </html>

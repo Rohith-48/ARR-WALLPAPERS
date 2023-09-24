@@ -1,150 +1,128 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const forms = document.querySelectorAll(".forms");
-
-    forms.forEach(form => {
-        const pwShowHide = form.querySelectorAll(".eye-icon");
-        
-        pwShowHide.forEach(eyeIcon => {
-            eyeIcon.addEventListener("click", () => {
-                let pwFields = eyeIcon.parentElement.parentElement.querySelectorAll(".password");
-                
-                pwFields.forEach(password => {
-                    if(password.type === "password"){
-                        password.type = "text";
-                        eyeIcon.classList.replace("bx-hide", "bx-show");
-                    } else {
-                        password.type = "password";
-                        eyeIcon.classList.replace("bx-show", "bx-hide");
-                    }
-                });
-            });
-        });
-
-        const fields = form.querySelectorAll('.input-field input');
-        fields.forEach(field => {
-            field.addEventListener('input', () => {
-                const validationMessage = field.nextElementSibling;
-
-                if (field.value.trim() === '') {
-                    showErrorMessage(validationMessage, 'This field is required.');
-                } else {
-                    hideErrorMessage(validationMessage);
-                }
-
-                if (field.type === 'email' && !validateEmail(field.value.trim())) {
-                    showErrorMessage(validationMessage, 'Please enter a valid email address.');
-                }
-
-        
-                
-            });
-        });
-
-        // Password strength validation
-        const passwordInput = form.querySelector(".password");
-        const confirmPasswordInput = form.querySelector("#password2"); // Get the confirmation password input
-        const passwordStrengthMessage = form.querySelector("#password-strength-message");
-        const letter = form.querySelector("#letter");
-        const capital = form.querySelector("#capital");
-        const number = form.querySelector("#number");
-        const length = form.querySelector("#length");
-        const passwordMatchMessage = document.createElement("span"); // Create a new span element
-        passwordMatchMessage.classList.add("password-match-message"); // Add appropriate class
-        passwordMatchMessage.style.display = 'none'; // Initially hide the message
-        form.appendChild(passwordMatchMessage); // Append the message to the form
-
-        passwordInput.addEventListener("input", function () {
-            const password = passwordInput.value;
-
-            // Validate lowercase letters
-            letter.classList.toggle("valid", /[a-z]/.test(password));
-            letter.classList.toggle("invalid", !/[a-z]/.test(password));
-
-            // Validate capital letters
-            capital.classList.toggle("valid", /[A-Z]/.test(password));
-            capital.classList.toggle("invalid", !/[A-Z]/.test(password));
-
-            // Validate numbers
-            number.classList.toggle("valid", /[0-9]/.test(password));
-            number.classList.toggle("invalid", !/[0-9]/.test(password));
-
-            // Validate length
-            length.classList.toggle("valid", password.length >= 8);
-            length.classList.toggle("invalid", password.length < 8);
-
-            // Show password strength message
-            if (/[a-z]/.test(password) && /[A-Z]/.test(password) && /[0-9]/.test(password) && password.length >= 8) {
-                passwordStrengthMessage.textContent = "Strong password";
-                passwordStrengthMessage.style.color = "#2ecc71";
-            } else {
-                passwordStrengthMessage.textContent = "Password should contain lowercase and uppercase letters, numbers, and be at least 8 characters long.";
-                passwordStrengthMessage.style.color = "#e74c3c";
-            }
-        });
-
-    });
-    function showErrorMessage(element, message) {
-        element.textContent = message;
-        element.style.display = 'block';
+function validateUsername() {
+    const usernameInput = document.getElementById("username");
+    const usernameValidation = document.getElementById("username-validation");
+    // Check for white spaces
+    if (/\s/.test(usernameInput.value)) {
+        usernameValidation.innerHTML = "Username cannot contain spaces.";
+        usernameValidation.style.color = "red";
+    } else {
+        usernameValidation.innerHTML = "";
     }
-
-    function hideErrorMessage(element) {
-        element.textContent = '';
-        element.style.display = 'none';
+    // Check for special characters
+    const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+    if (specialCharacters.test(usernameInput.value)) {
+        usernameValidation.innerHTML = "Username cannot contain special characters.";
+        usernameValidation.style.color = "red";
     }
+}
 
-    function validateEmail(email) {
-        const emailPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-        return emailPattern.test(email);
+function validateEmail() {
+    const emailInput = document.getElementById("email");
+    const emailValidation = document.getElementById("email-validation");
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!emailPattern.test(emailInput.value)) {
+        emailValidation.innerHTML = "Invalid email address.";
+        emailValidation.style.color = "red";
+    } else {
+        emailValidation.innerHTML = "";
     }
+}
 
-    function validatePassword(password) {
-        const passwordPattern = /^(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
-        return passwordPattern.test(password);
+function validatePhoneNo() {
+    const phonenoInput = document.getElementById("phoneno");
+    const phonenoValidation = document.getElementById("phoneno-validation");
+    const phonenoPattern = /^\d{12}$/;
+    if (!phonenoPattern.test(phonenoInput.value)) {
+        phonenoValidation.innerHTML = "Invalid phone number (12 digits required).";
+        phonenoValidation.style.color = "red";
+    } else {
+        phonenoValidation.innerHTML = "";
     }
+}
 
-    function passwordValidate() {
-        const pass = document.getElementById("password").value;
-        const re = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
-        if (!re.test(pass)) {
-            document.getElementById("pass-error").textContent =
-                "Minimum eight characters, at least one letter, one number and one special character";
-        } else {
-            document.getElementById("pass-error").textContent = "";
-        }
+function validatePassword() {
+    const password1Input = document.getElementById("password1");
+    const password1Validation = document.getElementById("password1-validation");
+    const passwordPattern = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+    if (!passwordPattern.test(password1Input.value)) {
+        password1Validation.innerHTML = "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.";
+        password1Validation.style.color = "red";
+    } else {
+        password1Validation.innerHTML = "";
     }
-})
+}
 
-// const password1Input = document.getElementById('password1');
-//         const password2Input = document.getElementById('password2');
-//         const password1Validation = document.getElementById('password1-validation');
-//         const password2Validation = document.getElementById('password2-validation');
-     
-//         function validatePassword() {
-//             const password1 = password1Input.value;
-//             const password2 = password2Input.value;
-        
-//             password1Validation.textContent = '';
-//             password2Validation.textContent = '';
-//             if (password1.length < 8) {
-//                 password1Validation.textContent = 'Password must be at least 8 characters long';
-//                 return false;
-//             }
-//             if (!/[A-Z]/.test(password1)) {
-//                 password1Validation.textContent = 'Password must contain at least one uppercase letter';
-//                 return false;
-//             }
-//             if (!/[a-z]/.test(password1)) {
-//                 password1Validation.textContent = 'Password must contain at least one lowercase letter';
-//                 return false;
-//             }
-//             if (!/\d/.test(password1)) {
-//                 password1Validation.textContent = 'Password must contain at least one digit';
-//                 return false;
-//             }
-        
-//             return true;
-//         }
-//         password1Input.addEventListener('input', validatePassword);
-//         password2Input.addEventListener('input', validatePassword);
-        
+function togglePasswordVisibility() {
+    const password1Input = document.getElementById("password1");
+    const password2Input = document.getElementById("password2");
+    const togglePassword = document.getElementById("togglePassword");
+    if (password1Input.type === "password") {
+        password1Input.type = "text";
+        password2Input.type = "text"; // Toggle visibility for the 2nd password field
+        togglePassword.classList.remove("bx-hide");
+        togglePassword.classList.add("bx-show");
+    } else {
+        password1Input.type = "password";
+        password2Input.type = "password"; // Toggle visibility for the 2nd password field
+        togglePassword.classList.remove("bx-show");
+        togglePassword.classList.add("bx-hide");
+    }
+}
+
+function validatePasswordMatch() {
+    const password1Input = document.getElementById("password1");
+    const password2Input = document.getElementById("password2");
+    const password2Validation = document.getElementById("password2-validation");
+    const passwordMatchMessage = document.getElementById("password-match-message");
+    if (password1Input.value !== password2Input.value) {
+        password2Validation.innerHTML = "Passwords do not match.";
+        password2Validation.style.color = "red";
+        passwordMatchMessage.innerHTML = "";
+    } else {
+        password2Validation.innerHTML = "";
+        passwordMatchMessage.innerHTML = "Passwords match.";
+        passwordMatchMessage.style.color = "green";
+    }
+}
+
+function validateFile() {
+    const portfolioInput = document.getElementById("portfolio");
+    const portfolioValidation = document.getElementById("portfolio-validation");
+    const allowedExtensions = /(\.pdf)$/i;
+    if (!allowedExtensions.exec(portfolioInput.value)) {
+        portfolioValidation.innerHTML = "Only PDF files are allowed.";
+        portfolioValidation.style.color = "red";
+    } else {
+        portfolioValidation.innerHTML = "";
+    }
+}
+
+function validateForm() {
+    // Check all validations and return true if the form is valid, otherwise return false
+    const usernameInput = document.getElementById("username");
+    const emailInput = document.getElementById("email");
+    const phonenoInput = document.getElementById("phoneno");
+    const password1Input = document.getElementById("password1");
+    const password2Input = document.getElementById("password2");
+    const portfolioInput = document.getElementById("portfolio");
+
+    validateUsername();
+    validateEmail();
+    validatePhoneNo();
+    validatePassword();
+    validatePasswordMatch();
+    validateFile();
+
+    if (
+        usernameInput.innerHTML === "" &&
+        emailInput.innerHTML === "" &&
+        phonenoInput.innerHTML === "" &&
+        password1Input.innerHTML === "" &&
+        password2Input.innerHTML === "" &&
+        portfolioInput.innerHTML === ""
+    ) {
+        return true; // Form is valid
+    } else {
+        return false; // Form is invalid
+    }
+}
