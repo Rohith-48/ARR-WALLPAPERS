@@ -8,7 +8,7 @@
     <link rel="stylesheet" href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css'>
     <link rel="icon" type="image-asset/png" href="{% static '\image-asset\icon.png'%}">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+           @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
         * {
             margin: 0;
             padding: 0;
@@ -34,7 +34,6 @@
             border-radius: 6px;
             background: #FFF;
         }
-
         header {
             font-size: 28px;
             font-weight: 600;
@@ -62,6 +61,7 @@
             font-size: 16px;
             font-weight: 400;
             border-radius: 6px;
+                margin-top: 0px;
         }
 
         .field input {
@@ -76,8 +76,8 @@
 
         .eye-icon {
             position: absolute;
-            top: 50%;
-            right: 10px;
+            top: 35%;
+            right: 0px;
             transform: translateY(-50%);
             font-size: 18px;
             color: #8b8b8b;
@@ -90,6 +90,7 @@
             background-color: #0171d3;
             transition: all 0.3s ease;
             cursor: pointer;
+            margin-top: 8px;
         }
 
         .field button:hover {
@@ -142,6 +143,7 @@
             color: #fff;
             background-color: #4267b2;
         }
+        
 
         a.facebook .facebook-icon{
     height: 28px;
@@ -180,48 +182,73 @@ img.google-img{
             opacity: 0.6;
             color: #232836;
         }
+        .validation-message {
+            color: red;
+        }
+        .flex-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .flex-column {
+            flex: 1;
+            margin-right: 20px; /* Adjust the spacing between columns */
+        }
 
         @media screen and (max-width: 400px) {
             .form {
                 padding: 20px 10px;
             }
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Poppins', sans-serif;
+                margin-bottom: 34px;
+            }
         }
 
-.validation-message {
-    display: none;
-    color: red;
-    font-size: 14px;
-    margin-top: 5px;
-}
-
+        .validation-message {
+            font-size: 14px;
+            color: red;
+            margin-top: 5px;
+            display: block;
+        }
+        
+        .password-match-message {
+            font-size: 14px;
+            color: green;
+            margin-top: 5px;
+            display: block;
+        }
+     
 
     </style>
 </head>
 <body>
-    {% block content %}
     <section class="container forms">
         <div class="form signup">
             <div class="form-content">
                 <header>Premium User Signup</header>
-                <form id="signup-form" method="POST" action="{% url 'Premium_signup' %}">
+                <form id="signup-form" method="POST" action="{% url 'Premium_signup' %}" onsubmit="return validateForm()">
                     {% csrf_token %}
                     <div class="field input-field">
-                        <input type="text" name="username" id="username" placeholder="Username" class="input" required>
+                        <input type="text" name="username" id="username" placeholder="Username" class="input" required oninput="validateUsername()">
                         <span class="validation-message" id="username-validation"></span>
                     </div>
                     <div class="field input-field">
-                        <input type="email" name="email" id="email" placeholder="Email" class="input" required>
+                        <input type="email" name="email" id="email" placeholder="Email" class="input" required oninput="validateEmail()">
                         <span class="validation-message" id="email-validation"></span>
                     </div>
     
                     <div class="field input-field">
-                        <input type="password" name="password1" id="password1" placeholder="Create password" class="password" required>
+                        <input type="password" name="password1" id="password1" placeholder="Create password" class="password" required oninput="validatePassword()">
                         <span class="validation-message" id="password1-validation"></span>
                     </div>
     
                     <div class="field input-field">
-                        <input type="password" name="password2" id="password2" placeholder="Confirm password" class="password" required>
-                        <i class='bx bx-hide eye-icon'></i>
+                        <input type="password" name="password2" id="password2" placeholder="Confirm password" class="password" required oninput="validatePasswordMatch()">
+                        <i class='bx bx-hide eye-icon'id="togglePassword" onclick="togglePasswordVisibility()"></i>
                         <span class="validation-message" id="password2-validation"></span>
                     </div>
                     <div class="field button-field">
@@ -251,8 +278,121 @@ img.google-img{
             </div>
         </div>
     </section>
+    <script>
+        // Function to validate the username
+        function validateUsername() {
+            const usernameInput = document.getElementById("username");
+            const usernameValidation = document.getElementById("username-validation");
     
-    {% endblock %}
-     <script src="{% static 'js\script.js'%}"></script>
+            // Check for white spaces
+            if (/\s/.test(usernameInput.value)) {
+                usernameValidation.innerHTML = "Username cannot contain spaces.";
+                usernameValidation.style.color = "red"; // Display in red color
+            } else {
+                usernameValidation.innerHTML = "";
+            }
+    
+            // Check for special characters
+            const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+            if (specialCharacters.test(usernameInput.value)) {
+                usernameValidation.innerHTML = "Username cannot contain special characters.";
+                usernameValidation.style.color = "red"; // Display in red color
+            }
+        }
+    
+        // Function to validate the email
+        function validateEmail() {
+            const emailInput = document.getElementById("email");
+            const emailValidation = document.getElementById("email-validation");
+            const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    
+            if (!emailPattern.test(emailInput.value)) {
+                emailValidation.innerHTML = "Invalid email address.";
+                emailValidation.style.color = "red"; // Display in red color
+            } else {
+                emailValidation.innerHTML = "";
+            }
+        }
+    
+        // Function to validate the password
+        function validatePassword() {
+            const password1Input = document.getElementById("password1");
+            const password1Validation = document.getElementById("password1-validation");
+            const passwordPattern = /^(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+    
+            if (!passwordPattern.test(password1Input.value)) {
+                password1Validation.innerHTML = "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.";
+                password1Validation.style.color = "red"; // Display in red color
+            } else {
+                password1Validation.innerHTML = "";
+            }
+        }
+    
+        // Function to validate password match
+        function validatePasswordMatch() {
+            const password1Input = document.getElementById("password1");
+            const password2Input = document.getElementById("password2");
+            const password2Validation = document.getElementById("password2-validation");
+    
+            if (password1Input.value !== password2Input.value) {
+                password2Validation.innerHTML = "Passwords do not match.";
+                password2Validation.style.color = "red"; // Display in red color
+            } else {
+                password2Validation.innerHTML = "";
+            }
+        }
+        function togglePasswordVisibility() {
+            const password1Input = document.getElementById("password1");
+            const password2Input = document.getElementById("password2");
+            const togglePassword = document.getElementById("togglePassword");
+            
+            if (password1Input.type === "password") {
+                password1Input.type = "text";
+                password2Input.type = "text";
+                togglePassword.classList.remove("bx-hide");
+                togglePassword.classList.add("bx-show");
+            } else {
+                password1Input.type = "password";
+                password2Input.type = "password"; 
+                togglePassword.classList.remove("bx-show");
+                togglePassword.classList.add("bx-hide");
+            }
+        }
+        // Form validation function
+        function validateForm() {
+            const usernameInput = document.getElementById("username");
+            const emailInput = document.getElementById("email");
+            const password1Input = document.getElementById("password1");
+            const password2Input = document.getElementById("password2");
+    
+            // Check all validations and return true if the form is valid, otherwise return false
+            const isUsernameValid = !/\s/.test(usernameInput.value) && !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(usernameInput.value);
+            const isEmailValid = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(emailInput.value);
+            const isPasswordValid = /^(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+)(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(password1Input.value);
+            const isPasswordMatch = password2Input.value === password1Input.value;
+    
+            if (isUsernameValid && isEmailValid && isPasswordValid && isPasswordMatch) {
+                return true;
+            } else {
+                alert("Registration failed. Please check the form for errors.");
+                return false;
+            }
+        }
+    
+        const form = document.getElementById("signup-form");
+        form.addEventListener("submit", function (event) {
+            if (!validateForm()) {
+                event.preventDefault();
+            }
+        });
+    
+        // Add event listeners for live validation
+        document.getElementById("username").addEventListener("input", validateUsername);
+        document.getElementById("email").addEventListener("input", validateEmail);
+        document.getElementById("password1").addEventListener("input", validatePassword);
+        document.getElementById("password2").addEventListener("input", validatePasswordMatch);
+    </script>
+    
+    
 </body>
 </html>

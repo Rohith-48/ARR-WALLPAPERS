@@ -96,7 +96,7 @@ def Premium_signup(request):
 
 def index(request):
     query = request.GET.get('q')
-    wallpapers = WallpaperCollection.objects.select_related('user').prefetch_related('tags').order_by('id')
+    wallpapers = WallpaperCollection.objects.select_related('user').prefetch_related('tags').order_by('-upload_date') 
     if query:
         wallpapers = wallpapers.filter(title__icontains=query)
     return render(request, 'index.html', {'wallpapers': wallpapers, 'query': query})
@@ -538,5 +538,6 @@ def liked_wallpapers(request):
             })
         except ObjectDoesNotExist:
             pass
-    context = {"one": liked_wallpapers}
-    return render(request, 'liked_wallpapers.html',{'wallpapers':liked_wallpapers_data} )
+    
+    context = {"wallpapers": liked_wallpapers_data}
+    return render(request, 'liked_wallpapers.html', context)

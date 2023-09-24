@@ -6,42 +6,77 @@
         text-align: center;
         max-width: 1200px;
         margin: 0 auto;
+        background-color: black;
     }
-    #liked-wallpapers-section {
-        display: flex;
-        flex-wrap: wrap; 
+
+    /* Add Masonry CSS */
+    #liked-wallpapers-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 10px;
     }
+
     .liked-wallpaper {
-        width: calc(25% - 10px); 
+        position: relative;
+        overflow: hidden;
         margin-bottom: 10px;
-        padding: 10px;
-        box-sizing: border-box;
-        text-align: center;
+        border-radius: 5px;
+        width: 100%; 
+        height: auto;
     }
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(158, 155, 155, 0.067);
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .liked-wallpaper:hover .overlay {
+        opacity: 1;
+    }
+
     .title {
         color: white;
         font-size: 14px;
+        text-align: left;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        padding: 5px;
     }
+
     .wallpaper-image {
         max-width: 100%;
         height: auto;
     }
 </style>
+
 <div class="container">
     <h1 style="color: white;">Liked Wallpapers</h1>
-    <section id="liked-wallpapers-section">
+    <div id="liked-wallpapers-container">
         {% for wallpaper in wallpapers %}
         <div class="liked-wallpaper">
-            <h2 class="title">{{ wallpaper.title }}</h2>
+            <div class="overlay">
+                <h2 class="title">{{ wallpaper.title }}</h2>
+            </div>
             <img src="{{ wallpaper.image_url }}" alt="{{ wallpaper.title }}" class="wallpaper-image">
         </div>
         {% if forloop.counter|divisibleby:4 and not forloop.last %}
         <div style="width: 100%; clear: both;"></div>
         {% endif %}
         {% endfor %}
-    </section>
+    </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
 <script>
     function getCookie(name) {
         var value = "; " + document.cookie;
