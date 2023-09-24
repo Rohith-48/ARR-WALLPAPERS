@@ -9,6 +9,9 @@
     <link rel="stylesheet" href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css'>
     <link rel="icon" type="image-asset/png" href="{% static '\image-asset\icon.png'%}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bxslider/dist/jquery.bxslider.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/css/intlTelInput.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/intlTelInput.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/bxslider/dist/jquery.bxslider.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
@@ -31,7 +34,7 @@
 
         .form {
             position: absolute;
-            max-width: 450px;
+            max-width: 800px;
             width: 100%;
             padding: 30px;
             border-radius: 6px;
@@ -189,10 +192,26 @@ img.google-img{
         .validation-message {
             color: red;
         }
+        .flex-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .flex-column {
+            flex: 1;
+            margin-right: 20px; /* Adjust the spacing between columns */
+        }
 
         @media screen and (max-width: 400px) {
             .form {
                 padding: 20px 10px;
+            }
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Poppins', sans-serif;
+                margin-bottom: 34px;
             }
         }
 
@@ -209,7 +228,7 @@ img.google-img{
             margin-top: 5px;
             display: block;
         }
-
+     
     </style>
 </head>
 <body>
@@ -219,36 +238,40 @@ img.google-img{
                 <header>Signup</header>
                 <form id="signup-form" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
                     {% csrf_token %}
-                    <div class="field input-field">
-                        <input type="text" name="username" id="username" placeholder="Username" class="input" required oninput="validateUsername()">
-                        <span class="validation-message" id="username-validation"></span>
+                    <div class="flex-container">
+                        <div class="flex-column">
+                            <div class="field input-field">
+                                <input type="text" name="username" id="username" placeholder="Username" class="input" required oninput="validateUsername()">
+                                <span class="validation-message" id="username-validation"></span>
+                            </div>
+                            <div class="field input-field">
+                                <input type="email" name="email" id="email" placeholder="Email" class="input" required oninput="validateEmail()">
+                                <span class="validation-message" id="email-validation"></span>
+                            </div>
+                            <div class="field input-field">
+                                <input type="tel" name="phoneno" id="phoneno" style="height: 50px; width: 350px;" placeholder="Phone Number" class="input" required oninput="validatePhoneNo()">
+                                <span class="validation-message" id="phoneno-validation"></span>
+                            </div>
+                            
+                        </div>
+                        <div class="flex-column">
+                            <i class='bx bx-hide eye-icon' id="togglePassword" onclick="togglePasswordVisibility()"></i>
+                            <div class="field input-field">
+                                <input type="password" name="password1" id="password1" placeholder="Create password" class="password" required oninput="validatePassword()">
+                                <span class="validation-message" id="password1-validation"></span>
+                            </div>
+                            <div class="field input-field">
+                                <input type="password" name="password2" id="password2" placeholder="Confirm password" class="password" required oninput="validatePasswordMatch()">
+                                <span class="validation-message" id="password2-validation"></span>
+                                <span class="password-match-message" id="password-match-message"></span>
+                            </div>
+                            <div class="field input-field">
+                                <p class="verification-text">Upload your CV for verification. (PDF only)</p>
+                                <input type="file" name="portfolio" id="portfolio" accept=".pdf" placeholder="Upload PDF" class="file-input" required oninput="validateFile()">
+                                <span class="validation-message" id="portfolio-validation"></span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="field input-field">
-                        <input type="email" name="email" id="email" placeholder="Email" class="input" required oninput="validateEmail()">
-                        <span class="validation-message" id="email-validation"></span>
-                    </div>
-                    <div class="field input-field">
-                        <input type="text" name="phoneno" id="phoneno" placeholder="Phone Number" class="input" required oninput="validatePhoneNo()">
-                        <span class="validation-message" id="phoneno-validation"></span>
-                    </div>
-                    <i class='bx bx-hide eye-icon' id="togglePassword" onclick="togglePasswordVisibility()"></i>
-                    <div class="field input-field">
-                        <input type="password" name="password1" id="password1" placeholder="Create password" class="password" required oninput="validatePassword()">
-                        <span class="validation-message" id="password1-validation"></span>
-                    </div>
-            
-                    <div class="field input-field">
-                        <input type="password" name="password2" id="password2" placeholder="Confirm password" class="password" required oninput="validatePasswordMatch()">
-                        <span class="validation-message" id="password2-validation"></span>
-                        <span class="password-match-message" id="password-match-message"></span>
-                    </div>
-            
-                    <div class="field input-field">
-                        <p class="verification-text">Upload your portfolio or CV for verification. (PDF only)</p>
-                        <input type="file" name="portfolio" id="portfolio" accept=".pdf" placeholder="Upload PDF" class="file-input" required>
-                        <span class="validation-message" id="portfolio-validation"></span>
-                    </div>
-            
                     <div class="field button-field">
                         <button type="submit">Signup</button>
                     </div>
@@ -302,6 +325,23 @@ img.google-img{
             }
         });
     </script>
-
+    <script>
+        const phoneInput = document.querySelector("#phoneno");
+        const iti = window.intlTelInput(phoneInput, {
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+            preferredCountries: ["IN", "US", "CA"], // Set your preferred countries
+            separateDialCode: true,
+        });
+        phoneInput.addEventListener("countrychange", function () {
+            const selectedCountry = iti.getSelectedCountryData();
+            const countryCode = selectedCountry.dialCode;
+            const phoneNumber = phoneInput.value;
+            const countryCodeDisplay = document.getElementById("country-code-display");
+            countryCodeDisplay.textContent = `+${countryCode} ${phoneNumber}`;
+        });
+    </script>
+    
+    
+    
 </body>
 </html>

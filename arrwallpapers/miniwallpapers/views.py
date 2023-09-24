@@ -19,13 +19,14 @@ def signup(request):
         email = request.POST['email']
         password1 = request.POST['password1']
         password2 = request.POST['password2']
+        phoneno = request.POST['phoneno'] 
         uploaded_files = request.FILES.getlist('portfolio')
 
         try:
             if password1 != password2:
                 raise ValidationError('Passwords do not match')
 
-            validate_email(email) 
+            validate_email(email)
 
             if User.objects.filter(username=username).exists():
                 raise ValidationError('Username Taken')
@@ -34,7 +35,7 @@ def signup(request):
                 raise ValidationError('Email already exists')
 
             user = User.objects.create_user(username=username, password=password1, email=email)
-            user_profile = UserProfileDoc(user=user, is_approved=False, is_creator=True) 
+            user_profile = UserProfileDoc(user=user, is_approved=False, is_creator=True, phoneno=phoneno)
             user_profile.save()
 
             for uploaded_file in uploaded_files:
@@ -46,13 +47,14 @@ def signup(request):
 
             messages.success(request, 'Your Account has been Created as a Creator')
             return redirect('login')
-        
+
         except ValidationError as e:
             messages.error(request, str(e))
             messages.error(request, 'Cannot Register')
             return redirect('signup')
 
     return render(request, "signup.html")
+
 
 
 from django.shortcuts import render, redirect

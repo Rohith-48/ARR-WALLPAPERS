@@ -762,6 +762,7 @@ body.dark-mode .user-table tbody tr:hover {
                 <tr>
                     <th>Username</th>
                     <th>Email</th>
+                    <th>Phone Number</th>
                     <th>Portfolio</th>
                     <th>Approval</th>
                     <th>Delete User</th>
@@ -769,10 +770,11 @@ body.dark-mode .user-table tbody tr:hover {
             </thead>
             <tbody>
                 {% for user_profile in user_profiles %}
-                    {% if not user_profile.is_premium %} {# Filter out premium users #}
+                    {% if not user_profile.is_premium %}
                         <tr>
                             <td>{{ user_profile.user.username }}</td>
                             <td>{{ user_profile.user.email }}</td>
+                            <td>{{ user_profile.phoneno }}</td> 
                             <td>
                                 {% if user_profile.portfolio %}
                                     <a href="{{ user_profile.portfolio.url }}" target="_blank">View Portfolio</a>
@@ -801,6 +803,7 @@ body.dark-mode .user-table tbody tr:hover {
                 {% endfor %}
             </tbody>
         </table>
+        
         
 <br><br>
         <h2>Manage Subscribers</h2>
