@@ -1,4 +1,5 @@
 {% load static %}
+{% load socialaccount %}
 
 <!DOCTYPE html>
 <html lang="en" class="no-js">
@@ -247,7 +248,7 @@ a.google span{
             </div>
     
             <div class="media-options">
-                <a href="#" class="field google">
+                <a href="{% provider_login_url 'google' %}?next=/" class="field google">
                     <img src="{% static 'image-asset\google.png'%}" alt="" class="google-img">
                     <span>Login with Google</span>
                 </a>

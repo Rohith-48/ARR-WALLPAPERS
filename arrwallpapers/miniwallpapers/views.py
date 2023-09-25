@@ -55,13 +55,12 @@ def signup(request):
 
     return render(request, "signup.html")
 
-
-
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from .models import UserProfileDoc
+from allauth.socialaccount.models import SocialAccount  # Import SocialAccount model
 
 def Premium_signup(request):
     if request.method == "POST":
@@ -80,7 +79,11 @@ def Premium_signup(request):
                 raise ValidationError('Email already exists')
 
             user = User.objects.create_user(username=username, password=password1, email=email)
-            user_profile = UserProfileDoc(user=user, is_approved=True, is_premium=True) 
+            user_profile = UserProfileDoc(user=user, is_approved=True)
+
+            if SocialAccount.objects.filter(user=user, provider='google').exists():
+                user_profile.is_premium = True
+
             user_profile.save()
 
             messages.success(request, 'Your Premium Account has been Created')
@@ -92,6 +95,8 @@ def Premium_signup(request):
             return redirect('PremiumUserPage/Premium_signup')
 
     return render(request, "PremiumUserPage/Premium_signup.html")
+
+
 
 
 def index(request):
