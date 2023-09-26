@@ -79,15 +79,22 @@ def Premium_signup(request):
                 raise ValidationError('Email already exists')
 
             user = User.objects.create_user(username=username, password=password1, email=email)
-            user_profile = UserProfileDoc(user=user, is_approved=True)
+            user_profile = UserProfileDoc(user=user, is_approved=True, is_premium=True)
 
+            # Check if a Google SocialAccount exists for the user
             if SocialAccount.objects.filter(user=user, provider='google').exists():
-                user_profile.is_premium = True
+                # Get the user's Google SocialAccount
+                google_account = SocialAccount.objects.get(user=user, provider='google')
+    
+                # Set the is_premium attribute in the extra_data dictionary
+                google_account.extra_data['is_premium'] = True
+                google_account.save()
 
             user_profile.save()
-
+            request.session['is_premium'] = True
             messages.success(request, 'Your Premium Account has been Created')
             return redirect('login')
+        
 
         except ValidationError as e:
             messages.error(request, str(e))
@@ -312,9 +319,9 @@ def paymenthandler(request):
             else:
                 return render(request, 'PremiumUserPage/errorpage.html')
         except:
-            return HttpResponseBadRequest()
+            return render(request, 'PremiumUserPage/errorpage.html')  # You can customize this error page
     else:
-        return HttpResponseBadRequest()
+        return render(request, 'PremiumUserPage/errorpage.html')
 
 
 
