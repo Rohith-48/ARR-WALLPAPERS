@@ -80,13 +80,8 @@ def Premium_signup(request):
 
             user = User.objects.create_user(username=username, password=password1, email=email)
             user_profile = UserProfileDoc(user=user, is_approved=True, is_premium=True)
-
-            # Check if a Google SocialAccount exists for the user
             if SocialAccount.objects.filter(user=user, provider='google').exists():
-                # Get the user's Google SocialAccount
                 google_account = SocialAccount.objects.get(user=user, provider='google')
-    
-                # Set the is_premium attribute in the extra_data dictionary
                 google_account.extra_data['is_premium'] = True
                 google_account.save()
 
@@ -94,37 +89,11 @@ def Premium_signup(request):
             request.session['is_premium'] = True
             messages.success(request, 'Your Premium Account has been Created')
             return redirect('login')
-        
-
         except ValidationError as e:
             messages.error(request, str(e))
             messages.error(request, 'Cannot Register')
             return redirect('PremiumUserPage/Premium_signup')
-
     return render(request, "PremiumUserPage/Premium_signup.html")
-
-
-
-
-def index(request):
-    query = request.GET.get('q')
-    wallpapers = WallpaperCollection.objects.select_related('user').prefetch_related('tags').order_by('-upload_date') 
-    if query:
-        wallpapers = wallpapers.filter(title__icontains=query)
-    return render(request, 'index.html', {'wallpapers': wallpapers, 'query': query})
-
-
-
-def subscribe_page(request):
-    return render(request, 'subscribe_page.html')
-
-
-def wallpaper_details(request, wallpaper_id):
-    wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
-    wallpaper.view_count += 1
-    wallpaper.save()
-    return render(request, 'wallpaper_details.html', {'wallpaper': wallpaper})
-
 
 
 from django.shortcuts import render, redirect
@@ -155,6 +124,26 @@ def login(request):
     else:
         return render(request, "login.html")
 
+
+
+def index(request):
+    query = request.GET.get('q')
+    wallpapers = WallpaperCollection.objects.select_related('user').prefetch_related('tags').order_by('-upload_date') 
+    if query:
+        wallpapers = wallpapers.filter(title__icontains=query)
+    return render(request, 'index.html', {'wallpapers': wallpapers, 'query': query})
+
+
+
+def subscribe_page(request):
+    return render(request, 'subscribe_page.html')
+
+
+def wallpaper_details(request, wallpaper_id):
+    wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
+    wallpaper.view_count += 1
+    wallpaper.save()
+    return render(request, 'wallpaper_details.html', {'wallpaper': wallpaper})
     
     
 
@@ -258,16 +247,26 @@ def successpage(request):
 def errorpage(request):
     return render(request, 'PremiumUserPage/errorpage.html')
 
+
+
 @login_required
 def premiumuserpage(request):
     user = request.user
     if request.method == 'POST':
         user.first_name = request.POST.get('first_name', '')
         user.last_name = request.POST.get('last_name', '')
+        avatar = request.FILES.get('avatar')
+        if avatar:
+            user.userprofiledoc.avatar = avatar
+            user.userprofiledoc.save()
+
         user.save()
         messages.success(request, 'Profile updated successfully.')
+
         return redirect('premiumuserpage')
+
     return render(request, 'PremiumUserPage/premiumuserpage.html', {'user': user})
+
 
 
 from django.conf import settings
@@ -323,7 +322,7 @@ def paymenthandler(request):
                 message = 'Dear {},\n\nYou have successfully subscribed to our site.'.format(authenticated_user.username)
                 from_email = settings.DEFAULT_FROM_EMAIL
                 recipient_list = [authenticated_user.email]
-                
+            
                 send_mail(subject, message, from_email, recipient_list, fail_silently=False)
                 
                 return render(request, 'PremiumUserPage/successpage.html')

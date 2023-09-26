@@ -11,7 +11,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <title>Document</title>
+    <title>Subscriber Profile</title>
     <style>
 body,html{
     height:100%;
@@ -217,7 +217,7 @@ form .btn{
             
                 <a href="#" class="nav-link active mt-auto"><i class="far fa-user-circle"></i> Profile</a>
                 <a href="#" class="nav-link"><i class="far fa-bell"></i> Notifications</a>
-                <a href="#" class="nav-link"><i class="far fa-file-alt"></i> Billing Info</a>
+                <a href="#" id="billingInfoLink" class="nav-link"><i class="far fa-file-alt"></i> Billing Info</a>
                 <a href="#" class="nav-link mb-auto"><i class="fas fa-cogs"></i> General</a>
             
             </div>
@@ -234,8 +234,20 @@ form .btn{
             
                 <div class="col-md-3">
                 
-                    <div href=# class="d-inline"><img src="https://image.flaticon.com/icons/svg/236/236831.svg" width=130px style="margin:0;"><br><p class="pl-2 mt-2"><a href="#" class="btn" style="color:#8f9096;font-weight:600">Edit Picture</a></p></div>
-                    
+                    <div class="col-md-3">
+                        <div class="d-inline">
+                            <img src="{% if user.userprofiledoc.avatar %}{{ user.userprofiledoc.avatar.url }}{% else %}{% static 'image-asset/dp.jpg' %}{% endif %}" width="130px" style="margin:0; border-radius: 50%" id="avatar-preview">
+                            <br>
+                            <input type="file" id="avatar-input" style="display:none;">
+                            <form id="avatar-form" method="post" enctype="multipart/form-data" action="{% url 'premiumuserpage' %}">
+                                {% csrf_token %}
+                                <input type="file" name="avatar" id="avatar-file" style="display:none;">
+                                <button type="submit" id="save-avatar" class="btn" style="color:#8f9096;font-weight:600; display:none;">Save</button>
+                            </form>
+                            <p class="pl-2 mt-2"><a href="#" id="edit-avatar" class="btn" style="color:#8f9096;font-weight:600">Edit Picture</a></p>
+                        </div>
+                    </div>
+                                    
                     
                 </div>
                 
@@ -266,16 +278,20 @@ form .btn{
                                     <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
                                 </div>
                                 <div class="col">
-                                    <a href="" class="btn btn-default btn-block">Cancel</a>
+                                    <a href="{% url 'index' %}" class="btn btn-default btn-block">Cancel</a>
                                 </div>
                             </div>
                         </form>
                     
                     </div>
 
-                    <div id="billingInfoForm" style="display: none;">
-                        <!-- Your Billing Info form content here -->
+                    <div id="billingInfoForm">
+                        <div class="form-group">
+                            <label for="subscription_status">Subscription Status</label>
+                            <input type="text" class="form-control" id="subscription_status" value="{% if user.userprofiledoc.subscribed %}Subscribed{% else %}Not Subscribed{% endif %}" readonly>
+                        </div>
                     </div>
+                    
                     
                 
                 </div>
@@ -290,16 +306,62 @@ form .btn{
     
 </div>
     
-
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
     
+
+
+    <script>
+        $(document).ready(function(){
+            var avatarInput = $('#avatar-input');
+            var avatarPreview = $('#avatar-preview');
+            var editAvatarLink = $('#edit-avatar');
+            var saveAvatarButton = $('#save-avatar');
+            var avatarForm = $('#avatar-form');
+            var avatarFileInput = $('#avatar-file');
+            editAvatarLink.on('click', function(e) {
+                e.preventDefault();
+                avatarInput.click();
+            });
+            avatarInput.on('change', function() {
+                var file = this.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        avatarPreview.attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                    saveAvatarButton.show();
+                }
+            });
+            avatarForm.on('submit', function(e) {
+                e.preventDefault();
+                var file = avatarFileInput[0].files[0];
     
+                if (file) {
+                    var formData = new FormData();
+                    formData.append('avatar', file);
+                    $.ajax({
+                        url: '{% url "premiumuserpage" %}',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            console.log(response);
+                            saveAvatarButton.hide();
+                        },
+                        error: function(error) {
+                            console.error(error);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
 <script>
     $(document).ready(function(){
     
@@ -314,22 +376,36 @@ form .btn{
         
     })
 </script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
 <script>
     $(document).ready(function(){
-        // Select the link and billing info form by their IDs
+        $('.menu').on('click', function() {
+            $('.bar').toggleClass('animate');
+            $('.expand-menu').toggleClass('animate');
+            $('.expand-menu .nav-link').toggleClass('animate');
+            setTimeout(function(){
+                $('.expand-menu .nav-link').toggleClass('animate-show');
+            }, 500);
+        });
+
+        // Add this part for the billing info
         var billingInfoLink = $('#billingInfoLink');
         var billingInfoForm = $('#billingInfoForm');
-    
-        // Add a click event handler to the "Billing Info" link
+        var otherForms = $('.other-forms'); // Add a class to other forms you want to hide
+
         billingInfoLink.on('click', function(e) {
-            e.preventDefault(); // Prevent the default link behavior
-    
+            e.preventDefault();
+            
+            // Hide other forms
+            otherForms.slideUp();
+
             // Toggle the visibility of the billing info form
             billingInfoForm.slideToggle();
         });
     });
-    
 </script>
+
     
 </body>
 </html>

@@ -303,14 +303,37 @@
 						</li>
 					</ul>
 					<ul class="nav navbar-nav flex-child-menu menu-right">
-						{% if user.is_authenticated %}
-							<li><a href="{% url 'logout'%}">LOG OUT ({{ user.username }})</a></li>
-						{% else %}
-							<li><a href="{% url 'login'%}">LOG IN</a></li>
-							<li class="btn premium mobile-margin"><a href="{% url 'Premium_signup'%}">Subscribe</a></li>
-							<li class="btn signup"><a href="{% url 'signup'%}">SIGN UP</a></li>
-						{% endif %}
+						<ul class="nav navbar-nav flex-child-menu menu-right">
+							{% if user.is_authenticated %}
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+										<img src="{% if user.userprofiledoc.avatar %}{{ user.userprofiledoc.avatar.url }}{% else %}{% static 'image-asset/dp.jpg' %}{% endif %}" width="50" height="50" style="border-radius: 50%;">
+										<span class="caret"></span>
+									</a>
+									<ul class="dropdown-menu level1">
+										{% if user.userprofiledoc.is_creator %}
+											<li><a href="{% url 'userprofile'%}">Dashboard</a></li>
+										{% endif %}
+										{% if user.is_superuser %}
+											<li><a href="{% url 'admin_dashboard'%}">Dashboard</a></li>
+										{% endif %}
+										{% if user.userprofiledoc.is_premium %}
+											<li><a href="{% url 'premiumuserpage'%}">Dashboard</a></li>
+										{% endif %}
+										<li><a href="{% url 'logout'%}">Logout</a></li>
+									</ul>
+								</li>
+							{% else %}
+								<li><a href="{% url 'login'%}">LOG IN</a></li>
+								<li class="btn premium mobile-margin"><a href="{% url 'Premium_signup'%}">Subscribe</a></li>
+								<li class="btn signup"><a href="{% url 'signup'%}">SIGN UP</a></li>
+							{% endif %}
+						</ul>
+						
+						
 					</ul>
+					
+					
 				</div>
 			<!-- /.navbar-collapse -->
 	    </nav>
