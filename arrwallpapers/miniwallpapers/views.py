@@ -295,7 +295,10 @@ def paymentform(request: HttpRequest):
 
     return render(request, 'paymentform.html', context=context)
 
+from django.core.mail import send_mail
+from django.conf import settings
 @csrf_exempt
+@login_required  
 def paymenthandler(request):
     if request.method == "POST":
         try:
@@ -315,13 +318,22 @@ def paymenthandler(request):
                 user_profile.subscribed = True
                 user_profile.save()
                 
+                # Send email notification
+                subject = 'Subscription Successful'
+                message = 'Dear {},\n\nYou have successfully subscribed to our site.'.format(authenticated_user.username)
+                from_email = settings.DEFAULT_FROM_EMAIL
+                recipient_list = [authenticated_user.email]
+                
+                send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+                
                 return render(request, 'PremiumUserPage/successpage.html')
             else:
                 return render(request, 'PremiumUserPage/errorpage.html')
         except:
-            return render(request, 'PremiumUserPage/errorpage.html')  # You can customize this error page
+            return render(request, 'PremiumUserPage/errorpage.html') 
     else:
         return render(request, 'PremiumUserPage/errorpage.html')
+
 
 
 
