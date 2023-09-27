@@ -59,6 +59,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
+from django.core.validators import validate_email  # Import validate_email function
 from .models import UserProfileDoc
 from allauth.socialaccount.models import SocialAccount  # Import SocialAccount model
 
@@ -71,15 +72,18 @@ def Premium_signup(request):
         try:
             if password1 != password2:
                 raise ValidationError('Passwords do not match')
+            
             validate_email(email) 
+
             if User.objects.filter(username=username).exists():
-                raise ValidationError('Username Taken')
+                raise ValidationError('Username is already taken. Please choose a different username.')
 
             if User.objects.filter(email=email).exists():
-                raise ValidationError('Email already exists')
+                raise ValidationError('Email is already registered. Please use a different email.')
 
             user = User.objects.create_user(username=username, password=password1, email=email)
             user_profile = UserProfileDoc(user=user, is_approved=True, is_premium=True)
+            
             if SocialAccount.objects.filter(user=user, provider='google').exists():
                 google_account = SocialAccount.objects.get(user=user, provider='google')
                 google_account.extra_data['is_premium'] = True
@@ -94,6 +98,7 @@ def Premium_signup(request):
             messages.error(request, 'Cannot Register')
             return redirect('PremiumUserPage/Premium_signup')
     return render(request, "PremiumUserPage/Premium_signup.html")
+
 
 
 from django.shortcuts import render, redirect
@@ -316,13 +321,15 @@ def paymenthandler(request):
                 user_profile = UserProfileDoc.objects.get(user=authenticated_user)
                 user_profile.subscribed = True
                 user_profile.save()
-                
-                # Send email notification
                 subject = 'Subscription Successful'
-                message = 'Dear {},\n\nYou have successfully subscribed to our site.'.format(authenticated_user.username)
+                message = ('Dear {};'
+                        '\n\nThank you for subscribing to our platform. We are thrilled to have you on board! Your subscription is now active, and you can start enjoying our exclusive content.;'
+                        '\n\nTo begin your journey, click here👉🏻 http://127.0.0.1:8000/ to visit our index page. We have also attached a digital signature to this email for your reference.;'
+                        '\n\nIf you have any questions or need assistance, please don\'t hesitate to contact us.;'
+                        '\n\nBest Regards,'
+                        '\nARR')
                 from_email = settings.DEFAULT_FROM_EMAIL
                 recipient_list = [authenticated_user.email]
-            
                 send_mail(subject, message, from_email, recipient_list, fail_silently=False)
                 
                 return render(request, 'PremiumUserPage/successpage.html')
