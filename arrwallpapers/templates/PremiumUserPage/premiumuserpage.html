@@ -215,9 +215,9 @@ form .btn{
         
             <div class="container-fluid nav sidebar flex-column">
             
-                <a href="#" class="nav-link active mt-auto"><i class="far fa-user-circle"></i> Profile</a>
+                <a href="{% url 'premiumuserpage' %}" class="nav-link active mt-auto"><i class="far fa-user-circle"></i> Profile</a>
                 <a href="#" class="nav-link"><i class="far fa-bell"></i> Notifications</a>
-                <a href="#" id="billingInfoLink" class="nav-link"><i class="far fa-file-alt"></i> Billing Info</a>
+                <a href="{% url 'Billinginfo' %}" id="billingInfoLink" class="nav-link"><i class="far fa-file-alt"></i> Billing Info</a>
                 <a href="#" class="nav-link mb-auto"><i class="fas fa-cogs"></i> General</a>
             
             </div>
@@ -225,7 +225,7 @@ form .btn{
         </div>
         
         <div class="col-md-9">
-            
+            {% block content %}
             <div class="container content clear-fix">
         
             <h2 class="mt-5 mb-5">Profile Settings</h2>
@@ -284,14 +284,6 @@ form .btn{
                         </form>
                     
                     </div>
-
-                    <div id="billingInfoForm">
-                        <div class="form-group">
-                            <label for="subscription_status">Subscription Status</label>
-                            <input type="text" class="form-control" id="subscription_status" value="{% if user.userprofiledoc.subscribed %}Subscribed{% else %}Not Subscribed{% endif %}" readonly>
-                        </div>
-                    </div>
-                    
                     
                 
                 </div>
@@ -299,6 +291,7 @@ form .btn{
             </div>
         
         </div>
+        {% endblock %}
             
         </div>
     

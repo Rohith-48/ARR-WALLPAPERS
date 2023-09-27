@@ -240,6 +240,8 @@ def user_profile(request):
     return render(request, 'userprofile.html', {'user_profile': user_profile, 'user': user})
 
 
+def Billinginfo(request):
+    return render(request, 'PremiumUserPage/Billinginfo.html')
 
 
 def forgot_password(request):
