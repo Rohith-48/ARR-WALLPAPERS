@@ -175,9 +175,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'rohithsanthosh2001@gmail.com'  
-EMAIL_HOST_PASSWORD = 'wkculycgaqbadyyr'
-DEFAULT_FROM_EMAIL = 'rohithsanthosh2001@gmail.com'
+EMAIL_HOST_USER = 'arrlivewallpaper2022@gmail.com'  
+EMAIL_HOST_PASSWORD = 'ukdmvhpxihtkyixq'
+DEFAULT_FROM_EMAIL = 'arrlivewallpaper2022@gmail.com'
 
 
 RAZOR_KEY_ID = 'rzp_test_0zpOMoTxoYH2my'

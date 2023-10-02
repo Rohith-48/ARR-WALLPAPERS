@@ -573,3 +573,36 @@ def liked_wallpapers(request):
     
     context = {"wallpapers": liked_wallpapers_data}
     return render(request, 'liked_wallpapers.html', context)
+
+
+
+
+from django.shortcuts import render, redirect
+from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib import messages
+
+def contactform(request):
+    if request.method == 'POST':
+        name = request.POST['name']
+        email = request.POST['email']
+        query = request.POST['query']
+
+        # Send the email
+        subject = 'Contact Form Submission'
+        message = f'Name: {name}\nEmail: {email}\nQuery:\n{query}'
+        from_email = email  
+        recipient_list = [settings.EMAIL_HOST_USER]  
+
+        try:
+            send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+            messages.success(request, 'Your query has been submitted successfully.')
+        except Exception as e:
+            messages.error(request, f'An error occurred while sending your query: {str(e)}')
+
+        return redirect('contactform')
+
+    return render(request, 'registration/contactform.html')
+
+
+

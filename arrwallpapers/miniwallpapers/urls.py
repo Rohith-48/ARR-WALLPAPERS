@@ -44,6 +44,7 @@ urlpatterns=[
     path('successpage/', views.successpage, name='successpage'),
     path('errorpage/', views.errorpage, name='errorpage'),
      path('Billinginfo/', views.Billinginfo, name='Billinginfo'),
+     path('contactform/', views.contactform, name='contactform'),
     ]
 
 if settings.DEBUG:

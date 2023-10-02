@@ -1,0 +1,99 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .container10 {
+        background: black;
+    }
+
+    h2 {
+        color: #333;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        background: #222630;
+        border: 1px #191c22 solid;
+        color: white;
+    }
+    #form-control {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        background: #222630;
+        border: 1px #191c22 solid;
+        color: white;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        margin-left: 420px;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .contact {
+        margin-left: 0;
+        margin-top: 20px; 
+    }
+    .form{
+        margin-top: 30px;
+    }
+    @media (max-width: 768px) {
+        .contact {
+            margin-left: 0;
+            padding: 15px;
+        }
+
+        .map-container {
+            margin-top: 20px;
+        }
+
+        iframe {
+            width: 100%;
+            height: 200px;
+        }
+    }
+</style>
+<div class="container10 mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <!-- Google Map Embed -->
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d0.7898003296488621!2d-122.08468285665038!3d37.422003372173604!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808f9e6b13416151%3A0xb19b56b413b6f9d1!2sGolden%20Gate%20Bridge!5e0!3m2!1sen!2sus!4v1632501337121!5m2!1sen!2sus" width="80%" height="350" style="border: 2px solid #007bff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </div>
+        <div class="contact col-md-6">
+            <div>
+                
+                <h2 style="color: white;">Contact Us</h2>
+                <div class="form">
+                <form method="POST" action="{% url 'contactform' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" id="form-control" class="form-control" placeholder="Your Name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="form-control" class="form-control" placeholder="Your Email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" rows="5" placeholder="Your Query" name="query" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </form>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
