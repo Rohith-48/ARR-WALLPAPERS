@@ -606,3 +606,8 @@ def contactform(request):
 
 
 
+def about(request):
+    return render(request, 'registration/about.html')
+
+def termsofservice(request):
+    return render(request, 'registration/termsofservice.html')

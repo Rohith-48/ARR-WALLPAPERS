@@ -38,13 +38,18 @@ urlpatterns=[
     path('liked_wallpapers/', views.liked_wallpapers, name='liked_wallpapers'),
     path('subscribe_page/', views.subscribe_page, name='subscribe_page'),
     path('premiumuserpage/', views.premiumuserpage, name='premiumuserpage'),
-     path('paymentform/', views.paymentform, name='paymentform'),
-     path('paymenthandler/', views.paymenthandler, name='paymenthandler'),
+    path('paymentform/', views.paymentform, name='paymentform'),
+    path('paymenthandler/', views.paymenthandler, name='paymenthandler'),
+
 
     path('successpage/', views.successpage, name='successpage'),
     path('errorpage/', views.errorpage, name='errorpage'),
-     path('Billinginfo/', views.Billinginfo, name='Billinginfo'),
-     path('contactform/', views.contactform, name='contactform'),
+    path('Billinginfo/', views.Billinginfo, name='Billinginfo'),
+
+
+    path('contactform/', views.contactform, name='contactform'),
+    path('about/', views.about, name='about'),
+    path('termsofservice/', views.termsofservice, name='termsofservice'),
     ]
 
 if settings.DEBUG:

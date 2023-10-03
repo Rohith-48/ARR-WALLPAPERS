@@ -1,0 +1,140 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+<style>
+    body, #web {
+        background: #191c22;
+        margin: 0;
+        padding: 0;
+        font-family: Roboto,sans-serif;
+        font-family: -apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;
+        width: 100%;
+    }
+    .other {
+        margin: 0 auto 40px;
+    }
+    #subheader {
+        background-color: #13161d;
+        text-align: center;
+        background-size: 100%;
+        background-position: center;
+        color: white;
+        padding: 31px 0;
+        background-repeat: no-repeat;
+    }
+    #subheader:after {
+        visibility: hidden;
+        display: block;
+        font-size: 0;
+        content: " ";
+        clear: both;
+        height: 0;
+    }
+    #mtxt.about {
+        padding: 35px;
+        width: 700px;
+    }
+    
+    #mtxt {
+        width: 980px;
+        padding: 0 35px 35px 35px;
+        margin: 0 auto;
+        background: #222630;
+        margin-top: 33px;
+        color: #7c8796;
+        font-size: 13px;
+        line-height: 20px;
+        content: "";
+        clear: both;
+        display: table;
+    }
+    #subheader h1 {
+        margin: 0;
+        padding: 0;
+    }
+    
+    h1 {
+        font-family: 'Roboto Slab',serif;
+        font-family: 'Roboto Slab',Helvetica,Arial,-apple-system,BlinkMacSystemFont,sans-serif;
+        font-size: 34px;
+        font-weight: 300;
+        color: white;
+    }
+    #mtxt.about img {
+        width: 100%;
+        border: 5px solid black;
+    }
+    
+    img {
+        overflow-clip-margin: content-box;
+        overflow: clip;
+    }
+    #mtxt.about div h2 {
+        font-size: 120%;
+        padding: 0 95px;
+        background: transparent url("https://wallpapercave.com/img/next.png") 80px 1px no-repeat;
+        background-size: 8px;
+        display: flex;
+    }
+    
+    #mtxt h2 {
+        color: white;
+        font-weight: 300;
+        font-size: 15px;
+        margin: 35px 0 10px 0;
+    }
+    #mtxt.about p.intro {
+        padding: 0 10px;
+        font-size: 130%;
+        margin: 0 0 25px 0;
+        line-height: 160%;
+    }
+    #mtxt.about div a {
+        font-weight: bold;
+        color: #9aa7b8;
+    }
+    
+    #mtxt a {
+        color: #7c8796;
+        text-decoration: underline;
+    }
+    #mtxt.about p {
+        line-height: 170%;
+        padding: 0 95px;
+        text-align: justify;
+        text-justify: inter-word;
+    }
+    .other:after {
+        visibility: hidden;
+        display: block;
+        font-size: 0;
+        content: " ";
+        clear: both;
+        height: 0;
+    }
+</style>
+<div id="web">
+    <div class="other">
+    <div id="subheader">
+    <h1>About ARR Wallpapers</h1>
+    </div>
+    <div id="mtxt" class="about">
+        <p class="intro">ARR Wallpapers is the largest collection of high-quality wallpapers that you can find online. It’s easy, convenient, and fun to use. Every day we sort through thousands of images to find the very best wallpapers we can bring to you. <strong>Wallpapers for every taste, occasion, and device</strong>.</p>
+        <img src="{% static 'image-asset/about.jpg' %}" alt="Examples of beautiful wallpapers">
+        <div>
+            <h2>For all your devices</h2>
+            <p>If you like to make all your devices feel familiar, don't worry! Our wallpapers are suitable for devices of all sizes, from your desktop computer to your tablet, phone, and even your smartwatch!</p>
+        </div>
+        <div>
+            <h2>Community driven</h2>
+            <p>Behind our collection of beautiful images is an even more lovable community of users and curators. Sign up today and start taking part of it. You can also find us in social media: follow our <a href="https://www.instagram.com/amber_beatz/" target="_blank">Instagram account</a>!</p>
+        </div>
+        <div>
+            <h2>Drop us a line!</h2>
+            <p>We want to keep this site useful and fun for everybody, so if there is anything that comes up in your mind about how we could improve it, please <a href="{% url 'contactform' %}">contact us</a>. We'd love to hear from you.</p>
+        </div>
+        
+    </div>
+    </div>
+    </div>
+{% endblock %}

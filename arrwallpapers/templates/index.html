@@ -363,9 +363,9 @@
 			<div class="social-link">
 				<p>Follow us: </p>
 				<a href="#"><i class="ion-social-facebook"></i></a>
-				<a href="#"><i class="ion-social-twitter"></i></a>
+				<a href="https://www.instagram.com/amber_beatz/" target="_blank"><i class="ion-social-instagram"></i></a>
 				<a href="#"><i class="ion-social-googleplus"></i></a>
-				<a href="https://www.youtube.com/@amberbeatz/"><i class="ion-social-youtube"></i></a>
+				<a href="https://www.youtube.com/@amberbeatz/" target="_blank"><i class="ion-social-youtube"></i></a>
 			</div>
 
 			{% block content %}
@@ -553,10 +553,9 @@
 				<p>Call us: <a href="#">(+91) 954 438 2726</a></p>
 			</div>
 			<div class="flex-child-ft item2">
-				<h4>Resources</h4>
+				<h4>Info</h4>
 				<ul>
-					<li><a href="#">About</a></li> 
-					<li><a href="#">Wallpapers</a></li>
+					<li><a href="{% url 'about' %}">About</a></li> 
 					<li><a href="{% url 'contactform' %}">Contact Us</a></li>
 					<li><a href="#">Forums</a></li>
 					<li><a href="#">Blog</a></li>
@@ -566,7 +565,7 @@
 			<div class="flex-child-ft item3">
 				<h4>Legal</h4>
 				<ul>
-					<li><a href="#">Terms of Use</a></li> 
+					<li><a href="{% url 'termsofservice' %}">Terms of Service</a></li> 
 					<li><a href="#">Privacy Policy</a></li>	
 					<li><a href="#">Security</a></li>
 				</ul>
