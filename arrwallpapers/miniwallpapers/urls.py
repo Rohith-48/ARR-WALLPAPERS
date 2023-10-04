@@ -50,6 +50,7 @@ urlpatterns=[
     path('contactform/', views.contactform, name='contactform'),
     path('about/', views.about, name='about'),
     path('termsofservice/', views.termsofservice, name='termsofservice'),
+    path('privacypolicy/', views.privacypolicy, name='privacypolicy'),
     ]
 
 if settings.DEBUG:

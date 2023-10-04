@@ -611,3 +611,6 @@ def about(request):
 
 def termsofservice(request):
     return render(request, 'registration/termsofservice.html')
+
+def privacypolicy(request):
+    return render(request, 'registration/privacypolicy.html')

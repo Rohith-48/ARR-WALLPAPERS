@@ -531,8 +531,6 @@
 						<p>No wallpapers available.</p>
 					{% endif %}
 				</div>
-				
-				
                 </div>
             </div>
         </div>
@@ -548,8 +546,8 @@
 		<div class="flex-parent-ft">
 			<div class="flex-child-ft item1">
 				 <a href="{% url 'index'%}"><img class="logo" src="{% static '\image-asset\icon.png'%}" width="120" height="60"  alt=""></a>
-				 <p>India<br>
-				Kerala, Kottayam- Pala</p>
+				 <p>ARR WALLPAPERS is an online <br>community of desktop wallpapers enthusiasts.<br><a href="{% url 'signup' %}"><strong>Join now</strong></a> to share 
+					and explore tons of collections <br>of awesome wallpapers.</p>
 				<p>Call us: <a href="#">(+91) 954 438 2726</a></p>
 			</div>
 			<div class="flex-child-ft item2">
@@ -566,14 +564,32 @@
 				<h4>Legal</h4>
 				<ul>
 					<li><a href="{% url 'termsofservice' %}">Terms of Service</a></li> 
-					<li><a href="#">Privacy Policy</a></li>	
-					<li><a href="#">Security</a></li>
+					<li><a href="{% url 'privacypolicy' %}">Privacy Policy</a></li>	
+					<li><a href="#">Cookies policy</a></li>
 				</ul>
 			</div>
 			<div class="flex-child-ft item4">
 				<h4>Account</h4>
 				<ul>
-					<li><a href="#">My Account</a></li> 
+					<li>
+						{% if user.userprofiledoc.is_creator %}
+							<a href="{% url 'userprofile' %}">
+								My Account
+							</a>
+						{% elif user.userprofiledoc.is_premium %}
+							<a href="{% url 'subscribe_page' %}">
+								My Account
+							</a>
+						{% elif	user.is_superuser %}
+							<a href="{% url 'admin_dashboard' %}">
+								My Account
+							</a>
+						{% else %}
+							<a href="{% url 'login' %}">
+								My Account
+							</a>
+						{% endif %}
+					</li>
 					<li><a href="{% url 'liked_wallpapers' %}">Liked Wallpapers</a></li>
 
 					<li><a href="#">Collections</a></li>

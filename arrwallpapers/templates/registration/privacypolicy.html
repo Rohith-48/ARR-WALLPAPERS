@@ -1,0 +1,126 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+<style>
+    body, #web {
+        background: #000000;
+        margin: 0;
+        padding: 0;
+        font-family: Roboto,sans-serif;
+        font-family: -apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;
+        width: 100%;
+    }
+    .other {
+        margin: 0 auto 40px;
+    }
+    #subheader {
+        background-color: #000000;
+        text-align: center;
+        background-size: 100%;
+        background-position: center;
+        color: white;
+        padding: 31px 0;
+        background-repeat: no-repeat;
+    }
+    #subheader h1 {
+        margin: 0;
+        padding: 0;
+    }
+    #subheader:after {
+        visibility: hidden;
+        display: block;
+        font-size: 0;
+        content: " ";
+        clear: both;
+        height: 0;
+    }
+    #mtxt {
+        width: 980px;
+        padding: 0 35px 35px 35px;
+        margin: 0 auto;
+        background: #101011;
+        margin-top: 33px;
+        color: #7c8796;
+        font-size: 13px;
+        line-height: 20px;
+        content: "";
+        clear: both;
+        display: table;
+    }
+    #mtxt a {
+        color: #7c8796;
+        text-decoration: underline;
+    }
+    #mtxt h2 {
+        color: white;
+        font-weight: 300;
+        font-size: 15px;
+        margin: 35px 0 10px 0;
+        display: flex;
+    }
+    #mtxt h2 {
+        color: white;
+        font-weight: 300;
+        font-size: 15px;
+        margin: 35px 0 10px 0;
+    }
+
+    #mtxt p {
+        line-height: 170%;
+        padding: 0 95px;
+        margin-left: -95px;
+        text-align: justify;
+    }
+    #mtxt li {
+        margin: 8px 0;
+        display: flex;
+    }
+
+    #mtxt [id]::before {
+        content: '';
+        display: block;
+        height: 75px;
+        margin-top: -75px;
+        visibility: hidden;
+    }
+    .other:after {
+        visibility: hidden;
+        display: block;
+        font-size: 0;
+        content: " ";
+        clear: both;
+        height: 0;
+    }
+
+</style>
+<div id="web">
+    <div class="other">
+    <div id="subheader">
+    <h1>Privacy Policy</h1>
+    </div>
+    <div id="mtxt">
+    <p>The owners and operators of arrlivewallpaper.in take your online privacy seriously. This document outlines the types of information collected by our servers and provides links to the privacy policies of our third-party advertising partners.</p>
+    <h2>User Accounts</h2>
+    <p>Membership is an optional part of the arrlivewallpaper.in web site. No user account is required in order to browse or download the content we provide. However, creating an account enables extra features such as (but not limited to) the ability to submit content.</p>
+    <p>By creating an account, you are volunteering certain information about yourself that will be stored on our servers. This data includes at a minimum a username, password, and valid email address. Your user profile information is public and may appear on our web site, with the exception of your email address and password.</p>
+    <p>It is up to you to ensure that your username /email address is anonymous.</p>
+    <h2>Personally Identified Data</h2>
+    <p>We strongly discourage users from entering their full name, phone number, physical address, or other sensitive information in user profiles, comments, or other areas of the site.</p>
+    <p>We make a reasonable attempt to monitor for cases where users post personally identifiable information about other individuals to public portions of the web site and remove the offending material.</p>
+    <h2>Server Logs</h2>
+    <p>Like most web sites, arrlivewallpaper.in logs web, database, and other server-software usage and access information. This information may include your internet protocol (IP) address, which in many cases can be translated to an affiliation (such as your work, school, or internet service provider), or a geographical location. We only use this information for debugging purposes and for aggregating into anonymous usage and traffic statistics.</p>
+    <h2>Cookies</h2>
+    <p>While browsing arrlivewallpaper.in, a small number of text files referred to as "cookies" are created on your local file system by your web browser at the request of our servers. These files allow us to personalize the browsing experience for both registered and non-registered users. You are free to delete them at any time, or configure your browser not to create them. However, we do not guarantee that every feature of arrlivewallpaper.in will function as expected without cookies enabled.</p>
+    <h2>Third-Party Advertisers</h2>
+    <p>arrlivewallpaper.in serves ads provided by a range of third-party advertising networks. The practices of our advertising partners are not directly covered by arrlivewallpaper.in privacy policy. We recommend that you read their policies. For your convenience we provide a list our advertising partners below. Unfortunately we cannot guarantee it is always comprehensive and up to date.</p>
+    <p>• <a href="https://www.google.com/intl/en/policies/privacy/" target="_blank">Google AdSense</a></p>
+    <h2>Sharing/Selling of Data</h2>
+    <p>arrlivewallpaper.in does NOT share or sell personally identifiable data to third parties such as direct marketers. We respect your privacy.</p>
+    <h2>Account Cancellation</h2>
+    <p>Upon request, your arrlivewallpaper.in account can be canceled. Your user profile will no longer appear on the web site and your submissions will no longer be listed publicly for download. Any comments you have posted will still appear, but will not be linked to your profile. After cancellation, you will be not be available for log-in.</p>
+    <h2>Data Retention</h2>
+    <p>The data submitted to and generated by this web site may be copied to additional machines for redundancy and backup purposes.</p>
+    </div>
+    </div>
+    </div>
+{% endblock %}

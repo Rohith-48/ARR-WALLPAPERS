@@ -7624,11 +7624,9 @@ footer .flex-parent-ft {
     width: 100%;
   }
 }
-footer .flex-parent-ft .flex-child-ft img {
-  margin-bottom: 60px;
-}
+
 footer .flex-parent-ft .flex-child-ft p {
-  margin-bottom: 15px;
+  margin-bottom: 18px;
 }
 footer .flex-parent-ft .flex-child-ft p a {
   color: #ffffff;
