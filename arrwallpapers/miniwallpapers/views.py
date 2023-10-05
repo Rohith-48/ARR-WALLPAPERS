@@ -531,7 +531,7 @@ def view_delete_userwallpaper(request):
         user_profile = UserProfileDoc.objects.get(user=user)
         avatar = user_profile.avatar
     except UserProfileDoc.DoesNotExist:
-        avatar = None  # Handle the case when the profile doesn't exist
+        avatar = None  
 
     if request.method == 'POST':
         wallpaper_id = request.POST.get('wallpaper_id')
@@ -542,7 +542,7 @@ def view_delete_userwallpaper(request):
 
     context = {
         'wallpapers': wallpapers,
-       "user_profile": user_profile,   # Include the avatar in the context
+       "user_profile": user_profile,   
     }
     return render(request, 'view_delete_userwallpaper.html', context)
 

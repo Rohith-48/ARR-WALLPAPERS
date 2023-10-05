@@ -28,11 +28,16 @@ class Tag(models.Model):
     def __str__(self):
         return f'#{self.name}'
 
+from django.db import models
+from django.contrib.auth.models import User
+
 class Category(models.Model):
     CATEGORY_CHOICES = [
         ('superhero', 'Superhero'),
+         ('anime', 'Anime'),
         ('movie', 'Movie'),
         ('nature', 'Nature'),
+        ('game', 'Game'),
         ('wildlife', 'Wildlife'),
         ('cars', 'Cars'),
         ('bikes', 'Bikes'),
@@ -51,6 +56,11 @@ class WallpaperCollection(models.Model):
         ('paid', 'Paid'),
     ]
 
+    def get_upload_path(instance, filename):
+        # Define the upload path based on the category
+        category_folder = instance.category.name.lower().replace(" ", "_")
+        return f'wallpapers/{category_folder}/{filename}'
+
     title = models.CharField(max_length=100)
     description = models.TextField()
     price = models.CharField(max_length=10, choices=WALLPAPER_PRICE_CHOICES)
@@ -61,9 +71,12 @@ class WallpaperCollection(models.Model):
     is_superuser = models.BooleanField(default=False)
     view_count = models.PositiveIntegerField(default=0)
     wallpaper_image = models.ImageField(
-        upload_to='wallpapers/',
+        upload_to=get_upload_path,
         default='path_to_default_image.jpg',
     )
+
+    def __str__(self):
+        return self.title
 
     def clean(self):
         if self.tags.count() > 4:

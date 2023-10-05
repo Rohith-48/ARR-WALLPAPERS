@@ -81,15 +81,13 @@
                         <p class="uploader-info">Uploaded by: {{ wallpaper.user.username }}</p>
                         <p class="uploader-type">Uploader type: {% if wallpaper.user.is_superuser %}Admin{% else %}Creator{% endif %}</p>
                         <p class="upload-date">Uploaded on: {{ wallpaper.upload_date }}</p>
-
+                        <p class="category" style="color: black;">Category: {{ wallpaper.category.name }}</p> <br><br>
                         <div class="button-container">
                             <a href="#" class="button view-button" onclick="openOverlay('{{ wallpaper.wallpaper_image.url }}')">View</a>
                             <button type="submit" class="button delete-button" form="delete-form-{{ wallpaper.id }}" onclick="confirmDelete('{{ wallpaper.title }}')">Delete</button>
                             <form id="delete-form-{{ wallpaper.id }}" method="post" action="{% url 'view_delete_wallpaper' %}" onsubmit="return confirmDelete('{{ wallpaper.title }}')">
                                 {% csrf_token %}
                                 <input type="hidden" name="wallpaper_id" value="{{ wallpaper.id }}">
-                            </form>
-                            
                             </form>
                         </div>
                     </div>
@@ -100,6 +98,7 @@
                 {% endfor %}
             </div>
         </div>
+        
     </div>
 </div>
 {% endif %}
