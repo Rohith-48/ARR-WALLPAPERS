@@ -303,8 +303,14 @@ def paymentform(request: HttpRequest):
 
 from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
+from datetime import datetime, timedelta
+from .models import UserProfileDoc
+
 @csrf_exempt
-@login_required  
+@login_required
 def paymenthandler(request):
     if request.method == "POST":
         try:
@@ -316,31 +322,51 @@ def paymenthandler(request):
                 'razorpay_payment_id': payment_id,
                 'razorpay_signature': signature
             }
+            
             result = razorpay_client.utility.verify_payment_signature(params_dict)
+
             if result is not None:
-                amount = 20000 
                 authenticated_user = request.user
                 user_profile = UserProfileDoc.objects.get(user=authenticated_user)
+
+                amount = 200 if request.POST.get('amount') == '200' else 1000
+
+                # Set the subscription duration based on the plan
+                if amount == 200:
+                    user_profile.subscription_duration = 1  # 1 month
+                elif amount == 1000:
+                    user_profile.subscription_duration = 12  # 12 months
+
+                # Calculate the subscription expiration date
+                current_date = datetime.now().date()
+                expiration_date = current_date + timedelta(days=30 * user_profile.subscription_duration)  # Assuming 30 days per month
+                user_profile.subscription_expiration = expiration_date
+
+                # Set the user as subscribed
                 user_profile.subscribed = True
                 user_profile.save()
+
+                # Your code for sending a successful subscription email
                 subject = 'Subscription Successful'
                 message = ('Dear {};'
-                        '\n\nThank you for subscribing to our platform. We are thrilled to have you on board! Your subscription is now active, and you can start enjoying our exclusive content.;'
-                        '\n\nTo begin your journey, click here👉🏻 http://127.0.0.1:8000/ to visit our index page. We have also attached a digital signature to this email for your reference.;'
-                        '\n\nIf you have any questions or need assistance, please don\'t hesitate to contact us.;'
-                        '\n\nBest Regards,'
-                        '\nARR')
+                           '\n\nThank you for subscribing to our platform. We are thrilled to have you on board! Your subscription is now active, and you can start enjoying our exclusive content.;'
+                           '\n\nTo begin your journey, click here👉🏻 http://127.0.0.1:8000/ to visit our index page. We have also attached a digital signature to this email for your reference.;'
+                           '\n\nIf you have any questions or need assistance, please don\'t hesitate to contact us.;'
+                           '\n\nBest Regards,'
+                           '\nARR')
                 from_email = settings.DEFAULT_FROM_EMAIL
                 recipient_list = [authenticated_user.email]
                 send_mail(subject, message, from_email, recipient_list, fail_silently=False)
-                
+
                 return render(request, 'PremiumUserPage/successpage.html')
             else:
                 return render(request, 'PremiumUserPage/errorpage.html')
-        except:
-            return render(request, 'PremiumUserPage/errorpage.html') 
+        except Exception as e:
+            return render(request, 'PremiumUserPage/errorpage.html', {'error_message': str(e)})
     else:
         return render(request, 'PremiumUserPage/errorpage.html')
+
+
 
 
 

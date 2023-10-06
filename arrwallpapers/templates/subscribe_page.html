@@ -273,7 +273,7 @@
 					<div class="pricingTable-signup">
 						{% if user.is_authenticated %}
 							{% if user.userprofiledoc.subscribed %}
-								<a href="{% url 'index' %}">Subscribed</a>
+							<a href="{% url 'index' %}">Subscribed</a>
 							{% else %}
 								<a href="{% url 'paymentform' %}?amount=200">Subscribe Now</a>
 							{% endif %}
@@ -283,6 +283,7 @@
 					</div>
 				</div>
 			</div>
+			
 			
 			<div class="col-md-4 col-sm-6">
                 <div class="pricingTable green">

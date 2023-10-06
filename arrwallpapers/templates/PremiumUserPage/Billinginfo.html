@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-4 text-center">
             <img src="{% if user.userprofiledoc.avatar %}{{ user.userprofiledoc.avatar.url }}{% else %}{% static 'image-asset/dp.jpg' %}{% endif %}" class="img-fluid rounded-circle" alt="User Avatar" width="150px">
-           <br> {{ user.username }}
+            <br> {{ user.username }}
         </div>
         <div class="col-md-8">
             <div class="card">
@@ -15,9 +15,16 @@
                         <label for="subscription_status">Subscription Status:</label>
                         <input type="text" class="form-control" id="subscription_status" value="{% if user.userprofiledoc.subscribed %}Subscribed{% else %}Not Subscribed{% endif %}" readonly>
                     </div>
+                    {% if user.userprofiledoc.subscribed %}
+                    <div class="form-group">
+                        <label for="days_left">Subscription Expiration Date:</label>
+                        <input type="text" class="form-control" id="subscription_expiration" value="{{ user.userprofiledoc.subscription_expiration|date:"F d, Y" }}" readonly>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 {% endblock %}
