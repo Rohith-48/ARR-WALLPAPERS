@@ -10,8 +10,6 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css\premiumstyle.css'%}">
     <style>
-
-/* Default styles for larger screens */
 .navigation {
   list-style: none;
   padding: 0;
@@ -28,14 +26,13 @@
   text-align: center;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
-  background-image: linear-gradient(to bottom, #0073e6, #005bbf);
+  background-image: linear-gradient(to bottom, #0073e6, #007bff);
   color: rgb(255, 255, 255);
   font-weight: bold;
+  width: 280px;
 }
-
-.nav-item1:hover {
-  background-image: linear-gradient(to bottom, #005bbf, #0073e6);
-  transition: background-image 0.3s ease, color 0.3s ease;
+.nav-item1 :hover{
+  color: white;
 }
 .nav-link {
   color: #ffffff;
@@ -63,7 +60,6 @@
   width: 100px;
   margin-left: 140px;
 }
-
 .update-avatar-button {
   background-color: #007bff;
   color: #fff;
@@ -178,7 +174,14 @@
       <div class="container-fluid d-flex align-items-center">
         <div class="row">
           <div class="col-lg-7 col-md-10">
-					<h1 class="display-2 text-white">Hello, {{ user.first_name }} {{ user.last_name }}</h1>
+					<h1 class="display-2 text-white">Hello, 
+    {% if user.first_name or user.last_name %}
+        {{ user.first_name }} {{ user.last_name|default:user.username }}
+    {% else %}
+        {{ user.username }}
+    {% endif %}
+</h1>
+
             <p class="text-white mt-0 mb-5">This is your profile page. You can see the progress you've made with your work and manage your projects or assigned tasks</p>
             <a href="#!" class="btn btn-info">Edit Cover Picture</a>
           </div>
@@ -263,7 +266,7 @@
 
                   <li {% if request.path == userprofile_url %}class="active"{% endif %}></li>
                   <br>
-                  <li><a class="nav-item1" href="{% url 'logout' %}">Log out</a></li>
+                  <li class="nav-item1"><a class="nav-item1" id="navitem1" href="{% url 'logout' %}">Log out</a></li>
 
                 </ul>
               </nav>
