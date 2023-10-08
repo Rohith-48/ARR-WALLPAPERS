@@ -322,14 +322,16 @@ def paymenthandler(request):
                 'razorpay_payment_id': payment_id,
                 'razorpay_signature': signature
             }
-            
+            client = razorpay.Client(auth=('rzp_test_0zpOMoTxoYH2my', '8CMU9Qg9plMX3mYD07IrUEu2'))
+            payment = client.payment.fetch(payment_id)
+            payment_amount = payment['amount']
             result = razorpay_client.utility.verify_payment_signature(params_dict)
 
             if result is not None:
                 authenticated_user = request.user
                 user_profile = UserProfileDoc.objects.get(user=authenticated_user)
-
-                amount = 200 if request.POST.get('amount') == '200' else 1000
+            
+                amount = 200 if payment_amount == 20000 else 1000
 
                 # Set the subscription duration based on the plan
                 if amount == 200:
@@ -346,14 +348,17 @@ def paymenthandler(request):
                 user_profile.subscribed = True
                 user_profile.save()
 
+                username = authenticated_user.username
+
                 # Your code for sending a successful subscription email
                 subject = 'Subscription Successful'
                 message = ('Dear {};'
-                           '\n\nThank you for subscribing to our platform. We are thrilled to have you on board! Your subscription is now active, and you can start enjoying our exclusive content.;'
-                           '\n\nTo begin your journey, click here👉🏻 http://127.0.0.1:8000/ to visit our index page. We have also attached a digital signature to this email for your reference.;'
-                           '\n\nIf you have any questions or need assistance, please don\'t hesitate to contact us.;'
-                           '\n\nBest Regards,'
-                           '\nARR')
+                       '\n\nThank you for subscribing to our platform. We are thrilled to have you on board! Your subscription is now active, and you can start enjoying our exclusive content.;'
+                       '\n\nTo begin your journey, click here👉🏻 http://127.0.0.1:8000/ to visit our index page. We have also attached a digital signature to this email for your reference.;'
+                       '\n\nIf you have any questions or need assistance, please don\'t hesitate to contact us.;'
+                       '\n\nBest Regards,'
+                       '\nARR').format(username)
+            
                 from_email = settings.DEFAULT_FROM_EMAIL
                 recipient_list = [authenticated_user.email]
                 send_mail(subject, message, from_email, recipient_list, fail_silently=False)
@@ -579,10 +584,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from .models import WallpaperCollection
+from django.shortcuts import render  # Import the render function
 
-@csrf_exempt  # Use this decorator to disable CSRF protection for this view (for simplicity, consider enabling it in production)
+@csrf_exempt
 def liked_wallpapers(request):
-    # Get the liked wallpaper IDs from the cookie
     liked_wallpaper_ids = json.loads(request.COOKIES.get("likedWallpapers")) or []
 
     liked_wallpapers_data = []
@@ -590,10 +595,14 @@ def liked_wallpapers(request):
     for wallpaper_id in liked_wallpaper_ids:
         try:
             wallpaper = WallpaperCollection.objects.get(id=wallpaper_id)
-            liked_wallpapers_data.append({
-                'title': wallpaper.title,
-                'image_url': request.build_absolute_uri(wallpaper.wallpaper_image.url),  # Build absolute image URL
-            })
+            
+            # Check if wallpaper.id is not empty (None) before including it in the data
+            if wallpaper.id is not None:
+                liked_wallpapers_data.append({
+                    'title': wallpaper.title,
+                    'image_url': request.build_absolute_uri(wallpaper.wallpaper_image.url),
+                    'id': wallpaper.id  # Include wallpaper.id in the data
+                })
         except ObjectDoesNotExist:
             pass
     

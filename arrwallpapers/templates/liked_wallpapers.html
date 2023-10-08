@@ -57,6 +57,13 @@
         max-width: 100%;
         height: auto;
     }
+
+    /* Add CSS to style the anchor tags for clickable images */
+    .liked-wallpaper a {
+        display: block; /* Make the anchor tag cover the entire image */
+        text-decoration: none; /* Remove underlines */
+        color: inherit; /* Inherit text color */
+    }
 </style>
 
 <div class="container">
@@ -66,9 +73,13 @@
         {% for wallpaper in wallpapers %}
         <div class="liked-wallpaper">
             <div class="overlay">
-                <h2 class="title">{{ wallpaper.title }}</h2>
+                <a href="{% url 'wallpaper_details' wallpaper_id=wallpaper.id %}" data-lightbox="wallpapers" data-title="{{ wallpaper.title }}">
+                    <h2 class="title">{{ wallpaper.title }}</h2>
+                </a>
             </div>
-            <img src="{{ wallpaper.image_url }}" alt="{{ wallpaper.title }}" class="wallpaper-image">
+            <a href="{% url 'wallpaper_details' wallpaper_id=wallpaper.id %}" data-lightbox="wallpapers" data-title="{{ wallpaper.title }}">
+                <img src="{{ wallpaper.image_url }}" alt="{{ wallpaper.title }}" class="wallpaper-image">
+            </a>
         </div>
         {% if forloop.counter|divisibleby:4 and not forloop.last %}
         <div style="width: 100%; clear: both;"></div>

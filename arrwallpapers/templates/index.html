@@ -193,6 +193,7 @@
 @media (max-width: 576px) {
     .wallpapers {
         column-count: 1; 
+		
     }
 }
 @media (max-width: 767px) {
@@ -508,7 +509,7 @@
 											<h3>{{ wallpaper.title }}</h3>
 											<!-- HTML -->
 											<div class="like-button-container">
-												<button class="like-button" data-wallpaper-id="{{ wallpaper.id }}"><i class="fas fa-heart"></i></button>
+												<button class="like-button like-button-link" data-wallpaper-id="{{ wallpaper.id }}"><i class="fas fa-heart"></i></button>
 											</div>
 				
 											<div class="view-count">
@@ -536,7 +537,6 @@
         </div>
     </div>
 </div>
-
 
 {% endblock %}
 <!--end of latest new v1 section-->
@@ -684,6 +684,15 @@ $(document).ready(function () {
                     likeButton.classList.add('liked'); 
                 }
                 setCookie("likedWallpapers", JSON.stringify(likedWallpapers), 365);
+            });
+        });
+    });
+	document.addEventListener("DOMContentLoaded", function () {
+        var likeButtons = document.querySelectorAll('.like-button-link');
+
+        likeButtons.forEach(function (likeButton) {
+            likeButton.addEventListener('click', function (event) {
+                event.preventDefault();
             });
         });
     });
