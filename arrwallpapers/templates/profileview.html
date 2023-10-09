@@ -1,0 +1,359 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+    <style>
+          #uavatar.enlarge {
+            position: fixed;
+            z-index: 1000000;
+            border-radius: 0;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: zoom-out;
+          }
+          #overlay{
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 5;
+            width: 100%;
+            height: 100%;
+            display: none;
+          }
+
+          body, #web {
+            background: #191c22;
+            margin: 0;
+            padding: 0;
+            font-family: Roboto,sans-serif;
+            font-family: -apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;
+            width: 100%;
+        }
+
+        
+        #userheaderc {
+            -moz-background-size: cover;
+            -webkit-background-size: cover;
+            background-size: cover;
+            background-position: top 20% center;
+            position: relative;
+            background-image: url('{% static "image-asset/userheader.webp" %}');
+        }
+        
+#userheader {
+    width: 1060px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 32px 0 30px;
+    position: relative;
+}
+#umain {
+    text-align: center;
+}
+#uavatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    padding-top: 0;
+    margin-right: 10px;
+    margin-bottom: -20px;
+    display: inline-block;
+    cursor: zoom-in;
+    object-fit: cover;
+}
+#umain h1 {
+    margin-top: 0;
+    font-size: 20px;
+    display: inline-block;
+}
+
+h1 {
+    font-family: 'Roboto Slab',serif;
+    font-family: 'Roboto Slab',Helvetica,Arial,-apple-system,BlinkMacSystemFont,sans-serif;
+    font-size: 34px;
+    font-weight: 300;
+    color: white;
+}
+#usocial {
+    display: inline-block;
+    list-style: none;
+    margin: 0;
+    padding-left: 20px;
+}
+#uinfo {
+    background: rgb(0 0 0 / 35%);
+    border-radius: 20px;
+    height: 40px;
+    list-style: none;
+    padding: 0 10px;
+    display: inline-block;
+    margin-top: 27px;
+    margin-bottom: 25px;
+}
+#uinfo li {
+    display: inline-block;
+    font-size: 14px;
+    color: #fff;
+}
+
+#udate {
+    background-image: url(/img/udate.svg);
+    background-repeat: no-repeat;
+    background-position: top 50% left 5px;
+    background-size: 12px 13px;
+    padding: 11px 10px 11px 25px;
+}
+#ubio {
+    font-size: 14px;
+    line-height: 25px;
+    color: #c3c8d6;
+    width: 575px;
+    margin: 0 auto;
+}
+#utabsc {
+    background-color: #222630;
+    padding: 0;
+}
+#utabs {
+    width: 1060px;
+    margin: 0 auto;
+}
+#ustats {
+    list-style: none;
+    padding: 10px 0;
+    display: block;
+    width: 906px;
+    margin: 0 auto;
+}
+#ustats li {
+    height: 32px;
+    display: inline-block;
+    border-right: 1px solid #333948;
+    margin-right: 25px;
+    padding-right: 24px;
+}
+#ustats li>span {
+    display: inline-block;
+    width: 36px;
+    height: 28px;
+    margin-right: 10px;
+}
+
+#uwallpapers>span {
+        background-image: url('{% static "image-asset/uwallpapers.svg" %}');
+    background-repeat: no-repeat;
+    background-size: 25px 27px;
+    background-position: top 50% left 50%;
+}
+#ustats li p {
+    color: #fff;
+    font-family: 'Roboto Slab',serif;
+    font-size: 17px;
+    display: inline-block;
+    margin: 0;
+}
+#ustats li p span {
+    color: #9da2af;
+    font-family: Roboto,sans-serif;
+    font-size: 12px;
+    display: block;
+}
+.collectionc {
+    width: 1060px;
+    margin: 30px auto 0;
+}
+.collectionc .wp-grid {
+    margin: 0 -2%;
+}
+.uploaded {
+    position: relative;
+    float: left;
+    width: 160px;
+    margin: 8px 11px;
+}
+.collectionc .wp-grid>a, .collectionc .wp-grid div>a {
+    float: left;
+    margin: 8px 11px;
+    display: inline-block;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-position: center;
+}
+
+a {
+    text-decoration: none;
+    color: #0066c6;
+}
+#pagination {
+    margin: 20px 0 30px 0;
+}
+#pagination ul {
+    margin: 0;
+    padding: 0;
+}
+#pagination li {
+    display: inline;
+    margin: 0 4px;
+}
+#pagination .current strong {
+    background-color: #ffd30d;
+    color: #101319;
+    font-weight: bold;
+}
+
+#pagination a, #pagination strong {
+    padding: 4px 10px;
+    color: #9aa7b8;
+    background-color: #222630;
+    border: 1px solid #222630;
+}
+.uploaded span.stats{
+    font-size: 11px;
+    color: white;
+    margin: 0;
+    padding-left: 8px;
+    display: block;
+  }
+  .uploaded span.views{
+    background: url('{% static "image-asset/uviews.svg" %}') no-repeat 0 2px;
+    background-size: 9px;
+    padding-left: 15px;
+    margin-right: 15px;
+  }
+  .uploaded span.downloads{
+    background: url('{% static "image-asset/udownloads.svg" %}') no-repeat 0 2px;
+    background-size: 9px;
+    padding-left: 15px
+  }
+  #uviews>span {
+    background-image: url('{% static "image-asset/uviews.svg" %}');
+    background-repeat: no-repeat;
+    background-size: 36px 25px;
+    background-position: top 50% left 50%;
+}
+#udownloads>span {
+    background-image: url('{% static "image-asset/udownloads.svg" %}') ;
+    background-repeat: no-repeat;
+    background-size: 34px 28px;
+    background-position: top 50% left 50%;
+}
+#ulikes>span {
+    background-image: url('{% static "image-asset/ulikes.svg" %}');
+    background-repeat: no-repeat;
+    background-size: 36px 27px;
+    background-position: top 50% left 50%;
+}
+
+#ufeatured>span {
+    background-image: url('{% static "image-asset/badge.svg" %}');
+    background-repeat: no-repeat;
+    background-size: 36px 27px;
+    background-position: top 50% left 50%;
+}
+
+#ustickers>span {
+    background-image: url('{% static "image-asset/ustickers.svg" %}');
+    background-repeat: no-repeat;
+    background-size: 36px 36px;
+    background-position: top 50% left 50%;
+}
+
+@media screen and (max-width: 900px) {
+    #album, #content, #header, #footer, #stats, #intro, #user, #userheader, #utabs, .collectionc, .wp-listc {
+        width: 95%;
+    }
+    #umain {
+        text-align: center;
+        float: none;
+        width: auto;
+    }
+    #uavatar {
+        width: 30px;
+        height: 30px;
+        margin-bottom: -10px;
+    }
+    #umain h1 {
+        font-size: 16px;
+    }
+    #uinfo {
+        height: auto;
+        margin-top: 20px;
+    }
+    #ubio {
+        width: 90%;
+    }
+    #utabs {
+        padding-bottom: 5px;
+    }
+}
+@media screen and (max-width: 1060px) {
+    #album, #content, #header, #footer, #stats, #intro, #user, #userheader, #utabs, .collectionc, .wp-listc {
+        width: 95%;
+    }
+}
+</style>
+<div id="web">
+    <div id="userheaderc">
+        <div id="userheader">
+            <div id="umain">
+                <img id="uavatar" src="{{ user_profile.avatar.url|default:'image-asset/dp.jpg' }}" alt="{{ user_profile.user.username }}">
+                <h1>{{ user_profile.user.username }}</h1>
+    <ul id="usocial">
+    </ul>
+    </div>
+    <ul id="uinfo">
+        <li id="udate">Joined on: {{ user_profile.user.date_joined|date:"F d, Y" }}</li>
+        
+    </ul>
+    <p id="ubio"></p>
+    </div></div>
+    <div id="utabsc">
+        <div id="utabs">
+            <ul id="ustats">
+                <li id="uwallpapers" title="{{ user_profile.user.username }} has uploaded {{ uploaded_wallpapers_count }} wallpapers">
+                    <span></span><p>{{ uploaded_wallpapers_count }}<span>wallpapers</span></p>
+                </li>
+                <li id="uviews" title="{{ user_profile.user.username }}'s wallpapers have been visited {{ total_views }} times">
+                    <span></span><p>{{ total_views }}<span>views</span></p>
+                </li>
+                <li id="udownloads" title="{{ user_profile.user.username }}'s wallpapers have been downloaded {{ total_downloads }} times">
+                    <span></span><p>{{ total_downloads }}<span>downloads</span></p>
+                </li>
+    <li id="ulikes" title="Denimnelson22's wallpapers have been saved 0 times as favorite">
+    <span></span><p>0<span>favs</span></p>
+    </li>
+    <li id="ufeatured" title="Denimnelson22's wallpapers have been featured 2 times">
+    <span></span><p>2<span>featured</span></p>
+    </li>
+    <li id="ustickers" title="Denimnelson22's wallpapers have received 8 stickers">
+    <span></span><p>8<span>stickers</span></p>
+    </li>
+    </ul>
+    </div></div>
+    <div class="collectionc">
+        <div class="wp-grid">
+            {% for wallpaper in uploaded_wallpapers %}
+            <div class="uploaded">
+                <a href="{{ wallpaper.wallpaper_image.url }}" title="{{ wallpaper.title }}">
+                    <img loading="lazy" src="{{ wallpaper.wallpaper_image.url }}" width="160" height="160" alt="{{ wallpaper.title }}" title="{{ wallpaper.title }}">
+                </a>
+                <span class="stats views">Views: {{ wallpaper.view_count }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        <br style="clear: both;">
+
+
+
+    <div id="pagination">
+    <ul>
+    <li class="current"><strong>1</strong></li><li><a href="#">2</a></li><li><a href="#">3</a></li><li><a href="#">4</a></li><li><a href="#">›</a></li> </ul>
+    </div>
+    </div>
+    
+    </div>
+
+{% endblock %}

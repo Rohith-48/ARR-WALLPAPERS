@@ -144,6 +144,31 @@ def subscribe_page(request):
     return render(request, 'subscribe_page.html')
 
 
+
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.models import User  
+from .models import UserProfileDoc, WallpaperCollection
+
+def profileview(request, username):
+    user_profile = get_object_or_404(UserProfileDoc, user__username=username)
+    user_content = WallpaperCollection.objects.filter(user=user_profile.user, user__is_superuser=False)
+    superuser_content = WallpaperCollection.objects.filter(user__is_superuser=True)
+    uploaded_wallpapers_count = WallpaperCollection.objects.filter(user=user_profile.user).count()
+    context = {
+        'user_profile': user_profile,
+        'user_content': user_content,
+        'superuser_content': superuser_content,
+        'uploaded_wallpapers_count': uploaded_wallpapers_count,
+    }
+    
+    return render(request, 'profileview.html', {'user_profile': user_profile, 'uploaded_wallpapers': user_content})
+
+
+
+
+
+
+
 def wallpaper_details(request, wallpaper_id):
     wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
     wallpaper.view_count += 1

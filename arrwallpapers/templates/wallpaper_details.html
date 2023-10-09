@@ -236,9 +236,12 @@
         <div class="wallpaper-image-container">
             <img src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}" class="wallpaper-image">
                <!-- Username container -->
+    <!-- Username container -->
     <div class="uploader-info" style="color: white;">
-        Uploaded by: {{ wallpaper.user.username }}
+        Uploaded by: <a href="{% url 'profileview' username=wallpaper.user.username %}">{{ wallpaper.user.username }}</a>
     </div>
+    
+
         </div>
         <div class="customization-container">
             {% if wallpaper.price == 'paid' %}

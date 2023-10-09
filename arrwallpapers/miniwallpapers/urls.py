@@ -14,6 +14,7 @@ urlpatterns=[
     path('logout/', views.custom_logout, name='logout'),
     path('admin_dashboard', views.admin_dashboard, name='admin_dashboard'),
     path('userprofile', views.user_profile, name='userprofile'),
+    path('profile/<str:username>/', views.profileview, name='profileview'),
     path('forgot_password', views.forgot_password, name='forgot_password'),
     path('Premium_signup', views.Premium_signup, name='Premium_signup'),
     path('delete_user/<int:user_id>/', views.delete_user, name='delete_user'),
