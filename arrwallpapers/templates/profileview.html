@@ -23,7 +23,7 @@
           }
 
           body, #web {
-            background: #191c22;
+            background: #0f1216;
             margin: 0;
             padding: 0;
             font-family: Roboto,sans-serif;
@@ -98,7 +98,7 @@ h1 {
 }
 
 #udate {
-    background-image: url(/img/udate.svg);
+    background-image: url('{% static "image-asset/udate.svg" %}');
     background-repeat: no-repeat;
     background-position: top 50% left 5px;
     background-size: 12px 13px;
@@ -112,7 +112,7 @@ h1 {
     margin: 0 auto;
 }
 #utabsc {
-    background-color: #222630;
+    background-color: #000000;
     padding: 0;
 }
 #utabs {
@@ -207,7 +207,7 @@ a {
 #pagination a, #pagination strong {
     padding: 4px 10px;
     color: #9aa7b8;
-    background-color: #222630;
+    background-color: #000000;
     border: 1px solid #222630;
 }
 .uploaded span.stats{
@@ -216,17 +216,6 @@ a {
     margin: 0;
     padding-left: 8px;
     display: block;
-  }
-  .uploaded span.views{
-    background: url('{% static "image-asset/uviews.svg" %}') no-repeat 0 2px;
-    background-size: 9px;
-    padding-left: 15px;
-    margin-right: 15px;
-  }
-  .uploaded span.downloads{
-    background: url('{% static "image-asset/udownloads.svg" %}') no-repeat 0 2px;
-    background-size: 9px;
-    padding-left: 15px
   }
   #uviews>span {
     background-image: url('{% static "image-asset/uviews.svg" %}');
@@ -306,7 +295,6 @@ a {
     </div>
     <ul id="uinfo">
         <li id="udate">Joined on: {{ user_profile.user.date_joined|date:"F d, Y" }}</li>
-        
     </ul>
     <p id="ubio"></p>
     </div></div>
@@ -316,13 +304,13 @@ a {
                 <li id="uwallpapers" title="{{ user_profile.user.username }} has uploaded {{ uploaded_wallpapers_count }} wallpapers">
                     <span></span><p>{{ uploaded_wallpapers_count }}<span>wallpapers</span></p>
                 </li>
-                <li id="uviews" title="{{ user_profile.user.username }}'s wallpapers have been visited {{ total_views }} times">
-                    <span></span><p>{{ total_views }}<span>views</span></p>
+                <li id="uviews" title="{{ user_profile.user.username }}'s wallpapers have been visited {{ total_view_count }} times">
+                    <span></span><p>{{ total_view_count }}<span>views</span></p>
                 </li>
                 <li id="udownloads" title="{{ user_profile.user.username }}'s wallpapers have been downloaded {{ total_downloads }} times">
                     <span></span><p>{{ total_downloads }}<span>downloads</span></p>
                 </li>
-    <li id="ulikes" title="Denimnelson22's wallpapers have been saved 0 times as favorite">
+    <!-- <li id="ulikes" title="Denimnelson22's wallpapers have been saved 0 times as favorite">
     <span></span><p>0<span>favs</span></p>
     </li>
     <li id="ufeatured" title="Denimnelson22's wallpapers have been featured 2 times">
@@ -330,29 +318,43 @@ a {
     </li>
     <li id="ustickers" title="Denimnelson22's wallpapers have received 8 stickers">
     <span></span><p>8<span>stickers</span></p>
-    </li>
+    </li> -->
     </ul>
     </div></div>
     <div class="collectionc">
         <div class="wp-grid">
             {% for wallpaper in uploaded_wallpapers %}
             <div class="uploaded">
-                <a href="{{ wallpaper.wallpaper_image.url }}" title="{{ wallpaper.title }}">
+                <a href="{% url 'wallpaper_details' wallpaper.id %}" title="{{ wallpaper.title }}">
                     <img loading="lazy" src="{{ wallpaper.wallpaper_image.url }}" width="160" height="160" alt="{{ wallpaper.title }}" title="{{ wallpaper.title }}">
                 </a>
                 <span class="stats views">Views: {{ wallpaper.view_count }}</span>
             </div>
+            {% if forloop.counter|divisibleby:4 and not forloop.last %}
+            <div style="clear:both;"></div> <!-- Add this to clear the row after every 4 wallpapers -->
+            {% endif %}
             {% endfor %}
         </div>
+        
         <br style="clear: both;">
-
-
-
-    <div id="pagination">
-    <ul>
-    <li class="current"><strong>1</strong></li><li><a href="#">2</a></li><li><a href="#">3</a></li><li><a href="#">4</a></li><li><a href="#">›</a></li> </ul>
+        
+        <div id="pagination">
+            <ul>
+                {% if user_content.has_previous %}
+                    <li><a href="?page=1">‹‹</a></li>
+                    <li><a href="?page={{ user_content.previous_page_number }}">‹</a></li>
+                {% endif %}
+        
+                <li class="current"><strong>{{ user_content.number }}</strong></li>
+        
+                {% if user_content.has_next %}
+                    <li><a href="?page={{ user_content.next_page_number }}">›</a></li>
+                    <li><a href="?page={{ user_content.paginator.num_pages }}">››</a></li>
+                {% endif %}
+            </ul>
+        </div>
     </div>
-    </div>
+    
     
     </div>
 

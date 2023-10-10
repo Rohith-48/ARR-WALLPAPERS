@@ -6604,7 +6604,7 @@ background-color: black;
   background-color: #00b9ef;
 }
 .slider {
-  background: url("../image-asset/bg.jpg") no-repeat;
+  background-color: black;
   background-position: center;
   text-align: center;
   background-size: cover;
@@ -7596,7 +7596,7 @@ header#headerv3-light {
   }
 }
 footer {
-  background: url("../image-asset/bg.jpg") no-repeat;
+  background-color: black;
   background-position: center;
   background-size: cover;
 }

@@ -72,6 +72,7 @@ class WallpaperCollection(models.Model):
     upload_date = models.DateTimeField(auto_now_add=True)
     is_superuser = models.BooleanField(default=False)
     view_count = models.PositiveIntegerField(default=0)
+    downloads = models.PositiveIntegerField(default=0)
     wallpaper_image = models.ImageField(
         upload_to=get_upload_path,
         default='path_to_default_image.jpg',

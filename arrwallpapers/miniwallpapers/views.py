@@ -146,24 +146,32 @@ def subscribe_page(request):
 
 
 from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.models import User  
+from django.contrib.auth.models import User
 from .models import UserProfileDoc, WallpaperCollection
+from django.db.models import Sum
+from django.core.paginator import Paginator
 
 def profileview(request, username):
     user_profile = get_object_or_404(UserProfileDoc, user__username=username)
-    user_content = WallpaperCollection.objects.filter(user=user_profile.user, user__is_superuser=False)
-    superuser_content = WallpaperCollection.objects.filter(user__is_superuser=True)
-    uploaded_wallpapers_count = WallpaperCollection.objects.filter(user=user_profile.user).count()
+    user_content = WallpaperCollection.objects.filter(user=user_profile.user, is_superuser=False)
+    superuser_content = WallpaperCollection.objects.filter(is_superuser=True)
+    paginator = Paginator(user_content, 10)  
+    page = request.GET.get('page')
+    wallpapers = paginator.get_page(page)
+    total_view_count = user_content.aggregate(Sum('view_count'))['view_count__sum'] or 0
+    total_downloads = user_content.aggregate(Sum('downloads'))['downloads__sum'] or 0
+
     context = {
         'user_profile': user_profile,
-        'user_content': user_content,
+        'user_content': wallpapers, 
         'superuser_content': superuser_content,
-        'uploaded_wallpapers_count': uploaded_wallpapers_count,
+        'uploaded_wallpapers_count': user_content.count(),
+        'uploaded_wallpapers': user_content,
+        'total_view_count': total_view_count,
+        'total_downloads': total_downloads,
     }
-    
-    return render(request, 'profileview.html', {'user_profile': user_profile, 'uploaded_wallpapers': user_content})
 
-
+    return render(request, 'profileview.html', context)
 
 
 
@@ -172,6 +180,7 @@ def profileview(request, username):
 def wallpaper_details(request, wallpaper_id):
     wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
     wallpaper.view_count += 1
+    wallpaper.downloads += 1
     wallpaper.save()
     return render(request, 'wallpaper_details.html', {'wallpaper': wallpaper})
     
@@ -355,26 +364,20 @@ def paymenthandler(request):
             if result is not None:
                 authenticated_user = request.user
                 user_profile = UserProfileDoc.objects.get(user=authenticated_user)
-            
                 amount = 200 if payment_amount == 20000 else 1000
-
                 # Set the subscription duration based on the plan
                 if amount == 200:
                     user_profile.subscription_duration = 1  # 1 month
                 elif amount == 1000:
                     user_profile.subscription_duration = 12  # 12 months
-
                 # Calculate the subscription expiration date
                 current_date = datetime.now().date()
                 expiration_date = current_date + timedelta(days=30 * user_profile.subscription_duration)  # Assuming 30 days per month
                 user_profile.subscription_expiration = expiration_date
-
                 # Set the user as subscribed
                 user_profile.subscribed = True
                 user_profile.save()
-
                 username = authenticated_user.username
-
                 # Your code for sending a successful subscription email
                 subject = 'Subscription Successful'
                 message = ('Dear {};'
