@@ -186,29 +186,63 @@ def wallpaper_details(request, wallpaper_id):
     
     
 
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .models import UserProfileDoc
+
+@login_required
 def approve_user(request, user_id):
     if request.user.is_superuser:
         user_profile = get_object_or_404(UserProfileDoc, user__id=user_id)
         user_profile.is_approved = True
         user_profile.save()
+        subject = 'Account Approved'
+        message = (
+            f'Dear {user_profile.user.username},\n\n'
+            'Your account on our platform has been approved and activated. You can now access all features and content.\n\n'
+            'Thank you for joining us!\n\n'
+            'Best Regards,\n'
+            'ARR'
+        )
+        from_email = settings.DEFAULT_FROM_EMAIL 
+        recipient_list = [user_profile.user.email]
+        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+        
         return redirect('admin_dashboard')
     else:
         return redirect('login')
 
 
+
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.models import User  
 from .models import UserProfileDoc, WallpaperCollection
-import os
+from django.core.mail import send_mail
+from django.conf import settings
 
 def delete_user(request, user_id):
     user_profile = get_object_or_404(UserProfileDoc, user__id=user_id)
-    if user_profile.portfolio:
-        storage, path = user_profile.portfolio.storage, user_profile.portfolio.path
-        storage.delete(path)
-    WallpaperCollection.objects.filter(user=user_profile.user).delete()
-    user_profile.user.delete()
+    if not user_profile.is_approved:
+        return redirect('admin_dashboard') 
+    user_profile.is_approved = False
+    user_profile.save()
+    subject = 'Account Deactivation'
+    message = (
+        f'Dear {user_profile.user.username},\n\n'
+        'Your account on our platform has been deactivated by the administrator. If you have any questions or need further assistance, please contact us.\n\n'
+        'Thank you for using our platform.\n\n'
+        'Best regards,\n'
+        'Your Platform Team'
+    )
+    from_email = settings.DEFAULT_FROM_EMAIL
+    recipient_list = [user_profile.user.email]
 
+    try:
+        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+    except Exception as e:
+        pass
+    
     return redirect('admin_dashboard')
 
 
