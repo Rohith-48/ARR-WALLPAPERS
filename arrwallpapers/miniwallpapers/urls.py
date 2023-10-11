@@ -22,7 +22,7 @@ urlpatterns=[
     path('upload_wallpaper/', views.upload_wallpaper, name='upload_wallpaper'),
     path('view_delete_wallpaper/', views.view_delete_wallpaper, name='view_delete_wallpaper'),
     path('update_wallpaper/', views.update_wallpaper, name='update_wallpaper'),
-
+    
 
      path('password_reset/',auth_views.PasswordResetView.as_view(),name='password_reset'),
      path('password_reset/done/',auth_views.PasswordResetDoneView.as_view(),name='password_reset_done'),
