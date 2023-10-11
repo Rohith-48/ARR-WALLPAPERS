@@ -9,7 +9,7 @@ from .models import Category, Tag, UserProfileDoc, WallpaperCollection
 from django.shortcuts import get_object_or_404, redirect
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
-from django.contrib.auth.decorators import login_required  # Import this decorator
+from django.contrib.auth.decorators import login_required  
 from .models import UserProfileDoc
 
 
@@ -59,9 +59,9 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
-from django.core.validators import validate_email  # Import validate_email function
+from django.core.validators import validate_email 
 from .models import UserProfileDoc
-from allauth.socialaccount.models import SocialAccount  # Import SocialAccount model
+from allauth.socialaccount.models import SocialAccount 
 
 def Premium_signup(request):
     if request.method == "POST":
@@ -152,10 +152,17 @@ from django.db.models import Sum
 from django.core.paginator import Paginator
 
 def profileview(request, username):
-    user_profile = get_object_or_404(UserProfileDoc, user__username=username)
-    user_content = WallpaperCollection.objects.filter(user=user_profile.user, is_superuser=False)
+    user=User.objects.get(username=username)
+    if user.is_staff:
+        # Admin view
+        user_profile = get_object_or_404(User, username=username)
+        user_content = WallpaperCollection.objects.filter(user=user)
+    else:
+        user_profile = get_object_or_404(UserProfileDoc, user__username=username)
+        user_content = WallpaperCollection.objects.filter(user=user_profile.user, is_superuser=False)
+
     superuser_content = WallpaperCollection.objects.filter(is_superuser=True)
-    paginator = Paginator(user_content, 10)  
+    paginator = Paginator(user_content, 10)
     page = request.GET.get('page')
     wallpapers = paginator.get_page(page)
     total_view_count = user_content.aggregate(Sum('view_count'))['view_count__sum'] or 0
@@ -163,12 +170,13 @@ def profileview(request, username):
 
     context = {
         'user_profile': user_profile,
-        'user_content': wallpapers, 
+        'user_content': wallpapers,
         'superuser_content': superuser_content,
         'uploaded_wallpapers_count': user_content.count(),
         'uploaded_wallpapers': user_content,
         'total_view_count': total_view_count,
         'total_downloads': total_downloads,
+        'userdetail': user,
     }
 
     return render(request, 'profileview.html', context)
@@ -177,10 +185,11 @@ def profileview(request, username):
 
 
 
+
 def wallpaper_details(request, wallpaper_id):
     wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
     wallpaper.view_count += 1
-    wallpaper.downloads += 1
+    # wallpaper.downloads += 1
     wallpaper.save()
     return render(request, 'wallpaper_details.html', {'wallpaper': wallpaper})
     

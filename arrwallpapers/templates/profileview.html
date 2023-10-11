@@ -288,13 +288,13 @@ a {
     <div id="userheaderc">
         <div id="userheader">
             <div id="umain">
-                <img id="uavatar" src="{{ user_profile.avatar.url|default:'image-asset/dp.jpg' }}" alt="{{ user_profile.user.username }}">
-                <h1>{{ user_profile.user.username }}</h1>
+                <img id="uavatar" src="{% if user_profile.avatar.url %}{{  user_profile.avatar.url }}{% else %}{% static 'image-asset/dp.jpg' %}{% endif %}" alt="{{ userdetail.username }}">
+                <h1>{{ userdetail.username }}</h1>
     <ul id="usocial">
     </ul>
     </div>
     <ul id="uinfo">
-        <li id="udate">Joined on: {{ user_profile.user.date_joined|date:"F d, Y" }}</li>
+        <li id="udate">Joined on: {{ userdetail.date_joined|date:"F d, Y" }}</li>
     </ul>
     <p id="ubio"></p>
     </div></div>
