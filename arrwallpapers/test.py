@@ -25,29 +25,38 @@ class Hosttest(TestCase):
         driver.get(self.live_server_url)
         driver.maximize_window()
         time.sleep(1)
-        login=driver.find_element(By.CSS_SELECTOR,".login")
+        login = driver.find_element(By.CSS_SELECTOR, ".login")
         login.click()
         time.sleep(2)
-        username=driver.find_element(By.CSS_SELECTOR,"input#username")
+        username = driver.find_element(By.CSS_SELECTOR, "input#username")
         username.send_keys("rohithsanthosh")
-        password=driver.find_element(By.CSS_SELECTOR,"input#password")
+        password = driver.find_element(By.CSS_SELECTOR, "input#password")
         password.send_keys("R0hith@12")
         time.sleep(1)
-        submitc=driver.find_element(By.CSS_SELECTOR,"button#submit")
+        submitc = driver.find_element(By.CSS_SELECTOR, "button#submit")
         submitc.click()
         time.sleep(2)
-        find=driver.find_element(By.CSS_SELECTOR,"a[href='/therapist/listtherapist/']")
-        find.click()
+
+        driver.get("http://127.0.0.1:8000/wallpaper/46/")
+        time.sleep(2)
+        submitc = driver.find_element(By.CSS_SELECTOR, "a#download-for-my-screen")
+        submitc.click()
+        time.sleep(2)
+
+        dropdown_toggle = driver.find_element(By.CSS_SELECTOR, "li.dropdown a.dropdown-toggle")
+        dropdown_toggle.click()
+        time.sleep(1)
+        
+        logout_link = driver.find_element(By.CSS_SELECTOR, "li.dropdown ul.dropdown-menu li a[href*='/logout/']")
+        logout_link.click()
         time.sleep(2)
         # search=driver.find_element(By.CSS_SELECTOR,"input#query.form-control.border-primary.w-50")
         # search.send_keys("Abhijith Shaji")\
-        wait = WebDriverWait(driver, 10)
-        search_input = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "input#query.form-control.border-primary.w-50")))
-        search_input.send_keys("Abhijith")
-        time.sleep(5)
+        # wait = WebDriverWait(driver, 10)
+        # search_input = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "input#query.form-control.border-primary.w-50")))
+        # search_input.send_keys("Abhijith")
+        # time.sleep(5)
         
-
-    # Add more test methods as needed
 
 if __name__ == '__main__':
     import unittest
