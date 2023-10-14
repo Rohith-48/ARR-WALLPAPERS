@@ -7,9 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+
 class Hosttest(TestCase):
     
     def setUp(self):
@@ -19,44 +17,53 @@ class Hosttest(TestCase):
 
     def tearDown(self):
         self.driver.quit()
-        
-    def test_01_login_page(self):
+
+    def test_02_registration_and_login(self):
         driver = self.driver
         driver.get(self.live_server_url)
         driver.maximize_window()
         time.sleep(1)
-        login = driver.find_element(By.CSS_SELECTOR, ".login")
-        login.click()
+
+        # Registration
+        registration_link = driver.find_element(By.CSS_SELECTOR, "#premiumsignup")
+        registration_link.click()
         time.sleep(2)
         username = driver.find_element(By.CSS_SELECTOR, "input#username")
-        username.send_keys("rohithsanthosh")
+        username.send_keys("Dony")
+        email = driver.find_element(By.CSS_SELECTOR, "input#email")
+        email.send_keys("dony2001@gmail.com")
+        password = driver.find_element(By.CSS_SELECTOR, "input#password1")
+        password.send_keys("NewUser@123")
+        confirm_password = driver.find_element(By.CSS_SELECTOR, "input#password2")
+        confirm_password.send_keys("NewUser@123")
+        signup_button = driver.find_element(By.CSS_SELECTOR, "button#submit")
+        signup_button.click()
+        time.sleep(2)
+
+        username = driver.find_element(By.CSS_SELECTOR, "input#username")
+        username.send_keys("Dony")
         password = driver.find_element(By.CSS_SELECTOR, "input#password")
-        password.send_keys("R0hith@12")
+        password.send_keys("NewUser@123")
         time.sleep(1)
         submitc = driver.find_element(By.CSS_SELECTOR, "button#submit")
         submitc.click()
         time.sleep(2)
 
+        # Perform actions after login (e.g., download)
         driver.get("http://127.0.0.1:8000/wallpaper/46/")
         time.sleep(2)
         submitc = driver.find_element(By.CSS_SELECTOR, "a#download-for-my-screen")
         submitc.click()
         time.sleep(2)
 
-        dropdown_toggle = driver.find_element(By.CSS_SELECTOR, "li.dropdown a.dropdown-toggle")
+        dropdown_toggle = driver.find_element(By.CLASS_NAME, "dropdown-toggle")
         dropdown_toggle.click()
         time.sleep(1)
-        
-        logout_link = driver.find_element(By.CSS_SELECTOR, "li.dropdown ul.dropdown-menu li a[href*='/logout/']")
-        logout_link.click()
+
+        # Find and click the "Logout" link within the dropdown
+        submitc = driver.find_element(By.CSS_SELECTOR, "a.logout")
+        submitc.click()
         time.sleep(2)
-        # search=driver.find_element(By.CSS_SELECTOR,"input#query.form-control.border-primary.w-50")
-        # search.send_keys("Abhijith Shaji")\
-        # wait = WebDriverWait(driver, 10)
-        # search_input = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "input#query.form-control.border-primary.w-50")))
-        # search_input.send_keys("Abhijith")
-        # time.sleep(5)
-        
 
 if __name__ == '__main__':
     import unittest

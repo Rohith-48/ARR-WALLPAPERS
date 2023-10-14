@@ -321,12 +321,12 @@
 										{% if user.userprofiledoc.is_premium %}
 											<li><a href="{% url 'premiumuserpage'%}">Dashboard</a></li>
 										{% endif %}
-										<li><a href="{% url 'logout'%}">Logout</a></li>
+										<li class="droplogout"><a href="{% url 'logout'%}">Logout</a></li>
 									</ul>
 								</li>
 							{% else %}
 								<li class="login"><a href="{% url 'login'%}">LOG IN</a></li>
-								<li class="btn premium mobile-margin"><a href="{% url 'Premium_signup'%}">Subscribe</a></li>
+								<li class="btn premium mobile-margin" id="premiumsignup"><a href="{% url 'Premium_signup'%}">Subscribe</a></li>
 								<li class="btn signup"><a href="{% url 'signup'%}">SIGN UP</a></li>
 							{% endif %}
 						</ul>

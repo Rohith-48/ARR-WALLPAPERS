@@ -11,6 +11,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Subscriber Profile</title>
     <style>
 body,html{
@@ -206,7 +207,7 @@ form .btn{
                 <a href="#" class="nav-link"><i class="far fa-bell"></i> Notifications</a>
                 <a href="#" id="billingInfoLink" class="nav-link"><i class="far fa-file-alt"></i> Billing Info</a>
                 <a href="#" class="nav-link mb-auto"><i class="fas fa-cogs"></i> General</a>    
-        
+                <a href="#" class="nav-link mb-auto"><i class="fa fa-sign-out"></i> Logout</a>
         </div>
         
         <div class="row align-items-center" style="height:100%">
@@ -219,9 +220,9 @@ form .btn{
                 <a href="#" class="nav-link"><i class="far fa-bell"></i> Notifications</a>
                 <a href="{% url 'Billinginfo' %}" id="billingInfoLink" class="nav-link"><i class="far fa-file-alt"></i> Billing Info</a>
                 <a href="#" class="nav-link mb-auto"><i class="fas fa-cogs"></i> General</a>
-            
+                <a href="{% url 'logout' %}" class="logout" style="color: white;"><i class="fa fa-sign-out"></i> Logout</a>
             </div>
-        
+      
         </div>
         
         <div class="col-md-9">
