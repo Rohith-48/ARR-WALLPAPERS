@@ -9,7 +9,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 class Hosttest(TestCase):
-    
     def setUp(self):
         self.driver = webdriver.Chrome()
         self.driver.implicitly_wait(10)

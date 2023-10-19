@@ -190,6 +190,22 @@ form .btn{
 .expand-menu.animate{
     width : 100%;
 }
+/* Style for the logout link */
+.logout {
+    display: inline-block;
+    padding: 10px 20px;
+    background: linear-gradient(to bottom, #0074e4, #0055b7);
+    border-radius: 20px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    text-align: center;
+  }
+  .logout:hover{
+    color: white;
+    text-decoration: none;
+    background: rgb(41, 154, 247);
+  }
     </style>
 </head>
 <body>
@@ -207,7 +223,6 @@ form .btn{
                 <a href="#" class="nav-link"><i class="far fa-bell"></i> Notifications</a>
                 <a href="#" id="billingInfoLink" class="nav-link"><i class="far fa-file-alt"></i> Billing Info</a>
                 <a href="#" class="nav-link mb-auto"><i class="fas fa-cogs"></i> General</a>    
-                <a href="#" class="nav-link mb-auto"><i class="fa fa-sign-out"></i> Logout</a>
         </div>
         
         <div class="row align-items-center" style="height:100%">
@@ -220,9 +235,8 @@ form .btn{
                 <a href="#" class="nav-link"><i class="far fa-bell"></i> Notifications</a>
                 <a href="{% url 'Billinginfo' %}" id="billingInfoLink" class="nav-link"><i class="far fa-file-alt"></i> Billing Info</a>
                 <a href="#" class="nav-link mb-auto"><i class="fas fa-cogs"></i> General</a>
-                <a href="{% url 'logout' %}" class="logout" style="color: white;"><i class="fa fa-sign-out"></i> Logout</a>
+               
             </div>
-      
         </div>
         
         <div class="col-md-9">
@@ -246,6 +260,7 @@ form .btn{
                                 <button type="submit" id="save-avatar" class="btn" style="color:#8f9096;font-weight:600; display:none;">Save</button>
                             </form>
                             <p class="pl-2 mt-2"><a href="#" id="edit-avatar" class="btn" style="color:#8f9096;font-weight:600">Edit Picture</a></p>
+                            <a class="logout" href="{% url 'logout' %}">Logout</a>
                         </div>
                     </div>
                                     
