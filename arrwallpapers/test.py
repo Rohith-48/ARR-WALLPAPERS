@@ -64,6 +64,8 @@ class Hosttest(TestCase):
         submitc.click()
         time.sleep(2)
 
+        print("Test done successfully")
+
 if __name__ == '__main__':
     import unittest
     unittest.main()
