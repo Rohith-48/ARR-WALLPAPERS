@@ -723,3 +723,7 @@ def termsofservice(request):
 
 def privacypolicy(request):
     return render(request, 'registration/privacypolicy.html')
+
+
+def retrival(request):
+    return render(request, 'retrival.html')

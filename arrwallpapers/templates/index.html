@@ -201,8 +201,6 @@
         margin-bottom: 10px; 
     }
 }
-
-
 	</style>
 </head>
 <body>
@@ -344,38 +342,7 @@
 			</form>
 			<img class="custombtn" id="search-image" src="{% static 'image-asset/topsearch.png'%}">
 		</div>	
-		<li><a href="#" id="classify-image-link">Search using Image</a></li>
-
-		<div id="iframe-container"></div>
-		
-		<script>
-		  document.addEventListener("DOMContentLoaded", function() {
-			// Get a reference to the "Disposal Methods" link
-			var classifyImageLink = document.getElementById("classify-image-link");
-		
-			// Get a reference to the iframe container
-			var iframeContainer = document.getElementById("iframe-container");
-		
-			// Add a click event listener
-			classifyImageLink.addEventListener("click", function(e) {
-			  // Prevent the default link behavior (opening a new tab)
-			  e.preventDefault();
-		
-			  // Create an iframe element
-			  var iframe = document.createElement("iframe");
-			  iframe.src = "http://127.0.0.1:5000/";
-		
-			  // Set the attributes for the iframe
-			  iframe.setAttribute("width", "100%");
-			  iframe.setAttribute("height", "800"); // You can adjust the height as needed
-		
-			  // Append the iframe to the container
-			  iframeContainer.innerHTML = "";
-			  iframeContainer.appendChild(iframe);
-			});
-		  });
-		</script>
-		
+		<li><a href="{% url 'retrival' %}" id="classify-image-link">Search using Image</a></li>
 
 	</div>
 </header>
