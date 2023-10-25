@@ -188,7 +188,6 @@ def profileview(request, username):
 
 
 
-
 def wallpaper_details(request, wallpaper_id):
     wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
     wallpaper.view_count += 1
