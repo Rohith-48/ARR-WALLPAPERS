@@ -1,0 +1,113 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
+
+<style>
+    .grid {
+        margin: 0 auto;
+        column-gap: 15px;
+    }
+
+    .grid-item {
+        width: 100%;
+        break-inside: avoid-column;
+        position: relative;
+        margin-bottom: 15px;
+        overflow: hidden; 
+    }
+
+    .wallpaper-image img {
+        width: 100%;
+        height: auto;
+        border-radius: 5px;
+        display: block;
+    }
+
+    .wallpaper-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(158, 155, 155, 0.067); 
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        border: white;
+    }
+    
+    .wallpaper-overlay h3 {
+        margin: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        position: absolute;
+        top: 0;
+        left: 0;
+        text-align: left;
+    }
+
+    h2 {
+        color: white;
+        margin-bottom: 20px;
+    }
+</style>
+
+<style>
+    @media (min-width: 576px) {
+        .grid-item {
+            width: calc(50% - 7.5px);
+        }
+    }
+
+    @media (min-width: 768px) {
+        .grid-item {
+            width: calc(33.3333% - 10px);
+        }
+    }
+</style>
+
+</head>
+
+<body>
+
+<h2>Wallpapers in {{ selected_category }}</h2>
+
+<div class="grid">
+    {% for wallpaper in wallpapers %}
+        <div class="grid-item">
+            <a href="{% url 'wallpaper_details' wallpaper.id %}">
+                <div class="wallpaper-overlay" onmouseover="showOverlay(this)" onmouseout="hideOverlay(this)">
+                    <h3>{{ wallpaper.title }}</h3>
+                </div>
+                <img src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}">
+            </a>
+        </div>
+    {% endfor %}
+</div>
+
+<script>
+    function showOverlay(overlay) {
+        overlay.style.opacity = 1;
+    }
+
+    function hideOverlay(overlay) {
+        overlay.style.opacity = 0;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var grid = document.querySelector('.grid');
+        var masonry = new Masonry(grid, {
+            itemSelector: '.grid-item',
+            columnWidth: '.grid-item',
+            percentPosition: true,
+            gutter: 15,
+        });
+    });
+</script>
+
+{% endblock %}

@@ -1,5 +1,5 @@
-{% extends 'index.html' %}
 {% load static %}
+{% extends 'index.html' %}
 {% block content %}
     <style>
           #uavatar.enlarge {
@@ -159,30 +159,6 @@ h1 {
     font-size: 12px;
     display: block;
 }
-.collectionc {
-    width: 1060px;
-    margin: 30px auto 0;
-}
-.collectionc .wp-grid {
-    margin: 0 -2%;
-}
-.uploaded {
-    position: relative;
-    float: left;
-    width: 160px;
-    margin: 8px 11px;
-}
-.collectionc .wp-grid>a, .collectionc .wp-grid div>a {
-    float: left;
-    margin: 8px 11px;
-    display: inline-block;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-    background-position: center;
-}
-
 a {
     text-decoration: none;
     color: #0066c6;
@@ -283,7 +259,50 @@ a {
         width: 95%;
     }
 }
+
+
 </style>
+<style>
+    .wp-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        margin: 0 -15px;
+    }
+    
+    .masonry-item {
+        width: calc(25% - 30px);
+        box-sizing: border-box;
+        margin-bottom: 15px;
+    }
+    
+    .uploaded:nth-child(4n) {
+        clear: both;
+    }
+        
+
+    .uploaded img {
+        width: 100%;
+        height: auto;
+        border-radius: 5px;
+        display: block;
+    }
+</style>
+
+<style>
+    @media (min-width: 576px) {
+        .masonry-item {
+            width: calc(50% - 7.5px);
+        }
+    }
+
+    @media (min-width: 768px) {
+        .masonry-item {
+            width: calc(33.3333% - 10px);
+        }
+    }
+</style>
+
 <div id="web">
     <div id="userheaderc">
         <div id="userheader">
@@ -322,38 +341,43 @@ a {
     </ul>
     </div></div>
     <div class="collectionc">
-        <div class="wp-grid">
-            {% for wallpaper in uploaded_wallpapers %}
-            <div class="uploaded">
-                <a href="{% url 'wallpaper_details' wallpaper.id %}" title="{{ wallpaper.title }}">
-                    <img loading="lazy" src="{{ wallpaper.wallpaper_image.url }}" width="160" height="160" alt="{{ wallpaper.title }}" title="{{ wallpaper.title }}">
-                </a>
-                <span class="stats views">Views: {{ wallpaper.view_count }}</span>
+        {% if uploaded_wallpapers %}
+            <div class="wp-grid masonry">
+                {% for wallpaper in uploaded_wallpapers %}
+                    <div class="uploaded masonry-item">
+                        <a href="{% url 'wallpaper_details' wallpaper.id %}" title="{{ wallpaper.title }}">
+                            <img loading="lazy" src="{{ wallpaper.wallpaper_image.url }}" width="160" height="160" alt="{{ wallpaper.title }}" title="{{ wallpaper.title }}">
+                        </a>
+                        <span class="stats views">Views: {{ wallpaper.view_count }}</span>
+                    </div>
+                    {% if forloop.counter|divisibleby:4 %}
+                    <div style="clear:both;"></div> 
+                {% endif %}
+                {% endfor %}
             </div>
-            {% if forloop.counter|divisibleby:4 and not forloop.last %}
-            <div style="clear:both;"></div> <!-- Add this to clear the row after every 4 wallpapers -->
-            {% endif %}
-            {% endfor %}
-        </div>
-        
-        <br style="clear: both;">
-        
-        <div id="pagination">
-            <ul>
-                {% if user_content.has_previous %}
-                    <li><a href="?page=1">‹‹</a></li>
-                    <li><a href="?page={{ user_content.previous_page_number }}">‹</a></li>
-                {% endif %}
-        
-                <li class="current"><strong>{{ user_content.number }}</strong></li>
-        
-                {% if user_content.has_next %}
-                    <li><a href="?page={{ user_content.next_page_number }}">›</a></li>
-                    <li><a href="?page={{ user_content.paginator.num_pages }}">››</a></li>
-                {% endif %}
-            </ul>
-        </div>
+    
+            <br style="clear: both;">
+    
+            <div id="pagination">
+                <ul>
+                    {% if user_content.has_previous %}
+                        <li><a href="?page=1">‹‹</a></li>
+                        <li><a href="?page={{ user_content.previous_page_number }}">‹</a></li>
+                    {% endif %}
+    
+                    <li class="current"><strong>{{ user_content.number }}</strong></li>
+    
+                    {% if user_content.has_next %}
+                        <li><a href="?page={{ user_content.next_page_number }}">›</a></li>
+                        <li><a href="?page={{ user_content.paginator.num_pages }}">››</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        {% else %}
+            <p>No wallpapers to be shown.</p>
+        {% endif %}
     </div>
+    
     
     
     </div>

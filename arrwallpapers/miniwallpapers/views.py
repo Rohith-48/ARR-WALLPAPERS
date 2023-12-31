@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from django.contrib.auth import authenticate, login
+import requests
 from .models import Category, Tag, UserProfileDoc, WallpaperCollection
 from django.shortcuts import get_object_or_404, redirect
 from django.core.validators import validate_email
@@ -134,12 +135,38 @@ def login(request):
 
 
 
+from django.shortcuts import render
+from .models import WallpaperCollection, UserProfileDoc
+
 def index(request):
     query = request.GET.get('q')
+    
+    # Fetch wallpapers and creators
     wallpapers = WallpaperCollection.objects.select_related('user').prefetch_related('tags').order_by('-upload_date') 
+    creators = UserProfileDoc.objects.filter(is_creator=True)
+
+    admin_user = User.objects.filter(is_staff=True).first()
+    categories = Category.objects.all()
     if query:
         wallpapers = wallpapers.filter(title__icontains=query)
-    return render(request, 'index.html', {'wallpapers': wallpapers, 'query': query})
+
+    return render(request, 'index.html', {'wallpapers': wallpapers, 'creators': creators, 'admin_user': admin_user, 'categories': categories, 'query': query})
+
+
+
+from django.shortcuts import render
+from .models import WallpaperCollection, Category
+
+def category_filter(request, category):
+    # Get the category object
+    category_obj = Category.objects.get(name__iexact=category)
+
+    # Filter wallpapers by the selected category
+    wallpapers = WallpaperCollection.objects.filter(category=category_obj).order_by('-upload_date')
+
+    return render(request, 'category_filter.html', {'wallpapers': wallpapers, 'selected_category': category_obj})
+
+
 
 
 
@@ -191,7 +218,7 @@ def profileview(request, username):
 def wallpaper_details(request, wallpaper_id):
     wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
     wallpaper.view_count += 1
-    # wallpaper.downloads += 1
+    wallpaper.downloads += 1
     wallpaper.save()
     return render(request, 'wallpaper_details.html', {'wallpaper': wallpaper})
     
@@ -713,6 +740,84 @@ def contactform(request):
     return render(request, 'registration/contactform.html')
 
 
+from django.shortcuts import render
+import requests
+
+def ai_wallpaper_generator(request):
+    if request.method == 'POST':
+        api_key = 'vk-1OiO5Rrv2Nx3NiaajW3ADxuoAlZzGQ3QisedgkeZUAFIN'
+        api_url = 'https://api.vyro.ai/v1/imagine/api/generations'
+
+        headers = {
+            'Authorization': f'Bearer {api_key}',
+        }
+
+        prompt = request.POST.get('prompt')
+        style_id = request.POST.get('style_id')
+        aspect_ratio = request.POST.get('aspect_ratio')
+
+        # Set the number of images to generate
+        num_images = 4
+
+        # Create a list to store the generated images
+        generated_images = []
+
+        for _ in range(num_images):
+            # Make a request for each image
+            response = requests.post(api_url, headers=headers, files={
+                'prompt': (None, prompt),
+                'style_id': (None, style_id),
+                'aspect_ratio': (None, aspect_ratio)
+            })
+
+            if response.status_code == 200:
+                # Assuming the response contains the image data
+                image_data = response.content
+                generated_images.append(image_data)
+
+        if generated_images:
+            # Save or process the image data as needed
+            # For simplicity, we are saving the images in the static directory
+            for i, image_data in enumerate(generated_images):
+                with open(f'static/generated_images/generated_image_{i + 1}.jpg', 'wb') as f:
+                    f.write(image_data)
+
+            # Assuming you want to display the first generated image in the HTML
+            return render(request, 'ai_wallpaper_generator.html', {'image_url': f'/static/generated_images/generated_image_1.jpg'})
+        else:
+            return render(request, 'ai_wallpaper_generator.html', {'error_message': 'Failed to generate images'})
+
+    return render(request, 'ai_wallpaper_generator.html', {'image_url': None, 'error_message': None})
+
+
+# from django.shortcuts import render
+# import openai
+
+# def ai_wallpaper_generator(request):
+#     if request.method == 'POST':
+#         prompt = request.POST.get('prompt', '')
+#         img_quantity = int(request.POST.get('img_quantity', 4))  # Default to 4 images
+#         openai_api_key = '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'  # Replace with your OpenAI API key
+
+#         # Call OpenAI API to generate images
+#         try:
+#             response = openai.images.generate(
+#                 model="dall-e-3",
+#                 prompt=prompt,
+#                 size="1024x1024",
+#                 quality="standard",
+#                 n=img_quantity,
+#                 key=openai_api_key
+#             )
+
+#             image_data = response.data
+#             # Render the HTML template with the image data
+#             return render(request, 'ai_wallpaper_generator.html', {'data': image_data})
+#         except Exception as e:
+#             return render(request, 'error_page.html', {'error': str(e)})
+
+#     return render(request, 'ai_wallpaper_generator.html')  
+
 
 def about(request):
     return render(request, 'registration/about.html')
@@ -726,3 +831,4 @@ def privacypolicy(request):
 
 def retrival(request):
     return render(request, 'retrival.html')
+
