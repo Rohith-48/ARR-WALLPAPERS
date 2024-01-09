@@ -23,9 +23,8 @@
       }
 
       header img {
-          width: 70px;
-          height: 80px;
-          margin-right: 15px;
+          margin-right: 20px;
+          margin-left: 20px;
       }
 
       header button {
@@ -40,8 +39,8 @@
 
       header button.avatar {
           padding: 0;
-          width: 40px;
-          height: 40px;
+          width: 20px;
+          height: 20px;
           border-radius: 50%;
           overflow: hidden;
       }
@@ -83,33 +82,17 @@
     font-weight: lighter;
     margin-right: 25px; 
 }
-header button.avatar + .dropdown-menu {
-  display: none;
+.navbar-nav .dropdown-menu .dropdown-item {
+    color: white;
+    text-decoration: none;
+    /* background-color: white; */
 }
 
-/* Display the dropdown menu on hover */
-header button.avatar:hover + .dropdown-menu {
-  display: block;
-}
-
-/* Hide the dropdown menu when not hovering on the avatar */
-header button.avatar:hover + .dropdown-menu:hover {
-  display: block;
-}
-
-/* Adjust the positioning of the dropdown menu */
-header button.avatar + .dropdown-menu {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  z-index: 1;
-}
   </style>
 </head>
 <body>
   <header>
-    <img src="{% static 'image-asset/icon.png' %}" width="30" height="30" alt="Website Icon">
-
+    <a href="{% url 'index'%}"><img src="{% static 'image-asset/icon.png' %}" width="70" height="80" alt="Website Icon"></a>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -120,37 +103,48 @@ header button.avatar + .dropdown-menu {
                                 <img src="{% if user.userprofiledoc.avatar %}{{ user.userprofiledoc.avatar.url }}{% else %}{% static 'image-asset/dp.jpg' %}{% endif %}" width="40" height="40" style="border-radius: 50%;">
                                 <span class="caret"></span>
                             </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                {% if user.userprofiledoc.is_creator %}
-                                    <a class="dropdown-item" href="{% url 'userprofile'%}">Dashboard</a>
-                                {% endif %}
-                                {% if user.is_superuser %}
-                                    <a class="dropdown-item" href="{% url 'admin_dashboard'%}">Dashboard</a>
-                                {% endif %}
-                                {% if user.userprofiledoc.is_premium %}
-                                    <a class="dropdown-item" href="{% url 'premiumuserpage'%}">Dashboard</a>
-                                {% endif %}
-                                <div class="dropdown-divider"></div>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="display: none;" id="userDropdown">
+                                <div id="dashboardDropdown">
+                                    {% if user.userprofiledoc.is_creator %}
+                                        <a class="dropdown-item" href="{% url 'ai_wallpaper_generator'%}">Dashboard</a>
+                                    {% endif %}
+                                    {% if user.is_superuser %}
+                                        <a class="dropdown-item" href="{% url 'ai_wallpaper_generator'%}">Dashboard</a>
+                                    {% endif %}
+                                    {% if user.userprofiledoc.is_premium %}
+                                        <a class="dropdown-item" href="{% url 'ai_wallpaper_generator'%}">Dashboard</a>
+                                    {% endif %}
+                                    <div class="dropdown-divider"></div>
+                                </div>
                                 <a class="dropdown-item" href="{% url 'logout'%}">Logout</a>
                             </div>
                         </li>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                var userDropdown = document.getElementById('userDropdown');
+                                document.getElementById('navbarDropdown').addEventListener('click', function () {
+                                    userDropdown.style.display = userDropdown.style.display === 'none' ? 'block' : 'none';
+                                });
+                            });
+                        </script>
                     {% else %}
-                    <li class="nav-item">
-                      <button type="button" class="btn btn-danger" onclick="redirectToLoginPage()">Login</button>
-                  </li>
-                  
-                  <script>
-                      function redirectToLoginPage() {
-                          window.location.href = "{% url 'login' %}";
-                      }
-                  </script>
-                  
+                        <li class="nav-item">
+                            <button type="button" class="btn btn-danger" onclick="redirectToLoginPage()">Login</button>
+                        </li>
+                        <script>
+                            function redirectToLoginPage() {
+                                window.location.href = "{% url 'login' %}";
+                            }
+                        </script>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
+    
+    
 </header>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <section class="image-generator">
     <div class="content">
         <h1>AI Wallpaper</h1>
@@ -164,38 +158,35 @@ header button.avatar + .dropdown-menu {
         </form>
     </div>
 </section>
-
+<script>
+    $(document).ready(function () {
+        $('#generate-form').submit(function () {
+            // Change the button text to "Generating"
+            $('.generate-btn').text('Generating');
+        });
+    });
+</script>
 <section class="image-gallery">
-    {% if image_url %}
-    <section class="image-result">
-        <img src="{{ image_url }}" alt="Generated Image">
-        <button class="download-button" onclick="downloadImage('{{ image_url }}', 'generated_image.png')">
-            Download
-        </button>
-    </section>
+    {% if image_data %}
+        <h2>Generated Images</h2>
+        <div>
+            {% for img_data in image_data %}
+            <img src="data:image/jpeg;base64,{{ img_data.b64_json }}" alt="Generated Image">
+            <a href="data:image/jpeg;base64,{{ img_data.b64_json }}" download="generated_image{{ loop.index }}.jpeg">
+                <img src="{% static 'image-asset/download.svg' %}" alt="Download Icon" class="download-icon" style="width: 80px; height: 80px;">
+            </a>
+        {% endfor %}
+        </div>
+    {% elif error_message %}
+        <p class="error-message">{{ error_message }}</p>
+    {% else %}
+        <div class="img-card"><img src="{% static 'image-asset/img-1.jpg' %}" alt="image"></div>
+        <div class="img-card"><img src="{% static 'image-asset/img-2.jpg' %}" alt="image"></div>
+        <div class="img-card"><img src="{% static 'image-asset/img-3.jpg' %}" alt="image"></div>
+        <div class="img-card"><img src="{% static 'image-asset/img-4.jpg' %}" alt="image"></div>
     {% endif %}
 
-    {% if error_message %}
-    <section class="error-message">
-        <p>{{ error_message }}</p>
-    </section>
-    {% endif %}
-
-    {% for i in "1234" %}
-    <div class="img-card">
-        <img src="{% static 'generated_images/generated_image_'|add:i|stringformat:"s.jpg" %}" alt="Generated Image {{ i }}">
-    </div>
-    {% endfor %}
-
-    {% if not image_url %}
-    <div class="img-card"><img src="{% static 'image-asset/img-1.jpg' %}" alt="image"></div>
-    <div class="img-card"><img src="{% static 'image-asset/img-2.jpg' %}" alt="image"></div>
-    <div class="img-card"><img src="{% static 'image-asset/img-3.jpg' %}" alt="image"></div>
-    <div class="img-card"><img src="{% static 'image-asset/img-4.jpg' %}" alt="image"></div>
-    {% endif %}
 </section>
-
-
 
     <footer class="footer">
       <div class="container">
@@ -210,18 +201,8 @@ header button.avatar + .dropdown-menu {
       </div>
   </footer>
 </body>
-
-<script>
-    function downloadImage(url, filename) {
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-</script>
-<script>
+   
+<!-- <script>
     const updateImageCard = (imgDataArray) => {
         // Hide the loader
         const loader = document.querySelector(".loader");
@@ -231,12 +212,8 @@ header button.avatar + .dropdown-menu {
             const imgCard = imageGallery.querySelectorAll(".img-card")[index];
             const imgElement = imgCard.querySelector("img");
             const downloadBtn = imgCard.querySelector(".download-btn");
-
-            // Set the image source to the AI-generated image data
             const aiGeneratedImage = `data:image/jpeg;base64,${imgObject.b64_json}`;
             imgElement.src = aiGeneratedImage;
-
-            // When the image is loaded, remove the loading class and set download attributes
             imgElement.onload = () => {
                 imgCard.classList.remove("loading");
                 downloadBtn.setAttribute("href", aiGeneratedImage);
@@ -248,8 +225,6 @@ header button.avatar + .dropdown-menu {
     const handleImageGeneration = async (e) => {
         e.preventDefault();
         if (isImageGenerating) return;
-
-        // Get user input and image quantity values
         const userPrompt = e.srcElement[0].value;
         const userImgQuantity = parseInt(e.srcElement[1].value);
 
@@ -289,5 +264,5 @@ header button.avatar + .dropdown-menu {
             isImageGenerating = false;
         }
     }
-</script>
+</script> -->
 </html>

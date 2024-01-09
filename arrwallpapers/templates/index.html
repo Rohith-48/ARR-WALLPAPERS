@@ -372,7 +372,6 @@
     });
 </script>
 
-<!-- END | Header -->
 
 <div class="slider wall-item">
 	<div class="container">
@@ -386,7 +385,7 @@
 			</div>
 
 			{% block content %}
-	    	<div  class="slick-multiItemSlider">
+	    	<!-- <div  class="slick-multiItemSlider">
 	    		<div class="movie-item">
 	    			<div class="mv-img">
 	    				<a href="#"><img src="{% static 'image-asset\thumbnail.jpg'%}" alt="" width="285" height="437"></a>
@@ -498,7 +497,35 @@
 	    	</div>
 	    </div>
 	</div>
+</div> -->
+
+<!-- Add this section to display most viewed wallpapers -->
+<div class="slick-multiItemSlider">
+    {% for wallpaper in most_viewed_wallpapers %}
+        <div class="movie-item">
+            <div class="mv-img">
+                {% if wallpaper.wallpaper_image.width < wallpaper.wallpaper_image.height %}
+                    <a href="{% url 'wallpaper_details' wallpaper.id %}">
+                        <img src="{{ wallpaper.wallpaper_image.url }}" alt="" width="285" height="437">
+                    </a>
+                {% else %}
+                    <a href="{% url 'wallpaper_details' wallpaper.id %}">
+                        <img src="{{ wallpaper.wallpaper_image.url }}" alt="" width="285" height="437">
+                    </a>
+                {% endif %}
+            </div>
+            <div class="title-in">
+                <div class="cate">
+                    <span class="blue"><a href="{% url 'wallpaper_details' wallpaper.id %}">{{ wallpaper.category.name }}</a></span>
+                </div>
+                <h6><a href="{% url 'wallpaper_details' wallpaper.id %}">{{ wallpaper.title }}</a></h6>
+                <p><i class="ion-android-star"></i><span>{{ wallpaper.view_count }}</span> views</p>
+            </div>
+        </div>
+    {% endfor %}
 </div>
+
+
 <div class="wall-item">
     <div class="container">
         <div class="row ipad-width">
@@ -508,7 +535,7 @@
                     <a href="#" class="viewall">View all <i class="ion-ios-arrow-right"></i></a>
                 </div>
                 <div class="wallpapers">
-					<div class="grid-sizer"></div> <!-- Masonry requires a grid-sizer element -->
+					<div class="grid-sizer"></div> 
 					{% if wallpapers %}
 						{% for wallpaper in wallpapers %}
 						<div class="wallpaper-box">
@@ -523,7 +550,6 @@
 										{% endif %}
 										<div class="wallpaper-overlay">
 											<h3>{{ wallpaper.title }}</h3>
-											<!-- HTML -->
 											<div class="like-button-container">
 												<button class="like-button like-button-link" data-wallpaper-id="{{ wallpaper.id }}"><i class="fas fa-heart"></i></button>
 											</div>
@@ -555,8 +581,6 @@
 </div>
 
 {% endblock %}
-<!--end of latest new v1 section-->
-<!-- footer section-->
 <footer class="ht-footer">
 	<div class="container">
 		<div class="flex-parent-ft">
@@ -608,6 +632,7 @@
 						{% endif %}
 					</li>
 					<li><a href="{% url 'liked_wallpapers' %}">Liked Wallpapers</a></li>
+					
 
 					<li><a href="#">Collections</a></li>
 					<li><a href="#">User Guide</a></li>

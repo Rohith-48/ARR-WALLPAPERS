@@ -134,24 +134,26 @@ def login(request):
         return render(request, "login.html")
 
 
-
 from django.shortcuts import render
-from .models import WallpaperCollection, UserProfileDoc
+from .models import WallpaperCollection, UserProfileDoc, Category
 
 def index(request):
     query = request.GET.get('q')
-    
+
     # Fetch wallpapers and creators
-    wallpapers = WallpaperCollection.objects.select_related('user').prefetch_related('tags').order_by('-upload_date') 
+    wallpapers = WallpaperCollection.objects.select_related('user').prefetch_related('tags').order_by('-upload_date')
     creators = UserProfileDoc.objects.filter(is_creator=True)
 
     admin_user = User.objects.filter(is_staff=True).first()
     categories = Category.objects.all()
+
+    # Retrieve the most viewed wallpapers
+    most_viewed_wallpapers = WallpaperCollection.objects.order_by('-view_count')[:5]
+
     if query:
         wallpapers = wallpapers.filter(title__icontains=query)
 
-    return render(request, 'index.html', {'wallpapers': wallpapers, 'creators': creators, 'admin_user': admin_user, 'categories': categories, 'query': query})
-
+    return render(request, 'index.html', {'wallpapers': wallpapers, 'creators': creators, 'admin_user': admin_user, 'categories': categories, 'query': query, 'most_viewed_wallpapers': most_viewed_wallpapers})
 
 
 from django.shortcuts import render
@@ -740,83 +742,109 @@ def contactform(request):
     return render(request, 'registration/contactform.html')
 
 
+
 from django.shortcuts import render
+import base64
 import requests
+import os
 
 def ai_wallpaper_generator(request):
     if request.method == 'POST':
-        api_key = 'vk-1OiO5Rrv2Nx3NiaajW3ADxuoAlZzGQ3QisedgkeZUAFIN'
-        api_url = 'https://api.vyro.ai/v1/imagine/api/generations'
+        user_prompt = request.POST.get('prompt')
+        user_quantity = int(request.POST.get('quantity', 4))  
 
-        headers = {
-            'Authorization': f'Bearer {api_key}',
+        url = "https://api.stability.ai/v1/generation/stable-diffusion-v1-6/text-to-image"
+
+        body = {
+            "steps": 40,
+            "width": 512,
+            "height": 512,
+            "seed": 0,
+            "cfg_scale": 5,
+            "samples": user_quantity,
+            "text_prompts": [
+                {
+                    "text": user_prompt,
+                    "weight": 1
+                },
+                {
+                    "text": "blurry, bad",
+                    "weight": -1
+                }
+            ],
         }
 
-        prompt = request.POST.get('prompt')
-        style_id = request.POST.get('style_id')
-        aspect_ratio = request.POST.get('aspect_ratio')
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": "Bearer sk-vOn49jmqCnzvAgcHG24nlxFQ8ztzRhLuihMJNG2j0PmW50mU",  
+        }
 
-        # Set the number of images to generate
-        num_images = 4
+        response = requests.post(url, headers=headers, json=body)
 
-        # Create a list to store the generated images
-        generated_images = []
+        if response.status_code != 200:
+            raise Exception("Non-200 response: " + str(response.text))
 
-        for _ in range(num_images):
-            # Make a request for each image
-            response = requests.post(api_url, headers=headers, files={
-                'prompt': (None, prompt),
-                'style_id': (None, style_id),
-                'aspect_ratio': (None, aspect_ratio)
-            })
+        data = response.json()
 
-            if response.status_code == 200:
-                # Assuming the response contains the image data
-                image_data = response.content
-                generated_images.append(image_data)
+        image_data = [{'b64_json': image['base64']} for image in data["artifacts"]]
 
-        if generated_images:
-            # Save or process the image data as needed
-            # For simplicity, we are saving the images in the static directory
-            for i, image_data in enumerate(generated_images):
-                with open(f'static/generated_images/generated_image_{i + 1}.jpg', 'wb') as f:
-                    f.write(image_data)
+        return render(request, 'ai_wallpaper_generator.html', {'image_data': image_data})
 
-            # Assuming you want to display the first generated image in the HTML
-            return render(request, 'ai_wallpaper_generator.html', {'image_url': f'/static/generated_images/generated_image_1.jpg'})
-        else:
-            return render(request, 'ai_wallpaper_generator.html', {'error_message': 'Failed to generate images'})
-
-    return render(request, 'ai_wallpaper_generator.html', {'image_url': None, 'error_message': None})
+    return render(request, 'ai_wallpaper_generator.html')
 
 
+
+# import os
+# import requests
+# from django.conf import settings 
 # from django.shortcuts import render
-# import openai
 
-# def ai_wallpaper_generator(request):
+# # Load API key 
+# API_KEY = os.environ.get('sk-JVY41JII6OjgoPqnzsyTzxas7iJsjFeOCyY9DLRGJXy7x8o7')
+
+# def upscaleimage(request):
 #     if request.method == 'POST':
-#         prompt = request.POST.get('prompt', '')
-#         img_quantity = int(request.POST.get('img_quantity', 4))  # Default to 4 images
-#         openai_api_key = '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'  # Replace with your OpenAI API key
+#         image = request.FILES['image']
+        
+#         # Save image 
+#         temp_path = os.path.join(settings.MEDIA_ROOT, 'temp.png')
+#         with open(temp_path, 'wb+') as f:
+#             for chunk in image.chunks(): 
+#                 f.write(chunk)
+        
+#         # Prepare headers
+#         headers = {
+#             'Authorization': f'Bearer {API_KEY}',
+#             'Accept': 'application/json'  
+#         }
+        
+#         # API request
+#         endpoint = 'https://api.stability.ai/v1/image-to-image/upscale'  
+#         files = {'image': open(temp_path, 'rb')}
+#         response = requests.post(endpoint, headers=headers, files=files)
 
-#         # Call OpenAI API to generate images
-#         try:
-#             response = openai.images.generate(
-#                 model="dall-e-3",
-#                 prompt=prompt,
-#                 size="1024x1024",
-#                 quality="standard",
-#                 n=img_quantity,
-#                 key=openai_api_key
-#             )
+#         # Process response 
+#         upscaled_images = []
+#         if response.status_code == 200:
+#             data = response.json()
+            
+#             for item in data['artifacts']:
+#                 image = base64.b64decode(item['base64']) 
+#                 filename = f'upscaled_{item["seed"]}.png'
+                
+#                 image_path = os.path.join(settings.MEDIA_ROOT, filename)  
+#                 with open(image_path, 'wb') as f:
+#                     f.write(image)  
+                    
+#                 upscaled_images.append(filename)
 
-#             image_data = response.data
-#             # Render the HTML template with the image data
-#             return render(request, 'ai_wallpaper_generator.html', {'data': image_data})
-#         except Exception as e:
-#             return render(request, 'error_page.html', {'error': str(e)})
+#         context = {'images': upscaled_images}       
+#         return render(request, 'upscaleimage.html', context)
 
-#     return render(request, 'ai_wallpaper_generator.html')  
+#     return render(request, 'upscaleimage.html')
+
+
 
 
 def about(request):
