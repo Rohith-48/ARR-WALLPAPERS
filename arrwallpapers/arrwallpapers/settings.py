@@ -183,3 +183,14 @@ DEFAULT_FROM_EMAIL = 'arrlivewallpaper2022@gmail.com'
 
 RAZOR_KEY_ID = 'rzp_test_0zpOMoTxoYH2my'
 RAZOR_KEY_SECRET = '8CMU9Qg9plMX3mYD07IrUEu2'
+
+STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
+
+ALLOWED_HOSTS = ['.vercel.app', '.now.sh']
+ALLOWED_HOSTS = ['*']
+
+
+# settings.py
+from dotenv import load_dotenv
+load_dotenv()
