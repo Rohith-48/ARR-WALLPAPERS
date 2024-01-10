@@ -110,10 +110,13 @@ WSGI_APPLICATION = 'arrwallpapers.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
+        # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'arrwallpapers',
         'USER': 'postgres',
         'PASSWORD': 'razor',
         'HOST': '127.0.0.1'
+        # 'HOST': 'localhost',
+        # 'PORT': '5432',
     }
 }
 
@@ -184,13 +187,8 @@ DEFAULT_FROM_EMAIL = 'arrlivewallpaper2022@gmail.com'
 RAZOR_KEY_ID = 'rzp_test_0zpOMoTxoYH2my'
 RAZOR_KEY_SECRET = '8CMU9Qg9plMX3mYD07IrUEu2'
 
-STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+# STATIC_URL = "static/"
+# STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
-ALLOWED_HOSTS = ['.vercel.app', '.now.sh']
-ALLOWED_HOSTS = ['*']
-
-
-# settings.py
-from dotenv import load_dotenv
-load_dotenv()
+# ALLOWED_HOSTS = ["127.0.0.1", ".vercel.app", ".now.sh"]
