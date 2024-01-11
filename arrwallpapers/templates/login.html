@@ -318,5 +318,21 @@ a.google span{
         });
     
     </script>
+
+    <div class="alan-btn"></div>
+
+<script type="text/javascript" src="https://studio.alan.app/web/lib/alan_lib.min.js"></script>
+<script>
+	var alanBtnInstance = alanBtn({
+	  key: "abf99f8333f9418af1f77c20dd0a63942e956eca572e1d8b807a3e2338fdd0dc/stage",
+	  onCommand: function (commandData) {
+		if (commandData.command === "go:back") {
+		  // Call client code that will react to the received command
+		}
+		// Add more command handlers as needed
+	  },
+	  rootEl: document.getElementById("alan-btn"),
+	});
+ </script>
 </body>
 </html>
