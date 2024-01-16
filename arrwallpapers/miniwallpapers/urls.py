@@ -11,6 +11,7 @@ urlpatterns=[
     path('retrival', views.retrival, name='retrival'),
     path('ai_wallpaper_generator/', views.ai_wallpaper_generator, name='ai_wallpaper_generator'),
     #  path('upscaleimage/', views.upscaleimage, name='upscaleimage'),
+    path('add_comment/<int:wallpaper_id>/', views.add_comment, name='add_comment'),
     path('login/', views.login, name='login'),
     path('signup', views.signup, name='signup'),
     path('logout', views.logout, name='logout'),

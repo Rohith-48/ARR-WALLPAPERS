@@ -7,11 +7,17 @@ For more information on this file, see
 https://docs.djangoproject.com/en/4.2/howto/deployment/wsgi/
 """
 
+# import os
+
+# from django.core.wsgi import get_wsgi_application
+
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'arrwallpapers.settings')
+# application = get_wsgi_application()
+# # add this vercel variable
+# app = application
+
 import os
-
 from django.core.wsgi import get_wsgi_application
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'arrwallpapers.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "arrwallpapers.settings")
 application = get_wsgi_application()
-# add this vercel variable
 app = application

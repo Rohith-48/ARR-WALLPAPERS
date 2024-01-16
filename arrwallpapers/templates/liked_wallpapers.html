@@ -70,23 +70,28 @@
     <h1 style="color: white;">Liked Wallpapers</h1>
     <br>
     <div id="liked-wallpapers-container">
-        {% for wallpaper in wallpapers %}
-        <div class="liked-wallpaper">
-            <div class="overlay">
-                <a href="{% url 'wallpaper_details' wallpaper_id=wallpaper.id %}" data-lightbox="wallpapers" data-title="{{ wallpaper.title }}">
-                    <h2 class="title">{{ wallpaper.title }}</h2>
-                </a>
-            </div>
-            <a href="{% url 'wallpaper_details' wallpaper_id=wallpaper.id %}" data-lightbox="wallpapers" data-title="{{ wallpaper.title }}">
-                <img src="{{ wallpaper.image_url }}" alt="{{ wallpaper.title }}" class="wallpaper-image">
-            </a>
-        </div>
-        {% if forloop.counter|divisibleby:4 and not forloop.last %}
-        <div style="width: 100%; clear: both;"></div>
+        {% if wallpapers %}
+            {% for wallpaper in wallpapers %}
+                <div class="liked-wallpaper">
+                    <div class="overlay">
+                        <a href="{% url 'wallpaper_details' wallpaper_id=wallpaper.id %}" data-lightbox="wallpapers" data-title="{{ wallpaper.title }}">
+                            <h2 class="title">{{ wallpaper.title }}</h2>
+                        </a>
+                    </div>
+                    <a href="{% url 'wallpaper_details' wallpaper_id=wallpaper.id %}" data-lightbox="wallpapers" data-title="{{ wallpaper.title }}">
+                        <img src="{{ wallpaper.image_url }}" alt="{{ wallpaper.title }}" class="wallpaper-image">
+                    </a>
+                </div>
+                {% if forloop.counter|divisibleby:4 and not forloop.last %}
+                    <div style="width: 100%; clear: both;"></div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <p>No liked wallpapers found.</p>
         {% endif %}
-        {% endfor %}
     </div>
 </div>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
 <script>
@@ -98,7 +103,7 @@
 
     document.addEventListener("DOMContentLoaded", function () {
         var likedWallpaperIds = JSON.parse(getCookie("likedWallpapers")) || [];
-
+    
         if (likedWallpaperIds.length === 0) {
             var messageElement = document.createElement("p");
             messageElement.textContent = "You haven't liked any wallpapers yet.";
@@ -107,14 +112,13 @@
             fetch("/liked_wallpapers/?likedWallpapers=" + JSON.stringify(likedWallpaperIds))
                 .then(response => response.json())
                 .then(data => {
+                    var likedWallpapersContainer = document.getElementById("liked-wallpapers-container");
+    
                     if (data.likedWallpapers.length === 0) {
                         var messageElement = document.createElement("p");
                         messageElement.textContent = "No liked wallpapers found.";
-                        document.getElementById("liked-wallpapers-section").appendChild(messageElement);
+                        likedWallpapersContainer.appendChild(messageElement);
                     } else {
-                        var likedWallpapersContainer = document.createElement("div");
-                        likedWallpapersContainer.id = "liked-wallpapers-container";
-                        document.getElementById("liked-wallpapers-section").appendChild(likedWallpapersContainer);
                         data.likedWallpapers.forEach(function (wallpaper) {
                             var wallpaperElement = document.createElement("div");
                             wallpaperElement.className = "liked-wallpaper";
@@ -136,6 +140,7 @@
                 });
         }
     });
+    
 </script>
 
 {% endblock %}

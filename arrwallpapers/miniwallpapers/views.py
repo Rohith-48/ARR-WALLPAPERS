@@ -217,14 +217,69 @@ def profileview(request, username):
 
 
 
+from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from .models import WallpaperCollection, UserProfileDoc, Category, Comment
+from django.contrib.auth.decorators import login_required
+
 def wallpaper_details(request, wallpaper_id):
     wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
+    wallpapers = WallpaperCollection.objects.select_related('user').prefetch_related('tags').order_by('-upload_date')
+    creators = UserProfileDoc.objects.filter(is_creator=True)
+    admin_user = User.objects.filter(is_staff=True).first()
+    categories = Category.objects.all()
+
+    # Increment view count and downloads
     wallpaper.view_count += 1
     wallpaper.downloads += 1
     wallpaper.save()
-    return render(request, 'wallpaper_details.html', {'wallpaper': wallpaper})
+
+    # Fetch comments related to the wallpaper
+    comments = Comment.objects.filter(wallpaper=wallpaper).order_by('-created_at')
+
+    return render(request, 'wallpaper_details.html', {
+        'wallpaper': wallpaper,
+        'wallpapers': wallpapers,
+        'creators': creators,
+        'admin_user': admin_user,
+        'categories': categories,
+        'comments': comments,
+    })
+
+
+from django.shortcuts import render
+from django.views.decorators.http import require_POST
+from django.utils import timezone
+@login_required
+@require_POST
+def add_comment(request, wallpaper_id):
+    wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
+    comment_text = request.POST.get('comment_text')
+
+    if comment_text:
+        comment = Comment.objects.create(
+            user=request.user,
+            wallpaper=wallpaper,
+            text=comment_text,
+            created_at=timezone
+        )
+
+        comments = Comment.objects.filter(wallpaper=wallpaper).order_by('-created_at')
+        wallpaper.save()
+
+        # Render the updated comments HTML
+        comments_html = render(request, 'wallpaper_details.html', {'comments': comments}).content
+
+        return render(request, 'wallpaper_details.html', {
+            'wallpaper': wallpaper,
+            'comments_html': comments_html,
+            # Add other context variables as needed
+        })
+    else:
+        # Handle the case where comment_text is empty
+        return render(request, 'wallpaper_details.html', {'error': 'Comment text is required'})
     
-    
+
 
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect, get_object_or_404
@@ -414,7 +469,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from .models import UserProfileDoc
 
 @csrf_exempt

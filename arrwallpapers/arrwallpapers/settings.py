@@ -110,16 +110,25 @@ WSGI_APPLICATION = 'arrwallpapers.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'arrwallpapers',
         'USER': 'postgres',
         'PASSWORD': 'razor',
         'HOST': '127.0.0.1'
-        # 'HOST': 'localhost',
-        # 'PORT': '5432',
+    
     }
 }
 
+# DATABASES = {
+#   'default': {
+#     'ENGINE': 'django.db.backends.postgresql',
+#     'NAME': 'neondb',
+#     'USER': 'Rohith-48',
+#     'PASSWORD': 'UM4FxqV3cbKR',
+#     'HOST': 'ep-calm-bush-38021353.us-east-2.aws.neon.tech',
+#     'PORT': '5432',
+#     'OPTIONS': {'sslmode': 'require'},
+#   }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
