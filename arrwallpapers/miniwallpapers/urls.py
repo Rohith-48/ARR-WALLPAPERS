@@ -12,6 +12,7 @@ urlpatterns=[
     path('ai_wallpaper_generator/', views.ai_wallpaper_generator, name='ai_wallpaper_generator'),
     #  path('upscaleimage/', views.upscaleimage, name='upscaleimage'),
     path('add_comment/<int:wallpaper_id>/', views.add_comment, name='add_comment'),
+    path('set_premium_status/', views.set_premium_status, name='set_premium_status'),
     path('login/', views.login, name='login'),
     path('signup', views.signup, name='signup'),
     path('logout', views.logout, name='logout'),
@@ -59,6 +60,9 @@ urlpatterns=[
     path('about/', views.about, name='about'),
     path('termsofservice/', views.termsofservice, name='termsofservice'),
     path('privacypolicy/', views.privacypolicy, name='privacypolicy'),
+
+
+    path('community', views.community, name='community'),
     ]
 
 if settings.DEBUG:

@@ -8,7 +8,7 @@ class UserProfileDoc(models.Model):
     is_creator = models.BooleanField(default=False)  
     is_premium = models.BooleanField(default=False) 
     is_approved = models.BooleanField(default=False)
-    subscribed = models.BooleanField(default=False)  # To track if user has subscribed
+    subscribed = models.BooleanField(default=False)  
     subscription_expiration = models.DateField(null=True, blank=True)
     subscription_duration = models.PositiveIntegerField(default=0)
     portfolio = models.FileField(upload_to='portfolio/', blank=True, null=True)

@@ -279,9 +279,7 @@
 					</ul>
 				</li>
 
-
-						
-						
+		
 						<li class="dropdown first">
 							{% if user.userprofiledoc.is_creator %}
 								<a href="{% url 'userprofile' %}" class="btn btn-default lv1">
@@ -304,7 +302,7 @@
 							community <i class="fa fa-angle-down" aria-hidden="true"></i>
 							</a>
 							<ul class="dropdown-menu level1">
-								<li><a href="#">user favorite grid</a></li>
+								<li><a href="{% url 'community' %}">Community Chat</a></li>
 								<li><a href="#">user favorite list</a></li>
 								<li><a href="#">user profile</a></li>
 								<li class="it-last"><a href="#">user rate</a></li>
@@ -744,7 +742,7 @@ $(document).ready(function () {
 <script type="text/javascript" src="https://studio.alan.app/web/lib/alan_lib.min.js"></script>
 <script>
 	var alanBtnInstance = alanBtn({
-	  key: "0bf09b7c50a3de046b6a477a86044fbf2e956eca572e1d8b807a3e2338fdd0dc/stage",
+	  key: "c0c38627f11e68a0cf12c55647129efe2e956eca572e1d8b807a3e2338fdd0dc/stage",
 	  onCommand: function (commandData) {
 		if (commandData.command === "go:back") {
 		  // Call client code that will react to the received command
@@ -754,8 +752,88 @@ $(document).ready(function () {
 	  rootEl: document.getElementById("alan-btn"),
 	});
  </script>
+
+
+
+
  
- 
+ <script src="https://cdn.jsdelivr.net/npm/@alan-ai/alan-sdk-web/dist/alan.min.js"></script>
+
+
+ <script src="https://cdn.alan.app/voice-1.6.0.min.js"></script>
+ <script>
+    const alanKey = "c0c38627f11e68a0cf12c55647129efe2e956eca572e1d8b807a3e2338fdd0dc/stage";
+
+    // Function to capitalize the first letter of a string
+    const capitalizeFirstLetter = (str) => {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    };
+
+    // Function to redirect to a specific page
+    const redirectToPage = (page) => {
+        // Implement your page redirection logic here
+        console.log(`Redirecting to ${page}`);
+    };
+
+    // Initialize Alan AI
+    alanBtn({
+        key: alanKey,
+        onCommand: (commandData) => {
+            if (commandData.command === 'go:to' && commandData.page) {
+                const category = capitalizeFirstLetter(commandData.page);
+                redirectToPage(category);
+            }
+        },
+    });
+
+    
+
+    // Function to redirect to the 'liked_wallpapers' page
+    const redirectToLikedWallpapers = () => {
+        // Implement your redirection logic here
+        window.location.href = "{% url 'liked_wallpapers' %}";
+    };
+
+    alanBtn({
+        key: alanKey,
+        onCommand: (commandData) => {
+            if (commandData.command === 'go:to' && commandData.page === 'liked_wallpapers') {
+                redirectToLikedWallpapers();
+            }
+        },
+    });
+
+    const alanScript = (p) => {
+        if (p.page.value) {
+            const liked_wallpapers = p.page.value;
+            // Perform actions based on the 'go:to' command
+            console.log(`Redirecting to ${liked_wallpapers}.`);
+        }
+
+        if (p.intent === 'What is my name?') {
+            // Respond to the 'What is my name?' intent
+            console.log("It's Razor.");
+        }
+
+        if (p.intent === 'How are you doing?') {
+            // Respond to the 'How are you doing?' intent
+            console.log("Good, thank you. What about you?");
+        }
+    };
+
+    alanBtn({
+        key: alanKey,
+        onCommand: (commandData) => {
+            // Extracting the relevant data from the command
+            const { page, intent } = commandData;
+
+            // Call the Alan AI script with the extracted data
+            alanScript({ page, intent });
+        },
+    });
+</script>
+
+
 </body>
 
 </html>

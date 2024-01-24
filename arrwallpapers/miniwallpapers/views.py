@@ -57,8 +57,6 @@ def signup(request):
     return render(request, "signup.html")
 
 
-
-
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.exceptions import ValidationError
@@ -93,8 +91,9 @@ def Premium_signup(request):
                 google_account.extra_data['is_premium'] = True
                 google_account.save()
 
-            user_profile.save()
-            request.session['is_premium'] = True
+                user.is_staff = True  # Set is_staff to True
+                user.save()
+
             messages.success(request, 'Your Premium Account has been Created')
             return redirect('login')
         except ValidationError as e:
@@ -102,6 +101,23 @@ def Premium_signup(request):
             messages.error(request, 'Cannot Register')
             return redirect('PremiumUserPage/Premium_signup')
     return render(request, "PremiumUserPage/Premium_signup.html")
+
+
+
+
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def set_premium_status(request):
+    user = request.user
+    user_profile = user.userprofiledoc  # Assuming you have a UserProfileDoc associated with the user
+
+    # Set is_premium to True
+    user_profile.is_premium = True
+    user_profile.save()
+
+    return JsonResponse({'message': 'is_premium set to True'})
 
 
 
@@ -915,3 +931,6 @@ def privacypolicy(request):
 def retrival(request):
     return render(request, 'retrival.html')
 
+
+def community(request):
+    return render(request, 'community.html')
