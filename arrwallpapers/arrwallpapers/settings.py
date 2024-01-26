@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'miniwallpapers',
+    'channels',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
@@ -48,6 +49,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     # 'allauth.socialaccount.providers.facebook',
 ]
+ASGI_APPLICATION = 'arrwallpapers.asgi.application'
 
 SOCIALACCOUNT_LOGIN_ON_GET=True
 

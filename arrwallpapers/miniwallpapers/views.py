@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from django.contrib.auth import authenticate, login
 import requests
-from .models import Category, Tag, UserProfileDoc, WallpaperCollection
+from .models import Category, ChatMessage, Tag, UserProfileDoc, WallpaperCollection
 from django.shortcuts import get_object_or_404, redirect
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
@@ -932,5 +932,45 @@ def retrival(request):
     return render(request, 'retrival.html')
 
 
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import ChatMessage
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
+
+@login_required
 def community(request):
-    return render(request, 'community.html')
+    chat_messages = ChatMessage.objects.select_related('user__userprofiledoc').all()
+    return render(request, 'community.html', {'chat_messages': chat_messages})
+
+@login_required
+def send_message(request):
+    if request.method == 'POST':
+        user = request.user
+        message = request.POST.get('message', '')
+        
+        if message:
+            chat_message = ChatMessage.objects.create(user=user, message=message)
+
+            # Broadcast the message to the chat group
+            channel_layer = get_channel_layer()
+            try:
+                async_to_sync(channel_layer.group_send)(
+                    'chat_group',
+                    {
+                        'type': 'chat.message',
+                        'message': chat_message.message,
+                        'username': user.username,
+                    }
+                )
+            except Exception as e:
+                print(f"Error sending message: {e}")
+
+            messages.success(request, 'Message sent successfully!')
+            return redirect('community') 
+        else:
+            messages.error(request, 'Invalid message. Please enter a non-empty message.')
+
+    return redirect('community')

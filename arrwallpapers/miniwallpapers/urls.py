@@ -62,7 +62,8 @@ urlpatterns=[
     path('privacypolicy/', views.privacypolicy, name='privacypolicy'),
 
 
-    path('community', views.community, name='community'),
+    path('community/', views.community, name='community'),
+    path('send_message/', views.send_message, name='send_message'),
     ]
 
 if settings.DEBUG:
