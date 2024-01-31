@@ -939,19 +939,23 @@ from .models import ChatMessage
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
+from django.shortcuts import render
+from .models import UserProfileDoc
 
-@login_required
 def community(request):
     chat_messages = ChatMessage.objects.select_related('user__userprofiledoc').all()
-    return render(request, 'community.html', {'chat_messages': chat_messages})
+    users_with_avatars = User.objects.filter(userprofiledoc__avatar__isnull=False)
+    return render(request, 'community.html', {'chat_messages': chat_messages, 'users_with_avatars': users_with_avatars})
+
 
 @login_required
 def send_message(request):
     if request.method == 'POST':
         user = request.user
         message = request.POST.get('message', '')
-        
+
         if message:
+            # Create a new chat message
             chat_message = ChatMessage.objects.create(user=user, message=message)
 
             # Broadcast the message to the chat group
@@ -969,7 +973,7 @@ def send_message(request):
                 print(f"Error sending message: {e}")
 
             messages.success(request, 'Message sent successfully!')
-            return redirect('community') 
+            return redirect('community')
         else:
             messages.error(request, 'Invalid message. Please enter a non-empty message.')
 
