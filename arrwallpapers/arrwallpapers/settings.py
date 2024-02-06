@@ -157,7 +157,7 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Asia/Kolkata'
-
+# TIME_ZONE = 'UST'
 USE_I18N = True
 
 USE_TZ = True
@@ -198,8 +198,3 @@ DEFAULT_FROM_EMAIL = 'arrlivewallpaper2022@gmail.com'
 RAZOR_KEY_ID = 'rzp_test_0zpOMoTxoYH2my'
 RAZOR_KEY_SECRET = '8CMU9Qg9plMX3mYD07IrUEu2'
 
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-# STATIC_URL = "static/"
-# STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-
-# ALLOWED_HOSTS = ["127.0.0.1", ".vercel.app", ".now.sh"]

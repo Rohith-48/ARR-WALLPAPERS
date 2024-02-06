@@ -12,6 +12,7 @@ urlpatterns=[
     path('ai_wallpaper_generator/', views.ai_wallpaper_generator, name='ai_wallpaper_generator'),
     #  path('upscaleimage/', views.upscaleimage, name='upscaleimage'),
     path('add_comment/<int:wallpaper_id>/', views.add_comment, name='add_comment'),
+
     path('set_premium_status/', views.set_premium_status, name='set_premium_status'),
     path('login/', views.login, name='login'),
     path('signup', views.signup, name='signup'),
@@ -41,7 +42,8 @@ urlpatterns=[
     path('user_upload/', views.user_upload, name='user_upload'),
     path('user_edit/', views.user_edit_wallpaper, name='user_edit'),
     path('view_delete_userwallpaper/', views.view_delete_userwallpaper, name='view_delete_userwallpaper'),  
-       
+    path('restore_wallpaper/', views.restore_wallpaper, name='restore_wallpaper'),
+    path('recyclebin/', views.recyclebin, name='recyclebin'),
            
     path('wallpaper/<int:wallpaper_id>/', views.wallpaper_details, name='wallpaper_details'),
     path('liked_wallpapers/', views.liked_wallpapers, name='liked_wallpapers'),

@@ -12,6 +12,7 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required  
 from .models import UserProfileDoc
+from django.views.decorators.cache import cache_control
 
 
 def signup(request):
@@ -124,7 +125,7 @@ def set_premium_status(request):
 from django.shortcuts import render, redirect
 from django.contrib import messages, auth
 from .models import UserProfileDoc
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def login(request):
     if request.method == "POST":
         username = request.POST['username']
@@ -134,7 +135,7 @@ def login(request):
             if user.is_superuser or (hasattr(user, 'userprofiledoc') and user.userprofiledoc.is_approved):
                 auth.login(request, user)
                 if user.is_superuser:
-                    return redirect('admin_dashboard')
+                    return redirect('index')
                 else:
                     if user.userprofiledoc.is_premium:
                         return redirect('index')
@@ -152,12 +153,13 @@ def login(request):
 
 from django.shortcuts import render
 from .models import WallpaperCollection, UserProfileDoc, Category
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 
 def index(request):
     query = request.GET.get('q')
 
-    # Fetch wallpapers and creators
-    wallpapers = WallpaperCollection.objects.select_related('user').prefetch_related('tags').order_by('-upload_date')
+    # Fetch wallpapers and creators excluding those with is_deleted=True
+    wallpapers = WallpaperCollection.objects.select_related('user').prefetch_related('tags').filter(is_deleted=False).order_by('-upload_date')
     creators = UserProfileDoc.objects.filter(is_creator=True)
 
     admin_user = User.objects.filter(is_staff=True).first()
@@ -171,18 +173,17 @@ def index(request):
 
     return render(request, 'index.html', {'wallpapers': wallpapers, 'creators': creators, 'admin_user': admin_user, 'categories': categories, 'query': query, 'most_viewed_wallpapers': most_viewed_wallpapers})
 
-
 from django.shortcuts import render
 from .models import WallpaperCollection, Category
 
 def category_filter(request, category):
     # Get the category object
     category_obj = Category.objects.get(name__iexact=category)
-
+    categories = Category.objects.all()
     # Filter wallpapers by the selected category
     wallpapers = WallpaperCollection.objects.filter(category=category_obj).order_by('-upload_date')
 
-    return render(request, 'category_filter.html', {'wallpapers': wallpapers, 'selected_category': category_obj})
+    return render(request, 'category_filter.html', {'wallpapers': wallpapers, 'selected_category': category_obj, 'categories': categories})
 
 
 
@@ -200,16 +201,17 @@ from django.db.models import Sum
 from django.core.paginator import Paginator
 
 def profileview(request, username):
-    user=User.objects.get(username=username)
+    user = User.objects.get(username=username)
+
     if user.is_staff:
         # Admin view
         user_profile = get_object_or_404(User, username=username)
-        user_content = WallpaperCollection.objects.filter(user=user)
+        user_content = WallpaperCollection.objects.filter(user=user, is_deleted=False)
     else:
         user_profile = get_object_or_404(UserProfileDoc, user__username=username)
-        user_content = WallpaperCollection.objects.filter(user=user_profile.user, is_superuser=False)
+        user_content = WallpaperCollection.objects.filter(user=user_profile.user, is_superuser=False, is_deleted=False)
 
-    superuser_content = WallpaperCollection.objects.filter(is_superuser=True)
+    superuser_content = WallpaperCollection.objects.filter(is_superuser=True, is_deleted=False)
     paginator = Paginator(user_content, 10)
     page = request.GET.get('page')
     wallpapers = paginator.get_page(page)
@@ -228,6 +230,7 @@ def profileview(request, username):
     }
 
     return render(request, 'profileview.html', context)
+
 
 
 
@@ -262,10 +265,14 @@ def wallpaper_details(request, wallpaper_id):
         'comments': comments,
     })
 
-
-from django.shortcuts import render
+    
+from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from .models import WallpaperCollection, UserProfileDoc, Category, Comment
+from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from django.utils import timezone
+from datetime import datetime
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required
 @require_POST
 def add_comment(request, wallpaper_id):
@@ -277,24 +284,25 @@ def add_comment(request, wallpaper_id):
             user=request.user,
             wallpaper=wallpaper,
             text=comment_text,
-            created_at=timezone
+            created_at=datetime.now()
         )
 
-        comments = Comment.objects.filter(wallpaper=wallpaper).order_by('-created_at')
+        # Increment view count and downloads
+        wallpaper.view_count += 1
+        wallpaper.downloads += 1
         wallpaper.save()
+
+        # Fetch comments related to the wallpaper
+        comments = Comment.objects.filter(wallpaper=wallpaper).order_by('-created_at')
 
         # Render the updated comments HTML
         comments_html = render(request, 'wallpaper_details.html', {'comments': comments}).content
 
-        return render(request, 'wallpaper_details.html', {
-            'wallpaper': wallpaper,
-            'comments_html': comments_html,
-            # Add other context variables as needed
-        })
+        # You can return the comments HTML as JSON if needed
+        return JsonResponse({'comments_html': comments_html})
     else:
         # Handle the case where comment_text is empty
-        return render(request, 'wallpaper_details.html', {'error': 'Comment text is required'})
-    
+        return JsonResponse({'error': 'Comment text is required'})
 
 
 from django.core.mail import send_mail
@@ -357,15 +365,21 @@ def delete_user(request, user_id):
     return redirect('admin_dashboard')
 
 
-
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required
 def admin_dashboard(request):
     if request.user.is_superuser:
+        # Fetch all users and user profiles
         users = User.objects.all()
         user_profiles = UserProfileDoc.objects.select_related('user').all()
+
+        # Fetch notifications
+        notifications = UserProfileDoc.objects.filter(is_approved=False)
+
         context = {
             'users': users,
             'user_profiles': user_profiles,
+            'notifications': notifications,
         }
         return render(request, 'admin_dashboard.html', context)
     else:
@@ -383,8 +397,8 @@ from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
 from .models import UserProfileDoc
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required
-
 def user_profile(request):
     user_profile = UserProfileDoc.objects.get(user=request.user)
     user = request.user
@@ -593,16 +607,45 @@ def upload_wallpaper(request):
 
 
 
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import WallpaperCollection  # Import your WallpaperCollection model
+
 def view_delete_wallpaper(request):
     if request.method == 'POST':
         wallpaper_id = request.POST.get('wallpaper_id')
         wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
-        wallpaper.delete()
+        
+        # Update the 'is_deleted' field instead of calling delete()
+        wallpaper.is_deleted = True
+        wallpaper.save()
+        
         return redirect('view_delete_wallpaper')
     
-    wallpapers = WallpaperCollection.objects.all()
+    wallpapers = WallpaperCollection.objects.filter(is_deleted=False)
     context = {'wallpapers': wallpapers}
     return render(request, 'view_delete_wallpaper.html', context)
+
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import WallpaperCollection
+
+def recyclebin(request):
+    deleted_wallpapers = WallpaperCollection.objects.filter(is_deleted=True)
+    context = {'deleted_wallpapers': deleted_wallpapers}
+    return render(request, 'recyclebin.html', context)
+
+def restore_wallpaper(request):
+    if request.method == 'POST':
+        wallpaper_id = request.POST.get('wallpaper_id')
+        wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
+        
+        # Restore the wallpaper by setting is_deleted to False
+        wallpaper.is_deleted = False
+        wallpaper.save()
+
+    return redirect('recyclebin')
+
 
 
 
@@ -916,8 +959,6 @@ def ai_wallpaper_generator(request):
 #     return render(request, 'upscaleimage.html')
 
 
-
-
 def about(request):
     return render(request, 'registration/about.html')
 
@@ -938,7 +979,6 @@ from django.contrib import messages
 from .models import ChatMessage
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-
 from django.shortcuts import render
 from .models import UserProfileDoc
 
@@ -953,12 +993,8 @@ def send_message(request):
     if request.method == 'POST':
         user = request.user
         message = request.POST.get('message', '')
-
         if message:
-            # Create a new chat message
             chat_message = ChatMessage.objects.create(user=user, message=message)
-
-            # Broadcast the message to the chat group
             channel_layer = get_channel_layer()
             try:
                 async_to_sync(channel_layer.group_send)(
@@ -971,10 +1007,10 @@ def send_message(request):
                 )
             except Exception as e:
                 print(f"Error sending message: {e}")
-
             messages.success(request, 'Message sent successfully!')
             return redirect('community')
         else:
             messages.error(request, 'Invalid message. Please enter a non-empty message.')
-
+            
     return redirect('community')
+

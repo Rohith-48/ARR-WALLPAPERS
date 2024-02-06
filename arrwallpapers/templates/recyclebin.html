@@ -1,0 +1,129 @@
+{% extends 'admin_dashboard.html' %}
+
+{% block content %}
+<style>
+    .button-container {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    .overlay img {
+        max-width: 90%;
+        max-height: 90%;
+    }
+    .wallpaper-row {
+        display: flex;
+        margin: 10px 0;
+    }
+
+    .wallpaper-box {
+        border: 5px solid orange;
+        box-shadow: 0 0 10px white;
+        padding: 15px;
+        background-color: #fff;
+        flex: 0 0 calc(25% - 20px);
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .wallpaper-image {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .wallpaper-image img {
+        max-width: 100%;
+        max-height: 200px; /* Adjust this as needed */
+    }
+</style>
+<div class="content_table">
+    {% if deleted_wallpapers %}
+        <ul>
+            {% for wallpaper in deleted_wallpapers %}
+                <li>
+                    <a href="{{ wallpaper.wallpaper_image.url }}" data-lightbox="wallpapers" data-title="{{ wallpaper.title }}">
+                        <img src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}" style="max-width: 10%; height: auto;">
+                    </a>
+                    <div class="wallpaper-details">
+                        <h3 class="wallpaper-title" style="color: white;">{{ wallpaper.title }}</h3>
+                        <p class="wallpaper-description" style="color: white;">{{ wallpaper.description }}</p>
+                        <p class="uploader-info" style="color: white;">Uploaded by: {{ wallpaper.user.username }}</p>
+                        <p class="uploader-type" style="color: white;">Uploader type: {% if wallpaper.user.is_superuser %}Admin{% else %}Creator{% endif %}</p>
+                        <p class="upload-date" style="color: white;">Uploaded on: {{ wallpaper.upload_date }}</p>
+                        <p class="category" style="color: white;">Category: {{ wallpaper.category.name }}</p>
+                        
+                        <!-- Add a "Restore" button -->
+                        <form method="post" action="{% url 'restore_wallpaper' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="wallpaper_id" value="{{ wallpaper.id }}">
+                            <button type="submit">Restore</button>
+                        </form>
+                        
+                        <br><br>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Your Recycle Bin is empty.</p>
+    {% endif %}
+</div>
+
+
+
+<div class="overlay" id="overlay" onclick="closeOverlay()">
+    <img src="" alt="Wallpaper" id="overlay-image">
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function openOverlay(imageUrl) {
+        document.getElementById('overlay-image').src = imageUrl;
+        document.getElementById('overlay').style.display = 'flex';
+    }
+
+    function closeOverlay() {
+        document.getElementById('overlay').style.display = 'none';
+    }
+
+    $(document).ready(function () {
+        $('#filter-type').change(function () {
+            var selectedFilter = $(this).val();
+
+            // Show or hide wallpapers based on the filter
+            $('.wallpaper-box').each(function () {
+                var uploaderType = $(this).data('uploader-type');
+                if (selectedFilter === 'all' || uploaderType === selectedFilter) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+    });
+</script>
+<script>
+    function confirmDelete(wallpaperTitle) {
+        var confirmation = confirm("Are you sure you want to delete the wallpaper titled '" + wallpaperTitle + "'?");
+        return confirmation;
+    }
+</script>
+
+
+{% endblock %}

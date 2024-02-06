@@ -214,5 +214,22 @@
         var confirmation = confirm("Are you sure you want to delete the wallpaper titled '" + wallpaperTitle + "'?");
         return confirmation;
     }
+  
 </script>
+<!-- <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var utcTimeString = document.getElementById('last_time').textContent;
+        var utcTime = new Date(utcTimeString);
+        var localTime = new Date(utcTime.getTime() - (utcTime.getTimezoneOffset()) * 60000);
+        var formattedLocalTime = localTime.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true
+        });
+        document.getElementById('last_time').textContent = formattedLocalTime;
+    });
+</script> -->
 {% endblock %}

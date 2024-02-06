@@ -276,6 +276,7 @@
 							<a href="{% url 'index' %}">Subscribed</a>
 							{% else %}
 								<a href="{% url 'paymentform' %}?amount=200">Subscribe Now</a>
+								
 							{% endif %}
 						{% else %}
 							<a href="{% url 'Premium_signup' %}">Subscribe Now</a>
@@ -308,6 +309,7 @@
 									<a href="{% url 'index' %}">Subscribed</a>
 								{% else %}
 									<a href="{% url 'paymentform' %}?amount=1000">Subscribe Now</a>
+									
 								{% endif %}
 							{% else %}
 								<a href="{% url 'Premium_signup' %}">Subscribe Now</a>

@@ -71,6 +71,7 @@ class WallpaperCollection(models.Model):
     tags = models.ManyToManyField(Tag, default=None)
     upload_date = models.DateTimeField(auto_now_add=True)
     is_superuser = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
     view_count = models.PositiveIntegerField(default=0)
     downloads = models.PositiveIntegerField(default=0)
     wallpaper_image = models.ImageField(
@@ -109,3 +110,4 @@ class ChatMessage(models.Model):
 
     def __str__(self):
         return f'{self.user.username} - {self.message}'
+    
