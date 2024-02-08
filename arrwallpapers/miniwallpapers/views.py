@@ -62,9 +62,9 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
-from django.core.validators import validate_email 
+from django.core.validators import validate_email
 from .models import UserProfileDoc
-from allauth.socialaccount.models import SocialAccount 
+from allauth.socialaccount.models import SocialAccount
 
 def Premium_signup(request):
     if request.method == "POST":
@@ -75,8 +75,8 @@ def Premium_signup(request):
         try:
             if password1 != password2:
                 raise ValidationError('Passwords do not match')
-            
-            validate_email(email) 
+
+            validate_email(email)
 
             if User.objects.filter(username=username).exists():
                 raise ValidationError('Username is already taken. Please choose a different username.')
@@ -85,14 +85,17 @@ def Premium_signup(request):
                 raise ValidationError('Email is already registered. Please use a different email.')
 
             user = User.objects.create_user(username=username, password=password1, email=email)
-            user_profile = UserProfileDoc(user=user, is_approved=True, is_premium=True)
-            
+
+            # Create UserProfileDoc and set is_premium to True
+            user_profile = UserProfileDoc.objects.create(user=user, is_approved=True, is_premium=True)
+
+            # Check and update SocialAccount if it exists
             if SocialAccount.objects.filter(user=user, provider='google').exists():
                 google_account = SocialAccount.objects.get(user=user, provider='google')
                 google_account.extra_data['is_premium'] = True
                 google_account.save()
 
-                user.is_staff = True  # Set is_staff to True
+                user.is_staff = True
                 user.save()
 
             messages.success(request, 'Your Premium Account has been Created')
@@ -101,9 +104,8 @@ def Premium_signup(request):
             messages.error(request, str(e))
             messages.error(request, 'Cannot Register')
             return redirect('PremiumUserPage/Premium_signup')
+
     return render(request, "PremiumUserPage/Premium_signup.html")
-
-
 
 
 from django.http import JsonResponse
@@ -112,7 +114,7 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def set_premium_status(request):
     user = request.user
-    user_profile = user.userprofiledoc  # Assuming you have a UserProfileDoc associated with the user
+    user_profile = user.userprofiledoc 
 
     # Set is_premium to True
     user_profile.is_premium = True
@@ -151,17 +153,17 @@ def login(request):
         return render(request, "login.html")
 
 
+
+
 from django.shortcuts import render
 from .models import WallpaperCollection, UserProfileDoc, Category
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 
 def index(request):
     query = request.GET.get('q')
-
     # Fetch wallpapers and creators excluding those with is_deleted=True
     wallpapers = WallpaperCollection.objects.select_related('user').prefetch_related('tags').filter(is_deleted=False).order_by('-upload_date')
     creators = UserProfileDoc.objects.filter(is_creator=True)
-
     admin_user = User.objects.filter(is_staff=True).first()
     categories = Category.objects.all()
 
@@ -173,14 +175,14 @@ def index(request):
 
     return render(request, 'index.html', {'wallpapers': wallpapers, 'creators': creators, 'admin_user': admin_user, 'categories': categories, 'query': query, 'most_viewed_wallpapers': most_viewed_wallpapers})
 
+
+
 from django.shortcuts import render
 from .models import WallpaperCollection, Category
 
 def category_filter(request, category):
-    # Get the category object
     category_obj = Category.objects.get(name__iexact=category)
     categories = Category.objects.all()
-    # Filter wallpapers by the selected category
     wallpapers = WallpaperCollection.objects.filter(category=category_obj).order_by('-upload_date')
 
     return render(request, 'category_filter.html', {'wallpapers': wallpapers, 'selected_category': category_obj, 'categories': categories})
@@ -190,7 +192,15 @@ def category_filter(request, category):
 
 
 def subscribe_page(request):
-    return render(request, 'subscribe_page.html')
+    creators = UserProfileDoc.objects.filter(is_creator=True)
+    admin_user = User.objects.filter(is_staff=True).first()
+    categories = Category.objects.all()
+    context = {
+        'categories': categories,
+        'admin_user': admin_user,
+        'creators' : creators,
+    }
+    return render(request, 'subscribe_page.html', context)
 
 
 
@@ -202,6 +212,10 @@ from django.core.paginator import Paginator
 
 def profileview(request, username):
     user = User.objects.get(username=username)
+    creators = UserProfileDoc.objects.filter(is_creator=True)
+    admin_user = User.objects.filter(is_staff=True).first()
+    categories = Category.objects.all()
+
 
     if user.is_staff:
         # Admin view
@@ -227,12 +241,12 @@ def profileview(request, username):
         'total_view_count': total_view_count,
         'total_downloads': total_downloads,
         'userdetail': user,
+        'categories': categories,
+        'admin_user': admin_user,
+        'creators' : creators,
     }
 
     return render(request, 'profileview.html', context)
-
-
-
 
 
 
@@ -560,10 +574,6 @@ def paymenthandler(request):
 
 
 
-
-
-
-
 from django.shortcuts import render, redirect
 from django.core.exceptions import ValidationError
 from .models import WallpaperCollection, Category, Tag
@@ -805,7 +815,9 @@ from django.shortcuts import render  # Import the render function
 @csrf_exempt
 def liked_wallpapers(request):
     liked_wallpaper_ids = json.loads(request.COOKIES.get("likedWallpapers")) or []
-
+    creators = UserProfileDoc.objects.filter(is_creator=True)
+    admin_user = User.objects.filter(is_staff=True).first()
+    categories = Category.objects.all()
     liked_wallpapers_data = []
     
     for wallpaper_id in liked_wallpaper_ids:
@@ -822,7 +834,12 @@ def liked_wallpapers(request):
         except ObjectDoesNotExist:
             pass
     
-    context = {"wallpapers": liked_wallpapers_data}
+    context = {"wallpapers": liked_wallpapers_data,
+               "categories": categories,
+               "admin_user" : admin_user,
+               "creators": creators,
+               
+               }
     return render(request, 'liked_wallpapers.html', context)
 
 
@@ -834,6 +851,14 @@ from django.conf import settings
 from django.contrib import messages
 
 def contactform(request):
+    creators = UserProfileDoc.objects.filter(is_creator=True)
+    admin_user = User.objects.filter(is_staff=True).first()
+    categories = Category.objects.all()
+    context = {
+        'categories': categories,
+        'admin_user': admin_user,
+        'creators' : creators,
+    }
     if request.method == 'POST':
         name = request.POST['name']
         email = request.POST['email']
@@ -853,7 +878,7 @@ def contactform(request):
 
         return redirect('contactform')
 
-    return render(request, 'registration/contactform.html')
+    return render(request, 'registration/contactform.html', context)
 
 
 
@@ -960,17 +985,53 @@ def ai_wallpaper_generator(request):
 
 
 def about(request):
-    return render(request, 'registration/about.html')
+    creators = UserProfileDoc.objects.filter(is_creator=True)
+    admin_user = User.objects.filter(is_staff=True).first()
+    categories = Category.objects.all()
+    context = {
+        'categories': categories,
+        'admin_user': admin_user,
+        'creators' : creators,
+    }
+    return render(request, 'registration/about.html', context)
+
+
 
 def termsofservice(request):
-    return render(request, 'registration/termsofservice.html')
+    creators = UserProfileDoc.objects.filter(is_creator=True)
+    admin_user = User.objects.filter(is_staff=True).first()
+    categories = Category.objects.all()
+    context = {
+        'categories': categories,
+        'admin_user': admin_user,
+        'creators' : creators,
+    }
+    
+    return render(request, 'registration/termsofservice.html', context)
+
 
 def privacypolicy(request):
-    return render(request, 'registration/privacypolicy.html')
+    creators = UserProfileDoc.objects.filter(is_creator=True)
+    admin_user = User.objects.filter(is_staff=True).first()
+    categories = Category.objects.all()
+    context = {
+        'categories': categories,
+        'admin_user': admin_user,
+        'creators' : creators,
+    }
+    return render(request, 'registration/privacypolicy.html', context)
 
 
 def retrival(request):
-    return render(request, 'retrival.html')
+    creators = UserProfileDoc.objects.filter(is_creator=True)
+    admin_user = User.objects.filter(is_staff=True).first()
+    categories = Category.objects.all()
+    context = {
+        'categories': categories,
+        'admin_user': admin_user,
+        'creators' : creators,
+    }
+    return render(request, 'retrival.html', context)
 
 
 from django.shortcuts import render, redirect

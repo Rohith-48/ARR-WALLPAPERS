@@ -280,21 +280,26 @@
 				</li>
 
 		
-						<li class="dropdown first">
-							{% if user.userprofiledoc.is_creator %}
-								<a href="{% url 'userprofile' %}" class="btn btn-default lv1">
-									Upload
-								</a>
-							{% elif user.userprofiledoc.is_premium %}
-								<a href="{% url 'subscribe_page' %}" class="btn btn-default lv1">
-									Subscribe
-								</a>
-							{% else %}
-								<a href="{% url 'login' %}" class="btn btn-default lv1">
-									Upload
-								</a>
-							{% endif %}
-						</li>
+				<li class="dropdown first">
+					{% if user.is_superuser %}
+						<a href="{% url 'upload_wallpaper' %}" class="btn btn-default lv1">
+							Upload
+						</a>
+					{% elif user.userprofiledoc.is_creator %}
+						<a href="{% url 'userprofile' %}" class="btn btn-default lv1">
+							Upload
+						</a>
+					{% elif user.userprofiledoc.is_premium %}
+						<a href="{% url 'subscribe_page' %}" class="btn btn-default lv1">
+							Subscribe
+						</a>
+					{% else %}
+						<a href="{% url 'login' %}" class="btn btn-default lv1">
+							Upload
+						</a>
+					{% endif %}
+				</li>
+				
 						
 						
 						<li class="dropdown first">
