@@ -132,6 +132,8 @@
     display: flex;
     align-items: center;
 }
+
+
 </style>
 
 <div id="allAvatarsModal" class="modal" style="display: none; width: 200px; height: 200px;">
@@ -237,10 +239,22 @@
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-video">
      <path d="M23 7l-7 5 7 5V7z" />
      <rect x="1" y="5" width="15" height="14" rx="2" ry="2" /></svg>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-image">
-     <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-     <circle cx="8.5" cy="8.5" r="1.5" />
-     <path d="M21 15l-5-5L5 21" /></svg>
+     
+
+     <span style="margin-left: 10px;"></span> 
+    <!-- Your new SVG code for the upload button -->
+    <label for="file-input">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-image">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+          <circle cx="8.5" cy="8.5" r="1.5" />
+          <path d="M21 15l-5-5L5 21" />
+      </svg>
+  </label>
+  <input type="file" id="file-input" style="display: none;">
+  <span style="margin-left: 10px;"></span> 
+
+
+
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle">
      <circle cx="12" cy="12" r="10" />
      <path d="M12 8v8M8 12h8" /></svg>
@@ -254,6 +268,7 @@
       {% csrf_token %}
       <div style="display: flex; align-items: center;">
           <input type="text" id="chat-input" name="message" placeholder="Type something here..." style="flex: 1; max-width: 550px;">
+  
           <button type="submit" id="send-btn" style="background-color: transparent; border: none;">
               <!-- Your SVG code for the send button -->
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24" height="24">
@@ -262,6 +277,18 @@
           </button>
       </div>
   </form>
+  
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script>
+      $(document).ready(function () {
+          $('#file-input').change(function () {
+              // Handle the file upload logic here
+              // You can use this.val() to get the selected file path
+              console.log('File selected:', $(this).val());
+          });
+      });
+  </script>
+  
   
   
    {% else %}
@@ -294,10 +321,74 @@
     // Call scrollToBottom() when the page loads
     window.onload = scrollToBottom;
 </script>
-  <span style="margin-left: 10px;"></span> 
-    <svg id="send-message" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-smile">
-     <circle cx="12" cy="12" r="10" />
-     <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01" /></svg>
+
+  
+<svg
+id="send-message"
+xmlns="http://www.w3.org/2000/svg"
+viewBox="0 0 24 24"
+fill="none"
+stroke="currentColor"
+stroke-width="1.5"
+stroke-linecap="round"
+stroke-linejoin="round"
+class="feather feather-smile"
+onclick="toggleEmojiPopup()"
+>
+<circle cx="12" cy="12" r="10" />
+<path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01" />
+<!-- No need for foreignObject in this case -->
+</svg>
+<style>
+  #emoji-popup {
+    display: none;
+    position: absolute;
+    top: -30px;
+    right: 0; 
+    background: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+  }
+</style>
+<div id="emoji-popup">
+  <span style="cursor: pointer;" onclick="insertEmoji('🥲')">🥲</span>
+  <span style="cursor: pointer;" onclick="insertEmoji('😄')">😄</span>
+  <span style="cursor: pointer;" onclick="insertEmoji('😊')">😊</span>
+  <span style="cursor: pointer;" onclick="insertEmoji('🌟')">🌟</span>
+  <span style="cursor: pointer;" onclick="insertEmoji('❤️')">❤️</span>
+  <span style="cursor: pointer;" onclick="insertEmoji('🚀')">🚀</span>
+  <span style="cursor: pointer;" onclick="insertEmoji('🎉')">🎉</span>
+  <span style="cursor: pointer;" onclick="insertEmoji('🍕')">🍕</span>
+  <span style="cursor: pointer;" onclick="insertEmoji('🎸')">🎸</span>
+</div>
+
+<script>
+function toggleEmojiPopup() {
+  var emojiPopup = document.getElementById('emoji-popup');
+  emojiPopup.style.display = emojiPopup.style.display === 'none' ? 'block' : 'none';
+}
+
+function insertEmoji(emoji) {
+  var chatInput = document.getElementById('chat-input');
+  chatInput.value += emoji;
+  toggleEmojiPopup(); // Hide the emoji popup after inserting emoji
+}
+
+// Close the emoji popup if clicked outside
+document.addEventListener('click', function (event) {
+  var emojiPopup = document.getElementById('emoji-popup');
+  var svgContainer = document.getElementById('send-message');
+  if (
+    event.target !== emojiPopup &&
+    !emojiPopup.contains(event.target) &&
+    event.target !== svgContainer
+  ) {
+    emojiPopup.style.display = 'none';
+  }
+});
+</script>
+
+<span style="margin-left: 10px;"></span> 
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-thumbs-up">
      <path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3" /></svg>
    </div>

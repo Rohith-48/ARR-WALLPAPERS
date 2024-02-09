@@ -358,7 +358,7 @@
 	    </nav>
 		<div class="top-search">
 			<form method="GET" id="search-form" action="#scroll">
-				<input type="text" id="search-input" name="q" placeholder="Search for a Wallpaper, Superheros, nature etc. that you are looking for" value="{{ query|default:"" }}">
+				<input type="text" id="search-input" placeholder="Search for a Wallpaper, Superheros, nature etc. that you are looking for">
 			</form>
 			<img class="custombtn" id="search-image" src="{% static 'image-asset/topsearch.png'%}">
 		</div>	
@@ -367,13 +367,89 @@
 	</div>
 </header>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
+<!-- <script>
     $(document).ready(function () {
         $('#search-image').on('click', function () {
             $('#search-form').submit(); 
         });
     });
-</script>
+</script> -->
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+	
+    <script>
+        $(document).ready(function () {
+            $('#search-input').keyup(function () {
+                var query = $(this).val();
+                $.ajax({
+                    type: 'GET',
+                    url: '/live_search/',
+                    data: {
+                        'query': query
+                    },
+                    success: function (data) {
+                        var results = data.products;
+                        var resultsHtml = '';
+                        resultsHtml += '<div class="product-container">';
+                        if (results.length === 0) {
+                
+							resultsHtml += '<img style="height:450px; width:650px; margin-top:60px" src="{% static "image-asset/not-found.svg" %}" alt="Default Image">';
+							resultsHtml += '<h3 style="color: white">No Wallpapers found</h3>';
+							
+                            // resultsHtml += '</div>';
+                        } else {
+                            for (var i = 0; i < results.length; i++) {
+								resultsHtml += '<div style="border-radius: 10px; max-width: 284px; border-radius: 14px;" class="product-info col-md-4 col-sm-6 pb-1" onclick="navigateToProductDesc(' + results[i].id + ')">';                                resultsHtml += '<div class="product-item bg-light mb-4">';
+                                resultsHtml += '<div class="product-img position-relative overflow-hidden">';
+                                resultsHtml += '<img align-self: unset;" class="img-fluid w-100" src="' + results[i].img1_url + '" alt="">';
+								
+                                resultsHtml += '<div class="product-action">';
+
+
+
+                                resultsHtml += '</div>';
+                                resultsHtml += '</div>';
+                                resultsHtml += '<div class="text-center py-4">';
+                                resultsHtml += '<a class="h6 text-decoration-none" href="#">';
+                                resultsHtml += '<span class="text-truncate">' + results[i].name + '</span>';
+                                resultsHtml += '</a>';
+                                resultsHtml += '<div class="d-flex align-items-center justify-content-center mt-2">';
+                                // Add the discounted price if applicable
+                                resultsHtml += '</div>';
+
+                                // Add your star rating section here
+                                resultsHtml += '</div>';
+                                resultsHtml += '</div>';
+                                resultsHtml += '</div>';
+
+                            }
+                        }
+                        resultsHtml += '</div>';
+
+                        if (query) {
+                            $('#search-results').html(resultsHtml);
+                            $('#search-results').show();
+                            $('#search-results').show();
+                            $('#main1').hide();
+                            $('#wallpaperss').hide();
+                        } else {
+                            $('#search-results').hide();
+                            $('#whole').show();
+                            $('#wallpaperss').show();
+                        }
+                    }
+                });
+            });
+        });
+
+
+        function navigateToProductDesc(prodId) {
+            // Redirect to the respective product description page based on the prodId
+            window.location.href = '/wallpaper/' + prodId + '/';
+        }
+    </script>
 
 
 <div class="slider wall-item">
@@ -503,6 +579,9 @@
 </div> -->
 
 <!-- Add this section to display most viewed wallpapers -->
+
+
+
 <div class="slick-multiItemSlider">
     {% for wallpaper in most_viewed_wallpapers %}
         <div class="movie-item">
@@ -537,7 +616,9 @@
                     <h2 style="color: rgb(255, 255, 255); font-weight: bold">WALLPAPERS</h2>
                     <a href="#" class="viewall">View all <i class="ion-ios-arrow-right"></i></a>
                 </div>
-                <div class="wallpapers">
+				<div id="search-results"></div>
+
+                <div id="wallpaperss" class="wallpapers">
 					<div class="grid-sizer"></div> 
 					{% if wallpapers %}
 						{% for wallpaper in wallpapers %}

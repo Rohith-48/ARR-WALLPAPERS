@@ -177,6 +177,39 @@ def index(request):
 
 
 
+
+
+
+
+from django.shortcuts import render
+from django.http import JsonResponse
+
+def live_search(request):
+    if request.method == 'GET':
+        search_query = request.GET.get('query', '')
+        results = WallpaperCollection.objects.filter(title__istartswith=search_query)
+        product_data = []
+
+        for product in results:
+            # avg_rating = Review.objects.filter(prod=product).aggregate(Avg('rating'))['rating__avg'] or 0
+            product_info = {
+                'name': product.title,
+                'id': product.id,
+                # 'description': product.productdescription.description,
+                # 'price': product.price,
+                # 'prod_id' : product.prod_id,
+                # 'avg_rating': avg_rating, 
+                'img1_url': product.wallpaper_image.url,  # Include img1 URL
+            }
+            product_data.append(product_info)
+
+        return JsonResponse({'products': product_data})
+    
+
+
+
+
+
 from django.shortcuts import render
 from .models import WallpaperCollection, Category
 

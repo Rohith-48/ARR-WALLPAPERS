@@ -15,6 +15,7 @@ urlpatterns=[
 
     path('set_premium_status/', views.set_premium_status, name='set_premium_status'),
     path('login/', views.login, name='login'),
+    path('live_search/', views.live_search, name='live_search'),
     path('signup', views.signup, name='signup'),
     path('logout', views.logout, name='logout'),
     path('logout/', views.custom_logout, name='logout'),
