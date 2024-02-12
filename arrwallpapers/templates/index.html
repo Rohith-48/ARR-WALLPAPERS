@@ -822,101 +822,48 @@ $(document).ready(function () {
     });
 </script>
 
-
 <div class="alan-btn"></div>
-
 <script type="text/javascript" src="https://studio.alan.app/web/lib/alan_lib.min.js"></script>
+<!-- Include the Alan AI SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@alan-ai/alan-sdk-web/dist/alan.min.js"></script>
+
 <script>
-	var alanBtnInstance = alanBtn({
-	  key: "c0c38627f11e68a0cf12c55647129efe2e956eca572e1d8b807a3e2338fdd0dc/stage",
-	  onCommand: function (commandData) {
-		if (commandData.command === "go:back") {
-		  // Call client code that will react to the received command
-		}
-		// Add more command handlers as needed
-	  },
-	  rootEl: document.getElementById("alan-btn"),
-	});
- </script>
+// JavaScript Integration
+var alanBtnInstance = alanBtn({
+    key: "990295dbd0c4bd2bf080918877d35c002e956eca572e1d8b807a3e2338fdd0dc/stage",
+    onCommand: function (commandData) {
+        if (commandData.command === "redirect") {
+            handleRedirect(commandData.route);
+        }
+    },
+    rootEl: document.querySelector(".alan-btn"),
+});
 
-
-
-
- 
- <script src="https://cdn.jsdelivr.net/npm/@alan-ai/alan-sdk-web/dist/alan.min.js"></script>
-
-
- <script src="https://cdn.alan.app/voice-1.6.0.min.js"></script>
- <script>
-    const alanKey = "c0c38627f11e68a0cf12c55647129efe2e956eca572e1d8b807a3e2338fdd0dc/stage";
-
-    // Function to capitalize the first letter of a string
-    const capitalizeFirstLetter = (str) => {
-        return str.charAt(0).toUpperCase() + str.slice(1);
-    };
-
-    // Function to redirect to a specific page
-    const redirectToPage = (page) => {
-        // Implement your page redirection logic here
-        console.log(`Redirecting to ${page}`);
-    };
-
-    // Initialize Alan AI
-    alanBtn({
-        key: alanKey,
-        onCommand: (commandData) => {
-            if (commandData.command === 'go:to' && commandData.page) {
-                const category = capitalizeFirstLetter(commandData.page);
-                redirectToPage(category);
-            }
-        },
-    });
-
+function handleRedirect(route) {
+    switch (route) {
+        case 'login':
+            // Send a request to your Django server with the redirect command
+            fetch('http://localhost:8000/alan-callback/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',  // Include credentials (cookies) in the request
+                body: JSON.stringify({ command: 'redirect', route: 'login' }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response if needed
+                console.log('Server Response:', data);
+            })
+            .catch(error => console.error('Error:', error));
+            break;
+        // Add more cases for other routes if needed
+    }
     
-
-    // Function to redirect to the 'liked_wallpapers' page
-    const redirectToLikedWallpapers = () => {
-        // Implement your redirection logic here
-        window.location.href = "{% url 'liked_wallpapers' %}";
-    };
-
-    alanBtn({
-        key: alanKey,
-        onCommand: (commandData) => {
-            if (commandData.command === 'go:to' && commandData.page === 'liked_wallpapers') {
-                redirectToLikedWallpapers();
-            }
-        },
-    });
-
-    const alanScript = (p) => {
-        if (p.page.value) {
-            const liked_wallpapers = p.page.value;
-            // Perform actions based on the 'go:to' command
-            console.log(`Redirecting to ${liked_wallpapers}.`);
-        }
-
-        if (p.intent === 'What is my name?') {
-            // Respond to the 'What is my name?' intent
-            console.log("It's Razor.");
-        }
-
-        if (p.intent === 'How are you doing?') {
-            // Respond to the 'How are you doing?' intent
-            console.log("Good, thank you. What about you?");
-        }
-    };
-
-    alanBtn({
-        key: alanKey,
-        onCommand: (commandData) => {
-            // Extracting the relevant data from the command
-            const { page, intent } = commandData;
-
-            // Call the Alan AI script with the extracted data
-            alanScript({ page, intent });
-        },
-    });
+    // Log a message to indicate that the handleRedirect function was called
+    console.log('handleRedirect function called for route:', route);
+}
 </script>
 
 

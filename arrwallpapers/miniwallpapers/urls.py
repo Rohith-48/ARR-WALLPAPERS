@@ -67,6 +67,11 @@ urlpatterns=[
 
     path('community/', views.community, name='community'),
     path('send_message/', views.send_message, name='send_message'),
+
+
+
+    path('alan-callback/', views.alan_callback, name='alan_callback'),
+
     ]
 
 if settings.DEBUG:

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="icon" type="image-asset/png" href="{% static '\image-asset\icon.png'%}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css\fontawesome.css'%}">
     <style>
         * {
@@ -845,7 +846,7 @@ body.dark-mode .user-table tbody tr:hover {
 </div>
 {% endif %}
 
-
+<div class="alan-btn"></div>
         
 
     </div>
@@ -893,7 +894,19 @@ body.dark-mode .user-table tbody tr:hover {
     darkModeToggle.addEventListener('change', toggleDarkMode);
 });
 
-</script>      
-      
+</script>     
+<script type="text/javascript"
+ src="https://studio.alan.app/web/lib/alan_lib.min.js"></script> 
+<script>
+    var alanBtnInstance = alanBtn({
+      key: "990295dbd0c4bd2bf080918877d35c002e956eca572e1d8b807a3e2338fdd0dc/stage",
+      onCommand: function (commandData) {
+        if (commandData.command === "go:back") {
+          //call client code that will react on the received command
+        }
+      },
+      rootEl: document.getElementById("alan-btn"),
+    });
+  </script>
 </body>
 </html>

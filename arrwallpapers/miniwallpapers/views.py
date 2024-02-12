@@ -191,14 +191,9 @@ def live_search(request):
         product_data = []
 
         for product in results:
-            # avg_rating = Review.objects.filter(prod=product).aggregate(Avg('rating'))['rating__avg'] or 0
             product_info = {
                 'name': product.title,
                 'id': product.id,
-                # 'description': product.productdescription.description,
-                # 'price': product.price,
-                # 'prod_id' : product.prod_id,
-                # 'avg_rating': avg_rating, 
                 'img1_url': product.wallpaper_image.url,  # Include img1 URL
             }
             product_data.append(product_info)
@@ -216,9 +211,11 @@ from .models import WallpaperCollection, Category
 def category_filter(request, category):
     category_obj = Category.objects.get(name__iexact=category)
     categories = Category.objects.all()
+    creators = UserProfileDoc.objects.filter(is_creator=True)
+    admin_user = User.objects.filter(is_staff=True).first()
     wallpapers = WallpaperCollection.objects.filter(category=category_obj).order_by('-upload_date')
 
-    return render(request, 'category_filter.html', {'wallpapers': wallpapers, 'selected_category': category_obj, 'categories': categories})
+    return render(request, 'category_filter.html', {'wallpapers': wallpapers, 'selected_category': category_obj, 'categories': categories, 'admin_user': admin_user, 'creators' : creators})
 
 
 
@@ -248,10 +245,7 @@ def profileview(request, username):
     creators = UserProfileDoc.objects.filter(is_creator=True)
     admin_user = User.objects.filter(is_staff=True).first()
     categories = Category.objects.all()
-
-
     if user.is_staff:
-        # Admin view
         user_profile = get_object_or_404(User, username=username)
         user_content = WallpaperCollection.objects.filter(user=user, is_deleted=False)
     else:
@@ -1066,7 +1060,6 @@ def retrival(request):
     }
     return render(request, 'retrival.html', context)
 
-
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -1108,3 +1101,17 @@ def send_message(request):
             
     return redirect('community')
 
+def alan_callback(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            # Check if the received data includes a command to redirect to login
+            if data.get('command') == 'redirect' and data.get('route') == 'login':
+                # Redirect to the login page
+                return redirect('login')
+            else:
+                return JsonResponse({'error': 'Invalid command or route'}, status=400)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+    else:
+        return HttpResponse(status=405, content="Method Not Allowed")

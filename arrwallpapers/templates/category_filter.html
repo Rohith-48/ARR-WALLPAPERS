@@ -74,10 +74,9 @@
 </head>
 
 <body>
-
-<h2>Wallpapers in {{ selected_category }}</h2>
-
-<div class="grid">
+    <h2>Wallpapers in {{ selected_category }}</h2>
+    <div id="search-results"></div>
+<div class="grid" id="wallpaperss">
     {% for wallpaper in wallpapers %}
         <div class="grid-item">
             <a href="{% url 'wallpaper_details' wallpaper.id %}">
@@ -88,8 +87,8 @@
             </a>
         </div>
     {% endfor %}
+    
 </div>
-
 <script>
     function showOverlay(overlay) {
         overlay.style.opacity = 1;
@@ -108,6 +107,78 @@
             gutter: 15,
         });
     });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#search-input').keyup(function () {
+            var query = $(this).val();
+            $.ajax({
+                type: 'GET',
+                url: '/live_search/',
+                data: {
+                    'query': query
+                },
+                success: function (data) {
+                    var results = data.products;
+                    var resultsHtml = '';
+                    resultsHtml += '<div class="product-container">';
+                    if (results.length === 0) {
+            
+                        resultsHtml += '<img style="height:450px; width:650px; margin-top:60px" src="{% static "image-asset/not-found.svg" %}" alt="Default Image">';
+                        resultsHtml += '<h3 style="color: white">No Wallpapers found</h3>';
+                        
+                        // resultsHtml += '</div>';
+                    } else {
+                        for (var i = 0; i < results.length; i++) {
+                            resultsHtml += '<div style="border-radius: 10px; max-width: 284px; border-radius: 14px;" class="product-info col-md-4 col-sm-6 pb-1" onclick="navigateToProductDesc(' + results[i].id + ')">';                                resultsHtml += '<div class="product-item bg-light mb-4">';
+                            resultsHtml += '<div class="product-img position-relative overflow-hidden">';
+                            resultsHtml += '<img align-self: unset;" class="img-fluid w-100" src="' + results[i].img1_url + '" alt="">';
+                            
+                            resultsHtml += '<div class="product-action">';
+
+
+
+                            resultsHtml += '</div>';
+                            resultsHtml += '</div>';
+                            resultsHtml += '<div class="text-center py-4">';
+                            resultsHtml += '<a class="h6 text-decoration-none" href="#">';
+                            resultsHtml += '<span class="text-truncate">' + results[i].name + '</span>';
+                            resultsHtml += '</a>';
+                            resultsHtml += '<div class="d-flex align-items-center justify-content-center mt-2">';
+                            // Add the discounted price if applicable
+                            resultsHtml += '</div>';
+
+                            // Add your star rating section here
+                            resultsHtml += '</div>';
+                            resultsHtml += '</div>';
+                            resultsHtml += '</div>';
+
+                        }
+                    }
+                    resultsHtml += '</div>';
+
+                    if (query) {
+                        $('#search-results').html(resultsHtml);
+                        $('#search-results').show();
+                        $('#search-results').show();
+                        $('#main1').hide();
+                        $('#wallpaperss').hide();
+                    } else {
+                        $('#search-results').hide();
+                        $('#whole').show();
+                        $('#wallpaperss').show();
+                    }
+                }
+            });
+        });
+    });
+
+
+    function navigateToProductDesc(prodId) {
+        // Redirect to the respective product description page based on the prodId
+        window.location.href = '/wallpaper/' + prodId + '/';
+    }
 </script>
 
 {% endblock %}
