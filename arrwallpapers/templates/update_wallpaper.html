@@ -100,6 +100,81 @@
         background-color: #dff0d8;
         border-color: #d6e9c6;
     }
+
+
+    
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        width: 60%;
+        position: relative;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        color: #888;
+    }
+
+    .close:hover {
+        color: #555;
+    }
+
+    .form-field {
+        margin-bottom: 15px;
+    }
+
+    label {
+        display: block;
+        font-size: 16px;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    input[type="text"],
+    textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+    }
+
+    .update-button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .update-button:hover {
+        background-color: #45a049;
+    }
+    
 </style>
 <div class="content_table">
     {% if user.is_superuser %}
@@ -115,7 +190,7 @@
                 <div class="wallpaper-selection">
                     {% for wallpaper in wallpapers %}
                     <label class="wallpaper-card">
-                        <input type="radio" name="selected_wallpaper" value="{{ wallpaper.id }}">
+                        <input type="radio" name="selected_wallpaper" value="{{ wallpaper.id }}" onclick="toggleUpdateForm(this)">
                         <img src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}">
                         <div class="wallpaper-details">
                             <p class="wallpaper-title">{{ wallpaper.title }}</p>
@@ -136,25 +211,30 @@
                 </div>
                 
             </div>
-    
-            <div class="form-field">
-                <label for="title">Title:</label>
-                <input type="text" id="title" name="title" value="" required>
-            </div>
-    
-            <div class="form-field">
-                <label for="description">Description:</label>
-                <textarea id="description" name="description" rows="4" required></textarea>
-            </div>
-    
-            <div class="form-field">
-                <label for="tags">Tags (comma-separated):</label>
-                <input type="text" id="tags" name="tags" placeholder="e.g., tag1, tag2, tag3" value="{% for tag in wallpaper.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}">
-            </div>
-            <input type="hidden" id="selected_tags" name="selected_tags">
+            <div id="updateModal" class="modal">
+                <div class="modal-content">
+                    <div class="form-field">
+                        <label for="title">Title:</label>
+                        <input type="text" id="title" name="title" value="" required>
+                    </div>
             
-    
-            <button type="submit" class="update-button" onclick="showUpdateSuccessMessage()">Update Wallpaper</button>
+                    <div class="form-field">
+                        <label for="description">Description:</label>
+                        <textarea id="description" name="description" rows="4" required></textarea>
+                    </div>
+            
+                    <div class="form-field">
+                        <label for="tags">Tags (comma-separated):</label>
+                        <input type="text" id="tags" name="tags" placeholder="e.g., tag1, tag2, tag3" value="{% for tag in wallpaper.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}">
+                    </div>
+                    <input type="hidden" id="selected_tags" name="selected_tags">
+            
+                    <button type="submit" class="update-button" onclick="showUpdateSuccessMessage()">Update Wallpaper</button>
+                    <button><span class="close" onclick="closeUpdateModal()">&times;</span></button>
+                </div>
+            </div>
+            
+            
         </form>
     </div>
     {% endif %}
@@ -171,4 +251,21 @@
         }, 5000); 
     }
 </script>
+
+<script>
+    function toggleUpdateForm(radioButton) {
+        var updateModal = document.getElementById('updateModal');
+        updateModal.style.display = 'block';
+    }
+
+    function closeUpdateModal() {
+        var updateModal = document.getElementById('updateModal');
+        updateModal.style.display = 'none';
+    }
+
+    function sayHello() {
+        alert('Hello!');
+    }
+</script>
+
 {% endblock %}

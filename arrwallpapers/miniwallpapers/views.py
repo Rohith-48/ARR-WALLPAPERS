@@ -433,16 +433,23 @@ def custom_logout(request):
     return redirect('index')  
 
 
+
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User 
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
-from .models import UserProfileDoc
+from .models import UserProfileDoc, WallpaperCollection, Comment
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required
 def user_profile(request):
     user_profile = UserProfileDoc.objects.get(user=request.user)
     user = request.user
+
+    # Fetch the count of uploaded wallpapers
+    uploaded_wallpapers_count = WallpaperCollection.objects.filter(user=user).count()
+
+    # Fetch the count of comments
+    comments_count = Comment.objects.filter(user=user).count()
 
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
@@ -471,7 +478,8 @@ def user_profile(request):
         user_profile.save()
         return redirect('userprofile')
 
-    return render(request, 'userprofile.html', {'user_profile': user_profile, 'user': user})
+    return render(request, 'userprofile.html', {'user_profile': user_profile, 'user': user, 'uploaded_wallpapers_count': uploaded_wallpapers_count, 'comments_count': comments_count})
+
 
 
 def Billinginfo(request):
@@ -717,9 +725,10 @@ def update_wallpaper(request):
 
 
 from django.contrib.auth import logout
-from django.shortcuts import render, redirect
-from .models import WallpaperCollection, Category, Tag, UserProfileDoc
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 from django.http import HttpResponseBadRequest
+from .models import WallpaperCollection, Category, Tag, UserProfileDoc, Comment
 
 ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'webp', 'svg', 'ico', 'jfif', 'pjpeg', 'pjp', 'avif']
 
@@ -728,20 +737,28 @@ def user_upload(request):
     user_profile = UserProfileDoc.objects.get(user=request.user)
     categories = Category.CATEGORY_CHOICES  # Define categories outside the if-else block
     
+    # Default values
+    uploaded_wallpapers_count = 0
+    comments_count = 0
+
     if request.method == "POST":
         title = request.POST.get("title")
         description = request.POST.get("description")
         price = request.POST.get("price")
-        user = request.user
+        user = request.user  # Move this line here
         category_name = request.POST.get("category")
         tags_input = request.POST.get("tags")
         tags_names = [tag.strip() for tag in tags_input.split(",")]
+
+        # Create or get tags from the database
+        tags = [Tag.objects.get_or_create(name=tag)[0] for tag in tags_names]
+
         category, created = Category.objects.get_or_create(name=category_name)
-        tags = Tag.objects.filter(name__in=tags_names)
         wallpaper_image = request.FILES.get("wallpaper_file")
         extension = wallpaper_image.name.split('.')[-1].lower()
         if extension not in ALLOWED_EXTENSIONS:
             return HttpResponseBadRequest("File must be an image with a valid extension (jpg, jpeg, png, gif, bmp, tiff, webp, svg, ico, jfif, pjpeg, pjp, avif).")
+
         wallpaper = WallpaperCollection.objects.create(
             title=title,
             description=description,
@@ -757,13 +774,24 @@ def user_upload(request):
             user_profile.avatar = avatar_image
             user_profile.save()
 
+        # Move this line after the user is assigned a value
+        uploaded_wallpapers_count = WallpaperCollection.objects.filter(user=user).count()
+
     else:
         tags = Tag.objects.all()
+        user = request.user  # Move this line here
+        # Fetch the count of uploaded wallpapers outside the if-else block
+        uploaded_wallpapers_count = WallpaperCollection.objects.filter(user=user).count()
+
+    # Fetch the count of comments
+    comments_count = Comment.objects.filter(user=user).count()
 
     context = {
         "tags": tags,
         "categories": categories,
         "user_profile": user_profile,
+        'uploaded_wallpapers_count': uploaded_wallpapers_count,
+        'comments_count': comments_count
     }
 
     return render(request, "user_upload.html", context)
@@ -773,8 +801,15 @@ def user_upload(request):
 @login_required
 def user_edit_wallpaper(request):
     user_profile = UserProfileDoc.objects.get(user=request.user)
-    wallpapers = WallpaperCollection.objects.filter(user=request.user)  # Move this line here
-    all_tags = Tag.objects.all()  # Move this line here
+    wallpapers = WallpaperCollection.objects.filter(user=request.user)
+    
+    # Fetch the count of uploaded wallpapers
+    uploaded_wallpapers_count = WallpaperCollection.objects.filter(user=request.user).count()
+
+    # Fetch the count of comments
+    comments_count = Comment.objects.filter(user=request.user).count()
+
+    all_tags = Tag.objects.all()
 
     if request.method == "POST":
         selected_wallpaper_id = request.POST.get("selected_wallpaper")
@@ -782,12 +817,16 @@ def user_edit_wallpaper(request):
         description = request.POST.get("description")
         tags_input = request.POST.get("tags")
         tags_list = [tag.strip() for tag in tags_input.split(",")]
+
         try:
             wallpaper = WallpaperCollection.objects.get(id=selected_wallpaper_id, user=request.user)
             wallpaper.title = title
             wallpaper.description = description
             wallpaper.save()
-            tags = Tag.objects.filter(name__in=tags_list)
+
+            # Create or get tags from the database
+            tags = [Tag.objects.get_or_create(name=tag)[0] for tag in tags_list]
+
             wallpaper.tags.set(tags)
 
             messages.success(request, "Wallpaper updated successfully")
@@ -798,8 +837,11 @@ def user_edit_wallpaper(request):
         "wallpapers": wallpapers,
         "all_tags": all_tags,
         "user_profile": user_profile,  
+        'uploaded_wallpapers_count': uploaded_wallpapers_count, 
+        'comments_count': comments_count,
     }
     return render(request, "user_edit.html", context)
+
 
 
 
@@ -810,6 +852,8 @@ from django.shortcuts import render, redirect
 @login_required
 def view_delete_userwallpaper(request):
     user = request.user
+    uploaded_wallpapers_count = WallpaperCollection.objects.filter(user=user).count()
+    comments_count = Comment.objects.filter(user=user).count()
     wallpapers = WallpaperCollection.objects.filter(user=user)
     try:
         user_profile = UserProfileDoc.objects.get(user=user)
@@ -826,7 +870,9 @@ def view_delete_userwallpaper(request):
 
     context = {
         'wallpapers': wallpapers,
-       "user_profile": user_profile,   
+       "user_profile": user_profile,  
+        'uploaded_wallpapers_count': uploaded_wallpapers_count,
+        'comments_count': comments_count 
     }
     return render(request, 'view_delete_userwallpaper.html', context)
 
