@@ -1121,13 +1121,17 @@ def community(request):
     return render(request, 'community.html', {'chat_messages': chat_messages, 'users_with_avatars': users_with_avatars})
 
 
+
 @login_required
 def send_message(request):
     if request.method == 'POST':
         user = request.user
         message = request.POST.get('message', '')
-        if message:
-            chat_message = ChatMessage.objects.create(user=user, message=message)
+        image = request.FILES.get('image')
+
+        # Check if the message or image is not empty
+        if message or image:
+            chat_message = ChatMessage.objects.create(user=user, message=message, image=image)
             channel_layer = get_channel_layer()
             try:
                 async_to_sync(channel_layer.group_send)(
@@ -1136,16 +1140,33 @@ def send_message(request):
                         'type': 'chat.message',
                         'message': chat_message.message,
                         'username': user.username,
+                        'image_url': chat_message.image.url if chat_message.image else None,
                     }
                 )
+                messages.success(request, 'Message sent successfully!')
             except Exception as e:
                 print(f"Error sending message: {e}")
-            messages.success(request, 'Message sent successfully!')
-            return redirect('community')
+                messages.error(request, 'Failed to send message.')
         else:
-            messages.error(request, 'Invalid message. Please enter a non-empty message.')
-            
+            messages.error(request, 'Invalid message or image. Please provide a non-empty message or select an image.')
+    else:
+        messages.error(request, 'Invalid request method.')
+
     return redirect('community')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def alan_callback(request):
     if request.method == 'POST':
