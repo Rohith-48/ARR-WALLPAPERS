@@ -602,50 +602,6 @@
 </script>
 
 
-<!-- crop from middle -->
-<!-- <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var originalImageUrl = "{{ wallpaper.wallpaper_image.url }}";
-        var stretchedImage = new Image();
-        stretchedImage.onload = function () {
-            var canvas = document.createElement("canvas");
-            var ctx = canvas.getContext("2d");
-    
-            // Determine the aspect ratios
-            var sourceAspectRatio = stretchedImage.width / stretchedImage.height;
-            var screenWidth = window.screen.width;
-            var screenHeight = window.screen.height;
-            var targetAspectRatio = screenWidth / screenHeight;
-    
-            var sourceWidth, sourceHeight, sourceX, sourceY;
-    
-            if (sourceAspectRatio > targetAspectRatio) {
-                sourceWidth = stretchedImage.height * targetAspectRatio;
-                sourceHeight = stretchedImage.height;
-                sourceX = (stretchedImage.width - sourceWidth) / 2;
-                sourceY = 0; // Keep the top portion of the image
-            } else {
-                sourceWidth = stretchedImage.width;
-                sourceHeight = stretchedImage.width / targetAspectRatio;
-                sourceX = 0;
-                sourceY = (stretchedImage.height - sourceHeight) / 2;
-            }
-    
-            canvas.width = screenWidth;
-            canvas.height = screenHeight;
-            ctx.drawImage(stretchedImage, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, screenWidth, screenHeight);
-    
-            var croppedImageDataURL = canvas.toDataURL("image/jpeg");
-            var downloadStretchedButton = document.getElementById("download-for-my-screen");
-            downloadStretchedButton.href = croppedImageDataURL;
-            downloadStretchedButton.download = "yourScreen_wallpaper.jpg";
-            var buttonText = "Download for My Screen " + screenWidth + "x" + screenHeight + "px";
-            downloadStretchedButton.textContent = buttonText;
-        };
-        stretchedImage.src = originalImageUrl;
-     
-    });
-</script> -->
 
 
 <script>
