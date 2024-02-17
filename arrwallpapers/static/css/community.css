@@ -201,11 +201,9 @@ html {
 
 .logo {
   color: var(--theme-color);
-  width: 38px;
   flex-shrink: 0;
-}
-.logo svg {
-  width: 100%;
+  width: 80px;
+  height: 70px;
 }
 
 .user-settings {

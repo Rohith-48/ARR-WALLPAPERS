@@ -46,3 +46,11 @@ if (storedMode) {
   // Default mode if not stored
   setMode('light-mode');
 }
+document.addEventListener("DOMContentLoaded", function () {
+  var userProfileIcon = document.getElementById("user-profile-icon");
+  var dropdownContent = document.getElementById("dropdown-content");
+
+  userProfileIcon.addEventListener("click", function () {
+      dropdownContent.style.display = (dropdownContent.style.display === "block") ? "none" : "block";
+  });
+});

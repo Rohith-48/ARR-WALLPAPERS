@@ -1116,7 +1116,7 @@ from django.shortcuts import render
 from .models import UserProfileDoc
 
 def community(request):
-    chat_messages = ChatMessage.objects.select_related('user__userprofiledoc').all()
+    chat_messages = ChatMessage.objects.select_related('user__userprofiledoc').order_by('timestamp')
     users_with_avatars = User.objects.filter(userprofiledoc__avatar__isnull=False)
     return render(request, 'community.html', {'chat_messages': chat_messages, 'users_with_avatars': users_with_avatars})
 
@@ -1153,9 +1153,6 @@ def send_message(request):
         messages.error(request, 'Invalid request method.')
 
     return redirect('community')
-
-
-
 
 
 
