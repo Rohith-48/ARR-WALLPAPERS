@@ -326,14 +326,67 @@
         <h2 class="wallpaper-title">{{ wallpaper.title }}</h2>
         <p class="wallpaper-description">{{ wallpaper.description }}</p>
     </div>
-    
-    <!-- Wallpaper and customization container -->
+
+    <script src="https://unpkg.com/watermarkjs"></script>
     <div class="wallpaper-container">
-        <!-- Container for wallpaper image -->
         <div class="wallpaper-image-container">
-            <img src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}" class="wallpaper-image">
-               <!-- Username container -->
-    <!-- Username container -->
+        <img src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}" class="wallpaper-image" id="watermarked-image">
+        <script>
+            const imageUrl = "{{ wallpaper.wallpaper_image.url }}";
+            const watermarkText = '©ARR WALLPAPERS';
+            const watermarkFont = '50px Arial';
+            const watermarkColor = '#fff';
+            const watermarkOpacity = 1;
+            
+            // Check if the wallpaper is premium
+            const isPremium = {% if wallpaper.price == 'paid' %} true {% else %} false {% endif %};
+            const isSubscribed = {% if user.is_authenticated and user.userprofiledoc.subscribed %} true {% else %} false {% endif %};
+            
+            // Get the image element
+            const image = document.getElementById('watermarked-image');
+            
+            // Apply watermark only for premium wallpapers and non-subscribed users
+            if (isPremium && !isSubscribed) {
+                const spreadWatermarks = function(target) {
+                    var context = target.getContext('2d');
+                    context.globalAlpha = 0.5;
+                    context.fillStyle = watermarkColor;
+                    context.font = watermarkFont;
+            
+                    // Define the number of watermarks
+                    const numWatermarks = 10;
+            
+                    for (let i = 0; i < numWatermarks; i++) {
+                        const x = Math.random() * target.width;
+                        const y = Math.random() * target.height;
+            
+                        // Rotate the context counterclockwise by 45 degrees
+                        context.save();
+                        context.translate(x, y);
+                        context.rotate(-45 * Math.PI / 180);
+            
+                        // Draw the rotated text
+                        context.fillText(watermarkText, 0, 0);
+            
+                        // Restore the context to its original state
+                        context.restore();
+                    }
+            
+                    return target;
+                };
+            
+                watermark([imageUrl])
+                    .image(spreadWatermarks)
+                    .then((img) => {
+                        image.src = img.src;
+                    });
+            } else {
+                // If the wallpaper is not premium or the user is subscribed, display the image without watermarks
+                image.src = imageUrl;
+            }
+        </script>
+        
+        
     <br><br>
     <div class="uploader-info" style="color: white;">
         Uploaded by: <img src="{% if wallpaper.user.userprofiledoc.avatar %}{{ wallpaper.user.userprofiledoc.avatar.url }}{% else %}{% static 'image-asset/dp.jpg' %}{% endif %}" alt="Avatar" width="50" height="50" style="  width: 50px;
@@ -450,7 +503,7 @@
                         <a href="{% url 'subscribe_page' %}" class="btn btn-primary custom-button" id="premiumbtn">Download<br>Go Premium</a>
                     {% endif %}
                 {% else %}
-                    <a href="{% url 'Premium_signup' %}" class="btn btn-primary custom-button" id="premiumbtn">Download<br>Go Premium</a>
+                    <a href="{% url 'login' %}" class="btn btn-primary custom-button" id="premiumbtn">Download<br>Go Premium</a>
                 {% endif %}
             {% else %}
                 <a id="download-for-my-screen" class="btn btn-primary custom-button">Download for My Screen</a><br><br><br>
