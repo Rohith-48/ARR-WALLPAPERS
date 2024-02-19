@@ -72,6 +72,8 @@ class WallpaperCollection(models.Model):
     upload_date = models.DateTimeField(auto_now_add=True)
     is_superuser = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
+    average_rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.00)
+    total_ratings = models.PositiveIntegerField(default=0)
     view_count = models.PositiveIntegerField(default=0)
     downloads = models.PositiveIntegerField(default=0)
     wallpaper_image = models.ImageField(
@@ -85,6 +87,46 @@ class WallpaperCollection(models.Model):
     def clean(self):
         if self.tags.count() > 4:
             raise ValidationError("A wallpaper can have a maximum of 4 tags.")
+    
+    def update_average_rating(self):
+        # Calculate the new average rating whenever a new rating is added
+        ratings = Rating.objects.filter(wallpaper=self)
+        total_ratings = ratings.count()
+        if total_ratings > 0:
+            average_rating = ratings.aggregate(models.Avg('value'))['value__avg']
+            self.average_rating = round(average_rating, 2)
+        else:
+            self.average_rating = 0.00
+        self.total_ratings = total_ratings
+        self.save()
+
+    def __str__(self):
+        return self.title
+
+
+class Rating(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    wallpaper = models.ForeignKey(WallpaperCollection, on_delete=models.CASCADE)
+    value = models.PositiveIntegerField()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # Update the average rating and total ratings for the associated wallpaper
+        self.wallpaper.update_average_rating()
+
+    def __str__(self):
+        return f"{self.user.username} - {self.wallpaper.title} - {self.value}"
+
+
+
+class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    wallpaper = models.ForeignKey(WallpaperCollection, on_delete=models.CASCADE)
+    text = models.TextField()
+
+    def __str__(self):
+        return f"{self.user.username} - {self.wallpaper.title}"
+
 
 
 from django.db import models
