@@ -62,15 +62,18 @@
    <div class="user-profile-container">
     {% if user.is_authenticated %}
         <img class="user-profile" src="{% if user.userprofiledoc.avatar %}{{ user.userprofiledoc.avatar.url }}{% else %}{% static 'image-asset/dp.jpg' %}{% endif %}" width="40" height="40" style="border-radius: 50%;" id="user-profile-icon">
-    {% else %}
-        <img class="user-profile" src="https://w7.pngwing.com/pngs/831/88/png-transparent-user-profile-computer-icons-user-interface-mystique-miscellaneous-user-interface-design-smile-thumbnail.png" alt="Default Image" id="user-profile-icon">
-    {% endif %}
 
-    <div class="dropdown-content" id="dropdown-content">
-        <a href="{% url 'index' %}">Home</a>
-        <a href="{% url 'logout' %}">Logout</a>
-    </div>
+        <div class="dropdown-content" id="dropdown-content">
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    {% else %}
+        <div class="login-button" style="border-radius: 15px; background-color: #3498db; padding: 10px; text-align: center;">
+            <a href="{% url 'login' %}" style="color: #fff; text-decoration: none;">Login</a>
+        </div>
+    {% endif %}
 </div>
+
 
   </div>
  </div>

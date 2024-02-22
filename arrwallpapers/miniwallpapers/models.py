@@ -108,7 +108,7 @@ class Rating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     wallpaper = models.ForeignKey(WallpaperCollection, on_delete=models.CASCADE)
     value = models.PositiveIntegerField()
-
+    
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         # Update the average rating and total ratings for the associated wallpaper
@@ -123,23 +123,12 @@ class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     wallpaper = models.ForeignKey(WallpaperCollection, on_delete=models.CASCADE)
     text = models.TextField()
-
-    def __str__(self):
-        return f"{self.user.username} - {self.wallpaper.title}"
-
-
-
-from django.db import models
-from django.contrib.auth.models import User
-
-class Comment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    wallpaper = models.ForeignKey('WallpaperCollection', on_delete=models.CASCADE)
-    text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.wallpaper.title}"
+
+
 
 
 from django.db import models

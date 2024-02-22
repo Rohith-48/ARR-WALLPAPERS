@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.js"></script>
     <link rel="icon" type="image/png" href="{% static 'image-asset/icon.png' %}">
     <title>AI Wallpaper Generator</title>
     <link rel="stylesheet" href="{% static 'css/aistyle.css' %}">
@@ -156,16 +158,33 @@
             <input type="hidden" name="aspect_ratio" value="16:9">
             <button type="submit" class="generate-btn">Generate</button>
         </form>
-    </div>
-</section>
-<script>
-    $(document).ready(function () {
-        $('#generate-form').submit(function () {
-            // Change the button text to "Generating"
-            $('.generate-btn').text('Generating');
-        });
-    });
-</script>
+        </div>
+        </section>
+        <script>
+            $(document).ready(function () {
+                $('#generate-form').submit(function (event) {
+                    // Check if the input is empty
+                    if ($('#prompt').val().trim() === '') {
+                        // Prevent form submission
+                        event.preventDefault();
+                        // Show toast message
+                        Toastify({
+                            text: "Please add a description before generating.",
+                            duration: 3000, // 3 seconds
+                            gravity: "top", // toast position
+                            position: "center", // toast position
+                            close: true, // close button
+                            backgroundColor: "linear-gradient(to right, #ff8a00, #da1b60)", // toast background color
+                        }).showToast();
+                    } else {
+                        // Change the button text to "Generating"
+                        $('.generate-btn').text('Generating');
+                    }
+                });
+            });
+        </script>
+        
+        
 <section class="image-gallery">
     {% if image_data %}
         <h2>Generated Images</h2>

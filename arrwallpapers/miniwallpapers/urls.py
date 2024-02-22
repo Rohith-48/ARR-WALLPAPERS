@@ -11,7 +11,8 @@ urlpatterns=[
     path('retrival', views.retrival, name='retrival'),
     path('ai_wallpaper_generator/', views.ai_wallpaper_generator, name='ai_wallpaper_generator'),
     #  path('upscaleimage/', views.upscaleimage, name='upscaleimage'),
-    path('add_comment/<int:wallpaper_id>/', views.add_comment, name='add_comment'),
+    path('post_rating/<int:wallpaper_id>/', views.post_rating, name='post_rating'),
+
 
     path('set_premium_status/', views.set_premium_status, name='set_premium_status'),
     path('login/', views.login, name='login'),
@@ -58,7 +59,7 @@ urlpatterns=[
     path('errorpage/', views.errorpage, name='errorpage'),
     path('Billinginfo/', views.Billinginfo, name='Billinginfo'),
 
-
+    path('arr_contributor/', views.arr_contributor, name='arr_contributor'),
     path('contactform/', views.contactform, name='contactform'),
     path('about/', views.about, name='about'),
     path('termsofservice/', views.termsofservice, name='termsofservice'),

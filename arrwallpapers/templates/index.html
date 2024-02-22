@@ -264,20 +264,42 @@
 
 				
 		
-				<li class="dropdown first">
-					<a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
-						Artists <i class="fa fa-angle-down" aria-hidden="true"></i>
-					</a>
-					<ul class="dropdown-menu level1">
-						{% if admin_user %}
-							<li><a href="{% url 'profileview' username=admin_user.username %}">{{ admin_user.username }} (Admin)</a></li>
-						{% endif %}
-						{% for creator in creators %}
-							<li><a href="{% url 'profileview' username=creator.user.username %}">{{ creator.user.username }}</a></li>
-						{% endfor %}
-						<li><a href="#">All Creators</a></li>
-					</ul>
-				</li>
+					<li class="dropdown first">
+						<a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
+							Artists <i class="fa fa-angle-down" aria-hidden="true"></i>
+						</a>
+						<ul class="dropdown-menu level1">
+							{% if admin_user %}
+								<li><a href="{% url 'profileview' username=admin_user.username %}">{{ admin_user.username }} (Admin)</a></li>
+							{% endif %}
+							{% for creator in creators %}
+								{% if creator.user.userprofiledoc.is_approved %}
+									<li class="{% if forloop.counter > 5 and not show_all_creators %}hidden-creator{% endif %}">
+										<a href="{% url 'profileview' username=creator.user.username %}">{{ creator.user.username }}</a>
+									</li>
+								{% endif %}
+							{% endfor %}
+							{% if creators|length > 5 %}
+								<li id="showAllCreators" {% if not show_all_creators %}class="visible-all-creators"{% endif %}>
+									<a href="#" onclick="toggleAllCreators()">All Creators</a>
+								</li>
+							{% endif %}
+						</ul>
+					</li>
+					
+					<script>
+						function toggleAllCreators() {
+							var hiddenCreators = document.querySelectorAll('.hidden-creator');
+							for (var i = 0; i < hiddenCreators.length; i++) {
+								hiddenCreators[i].classList.toggle('visible-creator');
+							}
+							document.getElementById('showAllCreators').classList.toggle('visible-all-creators');
+							show_all_creators = !show_all_creators;
+						}
+					
+						var show_all_creators = false;
+					</script>
+					
 
 		
 				<li class="dropdown first">
@@ -291,7 +313,7 @@
 						</a>
 					{% elif user.userprofiledoc.is_premium %}
 						<a href="{% url 'subscribe_page' %}" class="btn btn-default lv1">
-							Subscribe
+							Pricing
 						</a>
 					{% else %}
 						<a href="{% url 'login' %}" class="btn btn-default lv1">
@@ -326,8 +348,11 @@
 							{% if user.is_authenticated %}
 								<li class="dropdown">
 									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-										<img src="{% if user.userprofiledoc.avatar %}{{ user.userprofiledoc.avatar.url }}{% else %}{% static 'image-asset/dp.jpg' %}{% endif %}" width="40" height="40" style="border-radius: 50%;">
-										<span class="caret"></span>
+										<img src="{% if user.userprofiledoc.avatar %}{{ user.userprofiledoc.avatar.url }}{% else %}{% static 'image-asset/dp.jpg' %}{% endif %}" 
+										style="width: 50px; height: 50px; border-radius: 50%;" 
+										alt="Avatar">
+
+									<span class="caret"></span>
 									</a>
 									<ul class="dropdown-menu level1">
 										{% if user.userprofiledoc.is_creator %}
@@ -343,9 +368,9 @@
 									</ul>
 								</li>
 							{% else %}
-								<li class="login"><a href="{% url 'login'%}">LOG IN</a></li>
-								<li class="btn premium mobile-margin" id="premiumsignup"><a href="{% url 'Premium_signup'%}">Subscribe</a></li>
-								<li class="btn signup"><a href="{% url 'signup'%}">SIGN UP</a></li>
+								<li class="login"><a href="{% url 'subscribe_page'%}">Pricing</a></li>
+								<li class="btn signup"><a href="{% url 'login'%}">LOG IN</a></li>
+								<li class="btn signup"><a href="{% url 'Premium_signup'%}">SIGN UP</a></li>
 							{% endif %}
 						</ul>
 						
@@ -359,11 +384,141 @@
 		<div class="top-search">
 			<form method="GET" id="search-form" action="#scroll">
 				<input type="text" id="search-input" placeholder="Search for a Wallpaper, Superheros, nature etc. that you are looking for">
+				<label for="search-input" class="search-icon">
+			
+					<svg id="cameraIcon" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-camera-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="white" fill="none" stroke-linecap="round" stroke-linejoin="round">
+						<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+						<circle cx="12" cy="13" r="3" />
+						<path d="M5 7h2a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h2m9 7v7a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2" />
+						<line x1="15" y1="6" x2="21" y2="6" />
+						<line x1="18" y1="3" x2="18" y2="9" />
+					</svg>
+					
+					
+				</label>
 			</form>
 			<img class="custombtn" id="search-image" src="{% static 'image-asset/topsearch.png'%}">
-		</div>	
-		<li><a href="{% url 'retrival' %}" id="classify-image-link">Search using Image</a></li>
+		</div>
 
+
+		<div id="myModal" class="modal">
+			<div class="modal-content">
+				<span class="close">&times;</span>
+				<div id="image-container"></div>
+				<div id="modal-content-placeholder"></div>
+				
+				<!-- Include CSRF token within the modal form -->
+				<form method="post" action="{% url 'retrival' %}" enctype="multipart/form-data">
+					{% csrf_token %}
+					
+					<input type="file" accept="image/*" id="fileInput">
+					<button type="button" onclick="searchSimilar()">Search Similar</button>
+				</form>
+			</div>
+		</div>
+		
+	<style>
+.top-search {
+    position: relative;
+}
+.search-icon {
+    position: absolute;
+    top: 50%;
+    right: 80px;
+    transform: translateY(-50%);
+}
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+	</style>
+	<script>
+    const cameraIcon = document.getElementById("cameraIcon");
+    const modal = document.getElementById("myModal");
+    const closeBtn = document.getElementsByClassName("close")[0];
+
+    cameraIcon.addEventListener("click", () => {
+        modal.style.display = "block";
+    });
+
+    closeBtn.addEventListener("click", () => {
+        modal.style.display = "none";
+    });
+
+    window.addEventListener("click", (event) => {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+
+	function searchSimilar() {
+		const fileInput = document.getElementById("fileInput");
+		const selectedFile = fileInput.files[0];
+	
+		// Create a FormData object to send the file in the request
+		const formData = new FormData();
+		formData.append('fileInput', selectedFile);
+	
+		// Include the CSRF token in the headers
+		const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+		const headers = new Headers({
+			'X-CSRFToken': csrfToken,
+		});
+	
+		// Make an AJAX request to the retrival URL
+		fetch("{% url 'retrival' %}", {
+			method: 'POST',
+			body: formData,
+			headers: headers,
+		})
+		.then(response => response.text())  // Change to text() to get HTML response
+		.then(data => {
+			// Update the modal content with the retrieved HTML
+			document.getElementById("modal-content-placeholder").innerHTML = data;
+	
+			// Display the modal with the rendered content
+			modal.style.display = "block";
+		})
+		.catch(error => {
+			console.error('Error:', error);
+		});
+	}
+	
+</script>
+
+	
+	
 	</div>
 </header>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -573,8 +728,6 @@
 
 <!-- Add this section to display most viewed wallpapers -->
 
-
-
 <div class="slick-multiItemSlider">
     {% for wallpaper in most_viewed_wallpapers %}
         <div class="movie-item">
@@ -689,6 +842,7 @@
 			<div class="flex-child-ft item4">
 				<h4>Account</h4>
 				<ul>
+					<li><a href="{% url 'arr_contributor' %}">Sell Content</a></li>
 					<li>
 						{% if user.userprofiledoc.is_creator %}
 							<a href="{% url 'userprofile' %}">
@@ -713,6 +867,8 @@
 
 					<li><a href="#">Collections</a></li>
 					<li><a href="#">User Guide</a></li>
+					
+
 				</ul>
 			</div>
 			<div class="flex-child-ft item5">

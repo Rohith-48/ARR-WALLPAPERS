@@ -142,7 +142,7 @@ def login(request):
                     if user.userprofiledoc.is_premium:
                         return redirect('index')
                     else:
-                        return redirect('userprofile')
+                        return redirect('index')
             else:
                 messages.info(request, 'Your account is not approved yet. Please wait for admin approval.')
                 return redirect('login')
@@ -234,6 +234,19 @@ def subscribe_page(request):
 
 
 
+def arr_contributor(request):
+    creators = UserProfileDoc.objects.filter(is_creator=True)
+    admin_user = User.objects.filter(is_staff=True).first()
+    categories = Category.objects.all()
+    context = {
+        'categories': categories,
+        'admin_user': admin_user,
+        'creators' : creators,
+    }
+    return render(request, 'arr_contributor.html', context)
+
+
+
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User
 from .models import UserProfileDoc, WallpaperCollection
@@ -276,14 +289,11 @@ def profileview(request, username):
     return render(request, 'profileview.html', context)
 
 
-
-from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
-from .models import WallpaperCollection, UserProfileDoc, Category, Comment
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from .models import WallpaperCollection, Rating, Review
 
 def wallpaper_details(request, wallpaper_id):
-    wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
+    wallpaper = WallpaperCollection.objects.get(id=wallpaper_id)
     wallpapers = WallpaperCollection.objects.select_related('user').prefetch_related('tags').order_by('-upload_date')
     creators = UserProfileDoc.objects.filter(is_creator=True)
     admin_user = User.objects.filter(is_staff=True).first()
@@ -294,8 +304,13 @@ def wallpaper_details(request, wallpaper_id):
     wallpaper.downloads += 1
     wallpaper.save()
 
-    # Fetch comments related to the wallpaper
-    comments = Comment.objects.filter(wallpaper=wallpaper).order_by('-created_at')
+    ratings = Rating.objects.filter(wallpaper=wallpaper)
+    reviews = Review.objects.filter(wallpaper=wallpaper, text__isnull=False).order_by('-created_at')
+
+
+    total_ratings = ratings.count()
+    total_reviews = reviews.count()
+    total_users_rated = ratings.values('user').distinct().count()
 
     return render(request, 'wallpaper_details.html', {
         'wallpaper': wallpaper,
@@ -303,47 +318,52 @@ def wallpaper_details(request, wallpaper_id):
         'creators': creators,
         'admin_user': admin_user,
         'categories': categories,
-        'comments': comments,
+        'ratings': ratings,
+        'reviews': reviews,
+        'total_ratings': total_ratings,
+        'total_reviews': total_reviews,
+        'total_users_rated': total_users_rated,
     })
+
 
     
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
-from .models import WallpaperCollection, UserProfileDoc, Category, Comment
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_POST
-from datetime import datetime
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+from .models import WallpaperCollection, Rating, Review
+
 @login_required
-@require_POST
-def add_comment(request, wallpaper_id):
-    wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
-    comment_text = request.POST.get('comment_text')
+def post_rating(request, wallpaper_id):
+    if request.method == 'POST':
+        try:
+            wallpaper = WallpaperCollection.objects.get(id=wallpaper_id)
+        except WallpaperCollection.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Wallpaper not found'})
 
-    if comment_text:
-        comment = Comment.objects.create(
-            user=request.user,
-            wallpaper=wallpaper,
-            text=comment_text,
-            created_at=datetime.now()
-        )
+        user = request.user
+        rating_value = request.POST.get('star')
 
-        # Increment view count and downloads
-        wallpaper.view_count += 1
-        wallpaper.downloads += 1
-        wallpaper.save()
+        try:
+            # Ensure 'value' is a valid number
+            rating_value = int(rating_value)
+        except ValueError:
+            return JsonResponse({'success': False, 'error': 'Invalid rating value'})
 
-        # Fetch comments related to the wallpaper
-        comments = Comment.objects.filter(wallpaper=wallpaper).order_by('-created_at')
+        review_text = request.POST.get('review', '')
 
-        # Render the updated comments HTML
-        comments_html = render(request, 'wallpaper_details.html', {'comments': comments}).content
+        # Save the rating
+        Rating.objects.create(user=user, wallpaper=wallpaper, value=rating_value)
 
-        # You can return the comments HTML as JSON if needed
-        return JsonResponse({'comments_html': comments_html})
+        # Save the review
+        Review.objects.create(user=user, wallpaper=wallpaper, text=review_text)
+
+        # Update average rating and total ratings for the wallpaper
+        wallpaper.update_average_rating()
+
+        return JsonResponse({'success': True})
     else:
-        # Handle the case where comment_text is empty
-        return JsonResponse({'error': 'Comment text is required'})
+        return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
 
 
 from django.core.mail import send_mail
@@ -437,7 +457,7 @@ def custom_logout(request):
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
-from .models import UserProfileDoc, WallpaperCollection, Comment
+from .models import UserProfileDoc, WallpaperCollection
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required
@@ -448,8 +468,6 @@ def user_profile(request):
     # Fetch the count of uploaded wallpapers
     uploaded_wallpapers_count = WallpaperCollection.objects.filter(user=user).count()
 
-    # Fetch the count of comments
-    comments_count = Comment.objects.filter(user=user).count()
 
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
@@ -478,7 +496,7 @@ def user_profile(request):
         user_profile.save()
         return redirect('userprofile')
 
-    return render(request, 'userprofile.html', {'user_profile': user_profile, 'user': user, 'uploaded_wallpapers_count': uploaded_wallpapers_count, 'comments_count': comments_count})
+    return render(request, 'userprofile.html', {'user_profile': user_profile, 'user': user, 'uploaded_wallpapers_count': uploaded_wallpapers_count})
 
 
 
@@ -728,7 +746,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.http import HttpResponseBadRequest
-from .models import WallpaperCollection, Category, Tag, UserProfileDoc, Comment
+from .models import WallpaperCollection, Category, Tag, UserProfileDoc
 
 ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'webp', 'svg', 'ico', 'jfif', 'pjpeg', 'pjp', 'avif']
 
@@ -739,7 +757,6 @@ def user_upload(request):
     
     # Default values
     uploaded_wallpapers_count = 0
-    comments_count = 0
 
     if request.method == "POST":
         title = request.POST.get("title")
@@ -783,15 +800,11 @@ def user_upload(request):
         # Fetch the count of uploaded wallpapers outside the if-else block
         uploaded_wallpapers_count = WallpaperCollection.objects.filter(user=user).count()
 
-    # Fetch the count of comments
-    comments_count = Comment.objects.filter(user=user).count()
-
     context = {
         "tags": tags,
         "categories": categories,
         "user_profile": user_profile,
         'uploaded_wallpapers_count': uploaded_wallpapers_count,
-        'comments_count': comments_count
     }
 
     return render(request, "user_upload.html", context)
@@ -805,9 +818,6 @@ def user_edit_wallpaper(request):
     
     # Fetch the count of uploaded wallpapers
     uploaded_wallpapers_count = WallpaperCollection.objects.filter(user=request.user).count()
-
-    # Fetch the count of comments
-    comments_count = Comment.objects.filter(user=request.user).count()
 
     all_tags = Tag.objects.all()
 
@@ -838,7 +848,6 @@ def user_edit_wallpaper(request):
         "all_tags": all_tags,
         "user_profile": user_profile,  
         'uploaded_wallpapers_count': uploaded_wallpapers_count, 
-        'comments_count': comments_count,
     }
     return render(request, "user_edit.html", context)
 
@@ -853,7 +862,6 @@ from django.shortcuts import render, redirect
 def view_delete_userwallpaper(request):
     user = request.user
     uploaded_wallpapers_count = WallpaperCollection.objects.filter(user=user).count()
-    comments_count = Comment.objects.filter(user=user).count()
     wallpapers = WallpaperCollection.objects.filter(user=user)
     try:
         user_profile = UserProfileDoc.objects.get(user=user)
@@ -872,7 +880,6 @@ def view_delete_userwallpaper(request):
         'wallpapers': wallpapers,
        "user_profile": user_profile,  
         'uploaded_wallpapers_count': uploaded_wallpapers_count,
-        'comments_count': comments_count 
     }
     return render(request, 'view_delete_userwallpaper.html', context)
 
@@ -1095,16 +1102,70 @@ def privacypolicy(request):
     return render(request, 'registration/privacypolicy.html', context)
 
 
+import cv2
+import numpy as np
+from django.http import JsonResponse
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from .models import WallpaperCollection
+
+
+def color_histogram(uploaded_file):
+    # Check if the uploaded_file is an InMemoryUploadedFile
+    if isinstance(uploaded_file, InMemoryUploadedFile):
+        # Read the image from memory using cv2
+        file_data = uploaded_file.read()
+        image = cv2.imdecode(np.frombuffer(file_data, np.uint8), cv2.IMREAD_COLOR)
+        
+        # Calculate color histogram
+        hist = cv2.calcHist([image], [0, 1, 2], None, [8, 8, 8], [0, 256, 0, 256, 0, 256])
+        hist = cv2.normalize(hist, hist).flatten()
+
+        return hist
+
+    # Return a default descriptor or handle the None case
+    return np.zeros(512, dtype=float)  # Adjust the size and type as needed
+
+def calculate_similarity(descriptor1, descriptor2):
+    # Use any suitable similarity metric
+    # Here, I'll use the absolute difference for simplicity
+    return np.sum(np.abs(descriptor1 - descriptor2))
+from django.shortcuts import render
+
 def retrival(request):
-    creators = UserProfileDoc.objects.filter(is_creator=True)
-    admin_user = User.objects.filter(is_staff=True).first()
-    categories = Category.objects.all()
-    context = {
-        'categories': categories,
-        'admin_user': admin_user,
-        'creators' : creators,
-    }
-    return render(request, 'retrival.html', context)
+    if request.method == 'POST' and request.FILES.get('fileInput'):
+        uploaded_file = request.FILES['fileInput']
+        uploaded_image_descriptor = color_histogram(uploaded_file)
+
+        # Retrieve all wallpapers from the database
+        all_wallpapers = WallpaperCollection.objects.all()
+
+        # Calculate similarity with each wallpaper
+        similar_wallpapers = []
+        for wallpaper in all_wallpapers:
+            wallpaper_descriptor = color_histogram(wallpaper.wallpaper_image)
+            similarity_score = calculate_similarity(uploaded_image_descriptor, wallpaper_descriptor)
+
+            # If the similarity score is below a threshold, consider it a match
+            if similarity_score < 1000:
+                similar_wallpapers.append({
+                    'title': wallpaper.title,
+                    'image_url': wallpaper.wallpaper_image.url,
+                })
+
+        # Render the HTML template with the retrieved wallpapers
+        return render(request, 'retrival.html', {'similar_wallpapers': similar_wallpapers})
+    elif request.method == 'GET':
+        # Handle the GET request, e.g., render the template with an empty list
+        return render(request, 'retrival.html', {'similar_wallpapers': []})
+    else:
+        # Handle other request methods
+        return render(request, 'retrival.html', {'error': 'Invalid request'})
+
+
+
+
+
+
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required

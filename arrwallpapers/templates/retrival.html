@@ -14,7 +14,7 @@
         <!-- The iframe will be loaded here -->
     </div>
     
-    <script>
+    <!-- <script>
       document.addEventListener("DOMContentLoaded", function() {
         // Get a reference to the "Search using Image" link
         var classifyImageLink = document.getElementById("classify-image-link");
@@ -40,5 +40,16 @@
           imageContainer.appendChild(iframe);
         });
       });
-    </script>
+    </script> -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js"></script>
+    <div id="result-container">
+      {% for wallpaper in similar_wallpapers %}
+          <div class="image-container">
+              <img src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}">
+              <p>{{ wallpaper.title }}</p>
+          </div>
+      {% endfor %}
+  </div>
+  
 {% endblock %}

@@ -749,21 +749,29 @@ body.dark-mode .user-table tbody tr:hover {
     
     <div class="main_contant">
         {% block content %}
-        <div class="bread-crumbs">
-            <ul>
-                <li>
-                    <span><i class="fas fa-home"></i></span>
-                    <h3>Dashboard</h3>
-                </li>
-            </ul>
-        </div>
-      
-<div class="content_table">
+       <div class="content_table">
     <div class="title">
         <h2>Manage Content Creators</h2>
     </div>
     <div class="main">
-        <table class="user-table">
+        <!-- Responsive styles for mobile -->
+        <style>
+            @media (max-width: 600px) {
+                .user-table {
+                    font-size: 14px; /* Adjust font size for smaller screens */
+                }
+
+                .user-table th, .user-table td {
+                    padding: 8px;
+                }
+
+                .delete-button {
+                    font-size: 12px; /* Adjust font size for smaller screens */
+                }
+            }
+        </style>
+
+        <table class="user-table" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
             <thead>
                 <tr>
                     <th>Username</th>
@@ -809,11 +817,10 @@ body.dark-mode .user-table tbody tr:hover {
                 {% endfor %}
             </tbody>
         </table>
-        
-        
-<br><br>
+
+        <br><br>
         <h2>Manage Subscribers</h2>
-        <table class="user-table">
+        <table class="user-table" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
             <thead>
                 <tr>
                     <th>Username</th>
@@ -840,6 +847,9 @@ body.dark-mode .user-table tbody tr:hover {
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+</div>
+
         
         {% endblock %}
     </div>

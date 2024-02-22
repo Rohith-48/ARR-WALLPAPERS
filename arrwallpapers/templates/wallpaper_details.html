@@ -325,178 +325,9 @@
 <div class="container">
     <div class="title-description-container">
         <h2 class="wallpaper-title">{{ wallpaper.title }}</h2>
+        
         <p class="wallpaper-description">{{ wallpaper.description }}</p>
-        <!-- <div class="custom-body">
-        <div class="rating-stars">
-            <input type="radio" name="rating" id="rs0" checked><label for="rs0"></label>
-            <input type="radio" name="rating" id="rs1"><label for="rs1"></label>
-            <input type="radio" name="rating" id="rs2"><label for="rs2"></label>
-            <input type="radio" name="rating" id="rs3"><label for="rs3"></label>
-            <input type="radio" name="rating" id="rs4"><label for="rs4"></label>
-            <input type="radio" name="rating" id="rs5"><label for="rs5"></label>
-            <span class="rating-counter"></span>
-        </div>
-    </div>
-<style>
-    .custom-body {
-        margin: 0;
-        width: 530px;
-        height: 70px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
        
-    }
-    
-    .custom-body * {
-        box-sizing: border-box;
-    }
-    
-    .rating-stars {
-        display: block;
-        width: 50vmin;
-        padding: 1.75vmin 10vmin 2vmin 3vmin;
-        background: linear-gradient(90deg, #ffffff90 40vmin, #fff0 40vmin 100%);
-        border-radius: 5vmin;
-        position: relative;
-    }
-    
-    .rating-counter {
-        font-size: 5.5vmin;
-        font-family: Arial, Helvetica, serif;
-        color: #9aacc6;
-        width: 10vmin;
-        text-align: center;
-        background: rgba(81, 80, 80, 0.4);
-        position: absolute;
-        top: -10px;
-        right: 0;
-        height: 100%;
-        border-radius: 0 5vmin 5vmin 0;
-        line-height: 10vmin;
-    }
-    
-    .rating-counter:before {
-        content: "0";
-        transition: all 0.25s ease 0s;	
-    }
-    
-    
-    
-    input { display: none; }
-    
-    label {
-        width: 5vmin;
-        height: 5vmin;
-        background: #000b;
-        display: inline-flex;
-        cursor: pointer;
-        margin: 0.5vmin 0.65vmin;
-        transition: all 1s ease 0s;	
-        clip-path: polygon(50% 0%, 66% 32%, 100% 38%, 78% 64%, 83% 100%, 50% 83%, 17% 100%, 22% 64%, 0 38%, 34% 32%);
-    }
-    
-    label[for=rs0] {
-        display: none;
-    }
-    
-    label:before {
-        width: 90%;
-        height: 90%;
-        content: "";
-        background: orange;
-        z-index: -1;
-        display: block;
-        margin-left: 5%;
-        margin-top: 5%;
-        clip-path: polygon(50% 0%, 66% 32%, 100% 38%, 78% 64%, 83% 100%, 50% 83%, 17% 100%, 22% 64%, 0 38%, 34% 32%);
-        background: linear-gradient(90deg, yellow, orange 30% 50%, #184580 50%, 70%, #173a75 100%);
-        background-size: 205% 100%;
-        background-position: 0 0;
-    }
-    
-    label:hover:before {
-        transition: all 0.25s ease 0s;		
-    }
-    
-    input:checked + label ~ label:before {
-        background-position: 100% 0;
-        transition: all 0.25s ease 0s;	
-    }
-    
-    input:checked + label ~ label:hover:before {
-        background-position: 0% 0
-    }
-    
-    
-    
-    
-    
-    #rs1:checked ~ .rating-counter:before {
-        content: "1";
-    }
-    
-    #rs2:checked ~ .rating-counter:before {
-        content: "2";
-    }
-    
-    #rs3:checked ~ .rating-counter:before {
-        content: "3";
-    }
-    
-    #rs4:checked ~ .rating-counter:before {
-        content: "4";
-    }
-    
-    #rs5:checked ~ .rating-counter:before {
-        content: "5";
-    }
-    
-    label + input:checked ~ .rating-counter:before {
-        color: #ffab00 !important;
-        transition: all 0.25s ease 0s;
-    }
-    
-    
-    
-    
-    
-    label:hover ~ .rating-counter:before {
-        color: #9aacc6 !important;
-        transition: all 0.5s ease 0s;	
-        animation: pulse 1s ease 0s infinite;
-    }
-    
-    @keyframes pulse {
-          50% { font-size: 6.25vmin; }
-    }
-    
-    label[for=rs1]:hover ~ .rating-counter:before {
-        content: "1" !important;
-    }
-    
-    label[for=rs2]:hover ~ .rating-counter:before {
-        content: "2" !important;
-    }
-    
-    label[for=rs3]:hover ~ .rating-counter:before {
-        content: "3" !important;
-    }
-    
-    label[for=rs4]:hover ~ .rating-counter:before {
-        content: "4" !important;
-    }
-    
-    label[for=rs5]:hover ~ .rating-counter:before {
-        content: "5" !important;
-    }
-    
-    
-    input:checked:hover ~ .rating-counter:before {
-        animation: none !important;
-        color: #ffab00 !important ;
-    }
-</style>         -->
     </div>
     <script src="https://unpkg.com/watermarkjs"></script>
     <div class="wallpaper-container">
@@ -702,21 +533,61 @@
         }
     </style>
     
+    <style>
+        #snackbar {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #19a700;
+            color: #fff;
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            animation: fadeIn 0.5s, fadeOut 0.5s 2.5s forwards;
+        }
+    
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+    
+        #snackbar.error {
+            background-color: #ff5c5c;
+        }
+    </style>
+    
     <div class="cont">
         <div class="stars">
-            <form action="">
-                <input class="star star-5" id="star-5-2" type="radio" name="star" />
+            <form action="{% url 'post_rating' wallpaper_id=wallpaper.id %}" method="post" id="ratingForm">
+                {% csrf_token %}
+                <input type="hidden" name="wallpaper_id" value="{{ wallpaper.id }}">
+                <input class="star star-5" id="star-5-2" type="radio" name="star" value="5" required/>
                 <label class="star star-5" for="star-5-2"></label>
-                <input class="star star-4" id="star-4-2" type="radio" name="star" />
+                <input class="star star-4" id="star-4-2" type="radio" name="star" value="4" required/>
                 <label class="star star-4" for="star-4-2"></label>
-                <input class="star star-3" id="star-3-2" type="radio" name="star" />
+                <input class="star star-3" id="star-3-2" type="radio" name="star" value="3" required/>
                 <label class="star star-3" for="star-3-2"></label>
-                <input class="star star-2" id="star-2-2" type="radio" name="star" />
+                <input class="star star-2" id="star-2-2" type="radio" name="star" value="2" required/>
                 <label class="star star-2" for="star-2-2"></label>
-                <input class="star star-1" id="star-1-2" type="radio" name="star" />
+                <input class="star star-1" id="star-1-2" type="radio" name="star" value="1" required/>
                 <label class="star star-1" for="star-1-2"></label>
                 <div class="rev-box">
-                    <textarea class="review" col="30" name="review"></textarea>
+                    <textarea class="review" col="30" name="review" id="review"></textarea>
                     <label class="review" for="review">Brief Review</label>
                 </div>
                 <button class="post-button" type="submit">Post</button>
@@ -724,70 +595,243 @@
         </div>
     </div>
     
+    <div id="snackbar"></div>
+    
     <script>
+        const ratingForm = document.getElementById('ratingForm');
+    
+        ratingForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+    
+            const formData = new FormData(ratingForm);
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+    
+            fetch(ratingForm.action, {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                const snackbarElement = document.getElementById('snackbar');
+    
+                if (data.success) {
+                    snackbarElement.textContent = 'Thank you for your rating and review!';
+                    snackbarElement.style.display = 'block';
+                    snackbarElement.classList.remove('error');
+                    setTimeout(function() {
+                        snackbarElement.style.display = 'none';
+                    }, 3000);
+                } else {
+                    snackbarElement.textContent = 'Error: ' + data.error;
+                    snackbarElement.style.display = 'block';
+                    snackbarElement.classList.add('error');
+                    setTimeout(function() {
+                        snackbarElement.style.display = 'none';
+                        snackbarElement.classList.remove('error');
+                    }, 3000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const snackbarElement = document.getElementById('snackbar');
+                snackbarElement.textContent = 'An error occurred. Please Login and try again.';
+                snackbarElement.style.display = 'block';
+                snackbarElement.classList.add('error');
+                setTimeout(function() {
+                    snackbarElement.style.display = 'none';
+                    snackbarElement.classList.remove('error');
+                }, 3000);
+            });
+        });
+    
         document.addEventListener('DOMContentLoaded', function () {
             const stars = document.querySelectorAll('.stars input.star');
             const postButton = document.querySelector('.post-button');
+            const ratingForm = document.getElementById('ratingForm');
     
             stars.forEach((star) => {
                 star.addEventListener('change', function () {
                     postButton.style.display = 'block';
                 });
             });
+    
+            ratingForm.addEventListener('submit', function (event) {
+                if (!isLoggedIn()) {
+                    event.preventDefault();
+                    showModal('Please log in to add a rating and review.');
+                }
+            });
+    
+            function isLoggedIn() {
+                return {% if user.is_authenticated %}true{% else %}false{% endif %};
+            }
+    
+            function showModal(message) {
+                const snackbarElement = document.getElementById('snackbar');
+                snackbarElement.textContent = message;
+                snackbarElement.style.display = 'block';
+                snackbarElement.classList.add('error');
+                setTimeout(function() {
+                    snackbarElement.style.display = 'none';
+                    snackbarElement.classList.remove('error');
+                }, 3000);
+            }
         });
     </script>
     
-
-
-
-    <div class="comment-section">
-        {% if user.is_authenticated %}
-        <form method="post" action="{% url 'add_comment' wallpaper_id=wallpaper.id %}">
-            {% csrf_token %}
-            <label for="comment-text">Leave a Comment</label>
-            <textarea name="comment_text" id="comment-text" rows="4" class="transparent-textarea" required></textarea>
-            <input type="hidden" name="wallpaper_id" value="{{ wallpaper.id }}">
-            <button type="submit" class="comment">Submit Comment</button>
-            {% else %}
-            <p class="leave-comment-text leave-comment-label">Leave a comment</p>
-            <p class="signup-login-text">You need to <a href="{% url 'login' %}">Sign in</a> or <a href="{% url 'signup' %}">Create an account</a> to write comments.</p>
-            {% endif %} 
-        </form>
-<br><br>
-        {% for comment in comments %}
-            <div class="commenting">
-                <strong>{{ comment.user.username }}</strong>
-                <p>{{ comment.text }}</p>
-                <small>{{ comment.created_at }}</small>
-            </div>
-        {% endfor %}
-    </div>
     
-    <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="commentModalLabel">Comments</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" id="commentModalBody">
-                    <div id="commentsContainer"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script>
-        function updateComments(html) {
-            document.getElementById('commentsContainer').innerHTML = html;
-        }
-    </script>
+<hr>
+<style>
+    .star-rating .fa-star.text-success {
+        color: yellow; 
+    }
+    .ratings-reviews-section h4 {
+        text-align: left;
+        margin-bottom: 15px;
+    }
+    .user-reviews li {
+        border: 1px solid #ffffffc9; 
+        padding: 15px; 
+        margin-bottom: 20px;
+        text-align: left;
+    }
+    .user-reviews p {
+        margin: 5px 0;
+        color: white;
+    }
+    .timestamp {
+        color: #999;
+        font-size: 12px;
+    }
+</style>
+
+<br><br>
+<div class="ratings-reviews-section">
+    <h4>Ratings & Reviews</h4>
+
+    {% if ratings or reviews %}
+        <ul class="user-reviews">
+            {% for user_rating in ratings %}
+                {% for user_review in reviews %}
+                    {% if user_review.id == user_rating.id %}
+                        <li>
+                            <p class="timestamp">{{ user_review.created_at|date:"F d, Y H:i:s" }}</p>
+                            <p><strong>{{ user_review.user.username }}</strong></p>
+                            <div class="star-rating" data-rating="{{ user_rating.value }}">
+                                <!-- The stars will be displayed here dynamically using JavaScript -->
+                            </div>
+                            <p>{{ user_review.text }}</p>
+
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No ratings and reviews yet.</p>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const starContainers = document.querySelectorAll('.star-rating');
+
+        starContainers.forEach((starContainer) => {
+            const rating = parseFloat(starContainer.getAttribute('data-rating'));
+            const filledStars = Math.round(rating);
+
+            // Clear existing stars
+            starContainer.innerHTML = '';
+
+            // Add filled stars with yellow color
+            for (let i = 0; i < filledStars; i++) {
+                const star = document.createElement('i');
+                star.classList.add('fa', 'fa-star', 'text-success');
+                starContainer.appendChild(star);
+            }
+
+            // Add remaining unfilled stars
+            for (let i = filledStars; i < 5; i++) {
+                const star = document.createElement('i');
+                star.classList.add('fa', 'fa-star');
+                starContainer.appendChild(star);
+            }
+        });
+    });
+</script>
 
         </div>
-
         
         <div class="customization-container">
+
+
+
+
+            <style>
+                .average-rating-section {
+                    margin-bottom: 40px;
+                    margin-top: -140px;
+                }
+                .average-rating .fa-star.text-success {
+                    color: yellow;
+                }
+                ._2d4LTz {
+                    display: inline-block;
+                    font-size: 32px;
+                    color: #ffffff;
+                    margin-top: 4px;
+                }
+                .ratings-reviews-count{
+                    color: white;
+                }
+            </style>
+            
+            <div class="average-rating-section">
+                <!-- <h2>Average Rating</h2> -->
+                <div class="_2d4LTz">{{ wallpaper.average_rating }}/5</div>
+                <div class="average-rating" data-average-rating="{{ wallpaper.average_rating }}">
+                    <!-- The stars will be displayed here dynamically using JavaScript -->
+                </div>
+                <div class="ratings-reviews-count">
+                    <p>{{ total_ratings }} Ratings &amp; {{ total_reviews }} Reviews</p>
+                    <p>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="12" width="10.5" viewBox="0 0 448 512">
+                            <path fill="#ffffff" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"/>
+                        </svg>
+                        <strong>{{ total_users_rated }} total</strong>
+                    </p>
+                </div>
+            </div>
+            
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const averageRatingContainer = document.querySelector('.average-rating');
+                    const averageRating = parseFloat(averageRatingContainer.getAttribute('data-average-rating'));
+                    const roundedRating = Number.isInteger(averageRating) ? averageRating : averageRating.toFixed(2);
+                    const filledStars = Math.round(averageRating);
+            
+                    averageRatingContainer.innerHTML = '';
+            
+                    for (let i = 0; i < filledStars; i++) {
+                        const star = document.createElement('i');
+                        star.classList.add('fa', 'fa-star', 'text-success');
+                        averageRatingContainer.appendChild(star);
+                    }
+            
+                    for (let i = filledStars; i < 5; i++) {
+                        const star = document.createElement('i');
+                        star.classList.add('fa', 'fa-star');
+                        averageRatingContainer.appendChild(star);
+                    }
+                    
+                    // Display the rounded rating without decimal places
+                    const ratingText = document.querySelector('._2d4LTz');
+                    ratingText.textContent = `${roundedRating}/5`;
+                });
+            </script>
+            
+            
+            
             {% if wallpaper.price == 'paid' %}
                 {% if user.is_authenticated %}
                     {% if user.userprofiledoc.subscribed %}
@@ -1058,5 +1102,24 @@
 </script>
 
 
+<hr>
+ <script id="dsq-count-scr" src="//arrwallpapers.disqus.com/count.js" async></script>
+       <br>
+ <div id="disqus_thread"></div>
+        
+<script>
+    var disqus_config = function () {
+    this.page.url = window.location.href; 
+    this.page.identifier = window.location.href;
+    };
+    
+    (function() { 
+    var d = document, s = d.createElement('script');
+    s.src = 'https://arrwallpapers.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript><a href="https://disqus.com/?ref_noscript">Powered by ARR WALLPAPERS.</a></noscript>
 
 {% endblock %}

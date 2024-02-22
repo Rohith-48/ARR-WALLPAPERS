@@ -13,6 +13,8 @@
 	<!-- Mobile specific meta -->
 	<meta name=viewport content="width=device-width, initial-scale=1">
   <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <link rel="icon" type="image-asset/png" href="{% static '\image-asset\icon.png'%}">
     <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
@@ -230,10 +232,10 @@ a.google span{
                 </form>
     
                 <div class="form-link">
-                    <span>Don't have an account? <a href="{% url 'signup'%}" class="link signup-link">Signup</a></span>
+                    <span>Don't have an account? <a href="{% url 'Premium_signup'%}" class="link signup-link">Signup</a></span>
                 </div>
                 <div class="form-link">
-                    <span>For Subscription? <a href="{% url 'Premium_signup'%}" class="link signup-link">Signup now</a></span>
+                    <span>Want to sell content? <a href="{% url 'signup'%}" class="link signup-link">Signup now</a></span>
                 </div>
             </div>
     
@@ -252,11 +254,7 @@ a.google span{
                     <span>Login with Google</span>
                 </a>
             </div>
-    <div>
-        {% for message in messages %}
-        <h3>{{message}}</h3>
-        {% endfor %}
-    </div>
+ 
         </div>
     </section>
 
@@ -335,3 +333,19 @@ a.google span{
   </script>
 </body>
 </html>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Check if messages exist and display toast messages
+        {% if messages %}
+            {% for message in messages %}
+                Toastify({
+                    text: "{{ message }}",
+                    duration: 3000,
+                    gravity: 'top',
+                    position: 'center',
+                    close: true,
+                }).showToast();
+            {% endfor %}
+        {% endif %}
+    });
+</script>
