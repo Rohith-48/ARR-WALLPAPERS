@@ -707,11 +707,42 @@ def view_delete_wallpaper(request):
 
 
 
+from django.contrib.auth.decorators import login_required
+from .models import WallpaperCollection, UserProfileDoc
+from django.shortcuts import render, redirect, get_object_or_404
+
+@login_required
+def view_delete_userwallpaper(request):
+    user = request.user
+    uploaded_wallpapers_count = WallpaperCollection.objects.filter(user=user, is_deleted=False).count()
+    wallpapers = WallpaperCollection.objects.filter(user=user, is_deleted=False)
+    try:
+        user_profile = UserProfileDoc.objects.get(user=user)
+        avatar = user_profile.avatar
+    except UserProfileDoc.DoesNotExist:
+        avatar = None  
+
+    if request.method == 'POST':
+        wallpaper_id = request.POST.get('wallpaper_id')
+        wallpaper_to_delete = get_object_or_404(WallpaperCollection, id=wallpaper_id, user=user, is_deleted=False)
+        wallpaper_to_delete.is_deleted = True
+        wallpaper_to_delete.save()
+        return redirect('view_delete_userwallpaper')
+
+    context = {
+        'wallpapers': wallpapers,
+        "user_profile": user_profile,  
+        'uploaded_wallpapers_count': uploaded_wallpapers_count,
+    }
+    return render(request, 'view_delete_userwallpaper.html', context)
+
+
+
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import WallpaperCollection
 
 def recyclebin(request):
-    deleted_wallpapers = WallpaperCollection.objects.filter(is_deleted=True)
+    deleted_wallpapers = WallpaperCollection.objects.filter(is_deleted=True, user=request.user)
     context = {'deleted_wallpapers': deleted_wallpapers}
     return render(request, 'recyclebin.html', context)
 
@@ -725,6 +756,26 @@ def restore_wallpaper(request):
         wallpaper.save()
 
     return redirect('recyclebin')
+
+
+
+def userrecyclebin(request):
+    deleted_wallpapers = WallpaperCollection.objects.filter(is_deleted=True, user=request.user)
+    context = {'deleted_wallpapers': deleted_wallpapers}
+    return render(request, 'userrecyclebin.html', context)
+
+
+def restore_wallpaper1(request):
+    if request.method == 'POST':
+        wallpaper_id = request.POST.get('wallpaper_id')
+        wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
+        
+        # Restore the wallpaper by setting is_deleted to False
+        wallpaper.is_deleted = False
+        wallpaper.save()
+
+    return redirect('userrecyclebin')
+
 
 
 
@@ -869,36 +920,6 @@ def user_edit_wallpaper(request):
     return render(request, "user_edit.html", context)
 
 
-
-
-from django.contrib.auth.decorators import login_required
-from .models import WallpaperCollection, UserProfileDoc
-from django.shortcuts import render, redirect
-
-@login_required
-def view_delete_userwallpaper(request):
-    user = request.user
-    uploaded_wallpapers_count = WallpaperCollection.objects.filter(user=user).count()
-    wallpapers = WallpaperCollection.objects.filter(user=user)
-    try:
-        user_profile = UserProfileDoc.objects.get(user=user)
-        avatar = user_profile.avatar
-    except UserProfileDoc.DoesNotExist:
-        avatar = None  
-
-    if request.method == 'POST':
-        wallpaper_id = request.POST.get('wallpaper_id')
-        wallpaper_to_delete = WallpaperCollection.objects.get(id=wallpaper_id)
-        if wallpaper_to_delete.user == user:
-            wallpaper_to_delete.delete()
-            return redirect('view_delete_userwallpaper')
-
-    context = {
-        'wallpapers': wallpapers,
-       "user_profile": user_profile,  
-        'uploaded_wallpapers_count': uploaded_wallpapers_count,
-    }
-    return render(request, 'view_delete_userwallpaper.html', context)
 
 
 import json

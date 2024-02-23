@@ -259,12 +259,14 @@
                   {% url 'user_upload' as user_upload_url %}
                   {% url 'user_edit' as user_edit_url %}
                   {% url 'view_delete_userwallpaper' as view_delete_userwallpaper_url %}
+                  {% url 'userrecyclebin' as userrecyclebin_url %}
                 <nav>
                 <ul class="navigation row col-lg-12">
                   <li class="nav-item1 {% if request.path == userprofile_url %}active{% endif %}"><a class="nav-link" href="{% url 'userprofile' %}">Profile</a></li>
                   <li class="nav-item1 {% if request.path == user_upload_url %}active{% endif %}"><a class="nav-link" href="{% url 'user_upload' %}">Upload Wallpapers</a></li>
                   <li class="nav-item1 {% if request.path == user_edit_url %}active{% endif %}"><a class="nav-link" href="{% url 'user_edit' %}">Edit Wallpapers</a></li>
                   <li class="nav-item1 {% if request.path == view_delete_userwallpaper_url %}active{% endif %}"><a class="nav-link" href="{% url 'view_delete_userwallpaper' %}">View/Delete Wallpapers</a></li>
+                  <li class="nav-item1 {% if request.path == userrecyclebin_url %}active{% endif %}"><a class="nav-link" href="{% url 'userrecyclebin' %}">Recycle Bin</a></li>
 
 
                   <li {% if request.path == userprofile_url %}class="active"{% endif %}></li>

@@ -1,4 +1,4 @@
-{% extends 'admin_dashboard.html' %}
+{% extends 'userprofile.html' %}
 
 {% block content %}
 <style>
@@ -71,6 +71,8 @@
 </style>
 
 
+
+
 <div class="content_table">
     {% if deleted_wallpapers %}
         <ul class="wallpapers-list">
@@ -87,7 +89,7 @@
                         <p class="upload-date">Uploaded on: {{ wallpaper.upload_date }}</p>
                         <p class="category">Category: {{ wallpaper.category.name }}</p>
                         <!-- Stylish "Restore" button -->
-                        <form method="post" action="{% url 'restore_wallpaper' %}">
+                        <form method="post" action="{% url 'restore_wallpaper1' %}">
                             {% csrf_token %}
                             <input type="hidden" name="wallpaper_id" value="{{ wallpaper.id }}">
                             <button type="submit" class="restore-button">Restore</button>
@@ -101,17 +103,6 @@
     {% endif %}
 </div>
 <div id="restore-success-message"></div>
-<style>
-    #restore-success-message {
-        display: none;
-        background-color: green;
-        color: white;
-        padding: 10px;
-        margin-top: 10px;
-        border-radius: 5px;
-    }
-</style>
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const restoreButtons = document.querySelectorAll('.restore-button');
@@ -130,11 +121,12 @@
                 // Optional: You can hide the success message after a few seconds
                 setTimeout(() => {
                     successMessage.style.display = 'none';
-                }, 3000); // Adjust the timeout duration as needed
+                }, 3000); 
             });
         });
     });
 </script>
+
 
 
 {% endblock %}
