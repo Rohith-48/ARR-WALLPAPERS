@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from allauth.socialaccount.models import SocialAccount
-
+from django.core.exceptions import ValidationError
 
 class UserProfileDoc(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -15,14 +15,16 @@ class UserProfileDoc(models.Model):
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
     about_me = models.TextField(blank=True)
     phoneno = models.CharField(max_length=15, blank=True, null=True)
-   
+    money = models.IntegerField(default=0)
+
+    @classmethod
+    def get_or_create_profile(cls, user):
+        profile, created = cls.objects.get_or_create(user=user)
+        return profile
+
     def __str__(self):
         return self.user.username
     
-from django.db import models
-from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
-
 class Tag(models.Model):
     name = models.CharField(max_length=50)
     hashtag = models.CharField(max_length=50, default='default_hashtag') 
@@ -30,13 +32,10 @@ class Tag(models.Model):
     def __str__(self):
         return f'#{self.name}'
 
-from django.db import models
-from django.contrib.auth.models import User
-
 class Category(models.Model):
     CATEGORY_CHOICES = [
         ('superhero', 'Superhero'),
-         ('anime', 'Anime'),
+        ('anime', 'Anime'),
         ('movie', 'Movie'),
         ('nature', 'Nature'),
         ('game', 'Game'),
@@ -59,7 +58,6 @@ class WallpaperCollection(models.Model):
     ]
 
     def get_upload_path(instance, filename):
-        # Define the upload path based on the category
         category_folder = instance.category.name.lower().replace(" ", "_")
         return f'wallpapers/{category_folder}/{filename}'
 
@@ -80,6 +78,25 @@ class WallpaperCollection(models.Model):
         upload_to=get_upload_path,
         default='path_to_default_image.jpg',
     )
+    downloads_by_user = models.ManyToManyField(User, related_name='downloads', blank=True)
+
+    def download(self, user):
+        if self.price == 'paid' and user.userprofiledoc.subscribed:
+            if user in self.downloads_by_user.all():
+                # User has already downloaded this wallpaper, no additional earning
+                pass
+            else:
+                # Increment the download count for the wallpaper
+                self.downloads += 1
+                self.downloads_by_user.add(user)
+                self.save()
+
+                # Increment the creator's earnings
+                self.user.userprofiledoc.money += 5.00
+                self.user.userprofiledoc.save()
+
+        # Additional logic for handling the download
+        # ...
 
     def __str__(self):
         return self.title

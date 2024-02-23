@@ -288,29 +288,45 @@ def profileview(request, username):
 
     return render(request, 'profileview.html', context)
 
-
-from django.shortcuts import render
-from .models import WallpaperCollection, Rating, Review
-
+@login_required
 def wallpaper_details(request, wallpaper_id):
-    wallpaper = WallpaperCollection.objects.get(id=wallpaper_id)
+    wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
     wallpapers = WallpaperCollection.objects.select_related('user').prefetch_related('tags').order_by('-upload_date')
     creators = UserProfileDoc.objects.filter(is_creator=True)
     admin_user = User.objects.filter(is_staff=True).first()
     categories = Category.objects.all()
 
-    # Increment view count and downloads
+    # Increment view count
     wallpaper.view_count += 1
-    wallpaper.downloads += 1
     wallpaper.save()
 
     ratings = Rating.objects.filter(wallpaper=wallpaper)
     reviews = Review.objects.filter(wallpaper=wallpaper, text__isnull=False).order_by('-created_at')
 
-
     total_ratings = ratings.count()
     total_reviews = reviews.count()
     total_users_rated = ratings.values('user').distinct().count()
+
+    if wallpaper.price == 'paid':
+        if request.user.is_authenticated:
+            try:
+                user_profile = UserProfileDoc.get_or_create_profile(request.user)
+
+                # Check if the user is subscribed
+                if user_profile.subscribed:
+                    # Check if the user has already downloaded this wallpaper
+                    if request.user not in wallpaper.downloads_by_user.all():
+                        # Increment the download count for the wallpaper
+                        wallpaper.downloads += 1
+                        wallpaper.downloads_by_user.add(request.user)
+                        wallpaper.save()
+
+                        # Increment the creator's (uploader's) earnings
+                        wallpaper.user.userprofiledoc.money += 5
+                        wallpaper.user.userprofiledoc.save()
+
+            except Exception as e:
+                pass
 
     return render(request, 'wallpaper_details.html', {
         'wallpaper': wallpaper,
@@ -324,6 +340,7 @@ def wallpaper_details(request, wallpaper_id):
         'total_reviews': total_reviews,
         'total_users_rated': total_users_rated,
     })
+
 
 
     
