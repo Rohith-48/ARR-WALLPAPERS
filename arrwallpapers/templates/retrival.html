@@ -1,6 +1,9 @@
 {% extends 'index.html' %}
 
 {% block content %}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.css" integrity="sha512-hrQQ2Y2ttL1y5MkjxA7IpD0Q/7VzxbQg5lhWQCp6CkUN1rdBIRn0eW+6LIYD6E5O76A/CWKmAmMYt60GzbgWfQ==" crossorigin="anonymous" />
 <style>
     #image-container {
         width: 100%;
@@ -8,13 +11,84 @@
         border: 1px solid #000; 
         overflow: hidden; 
     }
+  /* Add Masonry styles */
+.masonry {
+  column-count: 3;  /* Adjust the number of columns as needed */
+  column-gap: 15px;
+}
+
+.masonry-item {
+  break-inside: avoid;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+/* Image container styles */
+.image-container {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Overlay styles */
+.overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.7); /* Adjust the overlay background color and opacity as needed */
+  color: #fff;  /* Adjust the text color as needed */
+  padding: 10px;
+  text-align: center;
+  opacity: 0; /* initially hidden */
+  transition: opacity 0.3s ease-in-out; /* smooth transition on hover */
+  z-index: 1; /* place overlay above the image */
+}
+
+.image-container:hover .overlay {
+  opacity: 1; /* make the overlay visible on hover */
+}
+
+.overlay p {
+  margin: 0;
+}
+
+/* Responsive styles */
+@media (max-width: 767px) {
+  .masonry {
+      column-count: 1;
+  }
+}
+
+
 </style>
 
+<body>
+  <br><br>
+  <div id="result-container" class="masonry">
+    {% for wallpaper in similar_wallpapers %}
+    <a href="{% url 'wallpaper_details' wallpaper.pk %}" data-lightbox="wallpapers" data-title="{{ wallpaper.title }}">
+        <div class="image-container masonry-item">
+            <img src="{{ wallpaper.image_url }}" alt="{{ wallpaper.title }}">
+            <div class="overlay">
+                <p>{{ wallpaper.title }}</p>
+            </div>
+        </div>
+    </a>
+{% endfor %}
+
+
+</div>
+
+</body>
+
+  
+{% endblock %}
+
+
+<!-- 
     <div id="image-container">
-        <!-- The iframe will be loaded here -->
-    </div>
-    
-    <!-- <script>
+    </div> -->
+ <!-- <script>
       document.addEventListener("DOMContentLoaded", function() {
         // Get a reference to the "Search using Image" link
         var classifyImageLink = document.getElementById("classify-image-link");
@@ -41,15 +115,3 @@
         });
       });
     </script> -->
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js"></script>
-    <div id="result-container">
-      {% for wallpaper in similar_wallpapers %}
-          <div class="image-container">
-              <img src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}">
-              <p>{{ wallpaper.title }}</p>
-          </div>
-      {% endfor %}
-  </div>
-  
-{% endblock %}

@@ -411,8 +411,8 @@
 				<form method="post" action="{% url 'retrival' %}" enctype="multipart/form-data">
 					{% csrf_token %}
 					
-					<input type="file" accept="image/*" id="fileInput">
-					<button type="button" onclick="searchSimilar()">Search Similar</button>
+					<input type="file" accept="image/*" name="fileInput">
+					<button type="submit" >Search Similar</button>
 				</form>
 			</div>
 		</div>
@@ -482,38 +482,6 @@
         }
     });
 
-	function searchSimilar() {
-		const fileInput = document.getElementById("fileInput");
-		const selectedFile = fileInput.files[0];
-	
-		// Create a FormData object to send the file in the request
-		const formData = new FormData();
-		formData.append('fileInput', selectedFile);
-	
-		// Include the CSRF token in the headers
-		const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-		const headers = new Headers({
-			'X-CSRFToken': csrfToken,
-		});
-	
-		// Make an AJAX request to the retrival URL
-		fetch("{% url 'retrival' %}", {
-			method: 'POST',
-			body: formData,
-			headers: headers,
-		})
-		.then(response => response.text())  // Change to text() to get HTML response
-		.then(data => {
-			// Update the modal content with the retrieved HTML
-			document.getElementById("modal-content-placeholder").innerHTML = data;
-	
-			// Display the modal with the rendered content
-			modal.style.display = "block";
-		})
-		.catch(error => {
-			console.error('Error:', error);
-		});
-	}
 	
 </script>
 

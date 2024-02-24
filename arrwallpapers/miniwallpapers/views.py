@@ -158,7 +158,6 @@ def login(request):
 from django.shortcuts import render
 from .models import WallpaperCollection, UserProfileDoc, Category
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-
 def index(request):
     query = request.GET.get('q')
     # Fetch wallpapers and creators excluding those with is_deleted=True
@@ -288,7 +287,7 @@ def profileview(request, username):
 
     return render(request, 'profileview.html', context)
 
-@login_required
+
 def wallpaper_details(request, wallpaper_id):
     wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
     wallpapers = WallpaperCollection.objects.select_related('user').prefetch_related('tags').order_by('-upload_date')
@@ -302,6 +301,7 @@ def wallpaper_details(request, wallpaper_id):
 
     ratings = Rating.objects.filter(wallpaper=wallpaper)
     reviews = Review.objects.filter(wallpaper=wallpaper, text__isnull=False).order_by('-created_at')
+
 
     total_ratings = ratings.count()
     total_reviews = reviews.count()
@@ -389,6 +389,8 @@ from django.contrib.auth.decorators import login_required
 from .models import UserProfileDoc
 
 @login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+
 def approve_user(request, user_id):
     if request.user.is_superuser:
         user_profile = get_object_or_404(UserProfileDoc, user__id=user_id)
@@ -417,6 +419,7 @@ from django.contrib.auth.models import User
 from .models import UserProfileDoc, WallpaperCollection
 from django.core.mail import send_mail
 from django.conf import settings
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 
 def delete_user(request, user_id):
     user_profile = get_object_or_404(UserProfileDoc, user__id=user_id)
@@ -443,8 +446,9 @@ def delete_user(request, user_id):
     return redirect('admin_dashboard')
 
 
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+
 @login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def admin_dashboard(request):
     if request.user.is_superuser:
         # Fetch all users and user profiles
@@ -464,7 +468,9 @@ def admin_dashboard(request):
         return redirect('login')
 
 
+
 from django.contrib.auth import logout as django_logout
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def custom_logout(request):
     django_logout(request)
     return redirect('index')  
@@ -534,6 +540,7 @@ def errorpage(request):
 
 
 @login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def premiumuserpage(request):
     user = request.user
     if request.method == 'POST':
@@ -648,7 +655,7 @@ from django.shortcuts import render, redirect
 from django.core.exceptions import ValidationError
 from .models import WallpaperCollection, Category, Tag
 ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'webp', 'svg', 'ico', 'jfif', 'pjpeg', 'pjp', 'avif']
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def upload_wallpaper(request):
     if request.method == 'POST':
         title = request.POST['title']
@@ -689,7 +696,7 @@ def upload_wallpaper(request):
 
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import WallpaperCollection  # Import your WallpaperCollection model
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def view_delete_wallpaper(request):
     if request.method == 'POST':
         wallpaper_id = request.POST.get('wallpaper_id')
@@ -710,7 +717,7 @@ def view_delete_wallpaper(request):
 from django.contrib.auth.decorators import login_required
 from .models import WallpaperCollection, UserProfileDoc
 from django.shortcuts import render, redirect, get_object_or_404
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required
 def view_delete_userwallpaper(request):
     user = request.user
@@ -740,12 +747,14 @@ def view_delete_userwallpaper(request):
 
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import WallpaperCollection
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def recyclebin(request):
     deleted_wallpapers = WallpaperCollection.objects.filter(is_deleted=True, user=request.user)
     context = {'deleted_wallpapers': deleted_wallpapers}
     return render(request, 'recyclebin.html', context)
 
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def restore_wallpaper(request):
     if request.method == 'POST':
         wallpaper_id = request.POST.get('wallpaper_id')
@@ -758,13 +767,14 @@ def restore_wallpaper(request):
     return redirect('recyclebin')
 
 
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def userrecyclebin(request):
     deleted_wallpapers = WallpaperCollection.objects.filter(is_deleted=True, user=request.user)
     context = {'deleted_wallpapers': deleted_wallpapers}
     return render(request, 'userrecyclebin.html', context)
 
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def restore_wallpaper1(request):
     if request.method == 'POST':
         wallpaper_id = request.POST.get('wallpaper_id')
@@ -779,7 +789,7 @@ def restore_wallpaper1(request):
 
 
 
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def update_wallpaper(request):
     if request.method == 'POST':
         selected_wallpaper_id = request.POST.get('selected_wallpaper')
@@ -817,7 +827,7 @@ from django.http import HttpResponseBadRequest
 from .models import WallpaperCollection, Category, Tag, UserProfileDoc
 
 ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'webp', 'svg', 'ico', 'jfif', 'pjpeg', 'pjp', 'avif']
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required
 def user_upload(request):
     user_profile = UserProfileDoc.objects.get(user=request.user)
@@ -880,6 +890,7 @@ def user_upload(request):
 
 
 @login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def user_edit_wallpaper(request):
     user_profile = UserProfileDoc.objects.get(user=request.user)
     wallpapers = WallpaperCollection.objects.filter(user=request.user)
@@ -1167,7 +1178,10 @@ def calculate_similarity(descriptor1, descriptor2):
     # Use any suitable similarity metric
     # Here, I'll use the absolute difference for simplicity
     return np.sum(np.abs(descriptor1 - descriptor2))
+
+
 from django.shortcuts import render
+from .models import WallpaperCollection, UserProfileDoc, Category
 
 def retrival(request):
     if request.method == 'POST' and request.FILES.get('fileInput'):
@@ -1175,7 +1189,8 @@ def retrival(request):
         uploaded_image_descriptor = color_histogram(uploaded_file)
 
         # Retrieve all wallpapers from the database
-        all_wallpapers = WallpaperCollection.objects.all()
+        all_wallpapers = WallpaperCollection.objects.select_related('user').filter(is_deleted=False)
+
 
         # Calculate similarity with each wallpaper
         similar_wallpapers = []
@@ -1188,18 +1203,29 @@ def retrival(request):
                 similar_wallpapers.append({
                     'title': wallpaper.title,
                     'image_url': wallpaper.wallpaper_image.url,
+                    'pk': wallpaper.pk,  # Add the primary key
                 })
+        # Retrieve additional context variables
+        creators = UserProfileDoc.objects.filter(is_creator=True)
+        admin_user = User.objects.filter(is_staff=True).first()
+        categories = Category.objects.all()
 
-        # Render the HTML template with the retrieved wallpapers
-        return render(request, 'retrival.html', {'similar_wallpapers': similar_wallpapers})
+        # Combine all context variables
+        context = {
+            'similar_wallpapers': similar_wallpapers,
+            'categories': categories,
+            'admin_user': admin_user,
+            'creators': creators,
+        }
+
+        # Render the HTML template with the retrieved wallpapers and additional context
+        return render(request, 'retrival.html', context)
     elif request.method == 'GET':
         # Handle the GET request, e.g., render the template with an empty list
         return render(request, 'retrival.html', {'similar_wallpapers': []})
     else:
         # Handle other request methods
         return render(request, 'retrival.html', {'error': 'Invalid request'})
-
-
 
 
 
@@ -1220,7 +1246,7 @@ def community(request):
     return render(request, 'community.html', {'chat_messages': chat_messages, 'users_with_avatars': users_with_avatars})
 
 
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required
 def send_message(request):
     if request.method == 'POST':

@@ -711,8 +711,8 @@
 
     {% if ratings or reviews %}
         <ul class="user-reviews">
-            {% for user_rating in ratings %}
-                {% for user_review in reviews %}
+            {% for user_review in reviews %}
+                {% for user_rating in ratings %}
                     {% if user_review.id == user_rating.id %}
                         <li>
                             <p class="timestamp">{{ user_review.created_at|date:"F d, Y H:i:s" }}</p>

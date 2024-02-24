@@ -264,44 +264,66 @@ a {
 </style>
 <style>
     .wp-grid {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        margin: 0 -15px;
+        margin: 0 auto;
+        max-width: 1200px;
+    }
+    
+    .masonry {
+        column-count: 4;  /* Adjust the number of columns as needed */
+        column-gap: 15px;
     }
     
     .masonry-item {
-        width: calc(25% - 30px);
-        box-sizing: border-box;
+        break-inside: avoid;
         margin-bottom: 15px;
+        position: relative;
     }
     
-    .uploaded:nth-child(4n) {
-        clear: both;
+    .uploaded {
+        position: relative;
+        overflow: hidden;
     }
-        
-
-    .uploaded img {
+    
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
-        height: auto;
-        border-radius: 5px;
-        display: block;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7); /* Adjust the overlay background color and opacity as needed */
+        color: #fff;  /* Adjust the text color as needed */
+        padding: 10px;
+        text-align: center;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
+    
+    .uploaded:hover .overlay {
+        opacity: 1;
+    }
+    
+   
+    .title {
+        color: white;
+        font-size: 14px;
+        text-align: left;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        padding: 5px;
+    }
+    .stats {
+        margin-top: 5px;
+        font-size: 14px;
+    }
+    
 </style>
 
-<style>
-    @media (min-width: 576px) {
-        .masonry-item {
-            width: calc(50% - 7.5px);
-        }
-    }
 
-    @media (min-width: 768px) {
-        .masonry-item {
-            width: calc(33.3333% - 10px);
-        }
-    }
-</style>
 
 <div id="web">
     <div id="userheaderc">
@@ -342,19 +364,22 @@ a {
     </div></div>
     <div class="collectionc">
         {% if uploaded_wallpapers %}
-            <div class="wp-grid masonry">
-                {% for wallpaper in uploaded_wallpapers %}
-                    <div class="uploaded masonry-item">
-                        <a href="{% url 'wallpaper_details' wallpaper.id %}" title="{{ wallpaper.title }}">
-                            <img loading="lazy" src="{{ wallpaper.wallpaper_image.url }}" width="160" height="160" alt="{{ wallpaper.title }}" title="{{ wallpaper.title }}">
-                        </a>
-                        <span class="stats views">Views: {{ wallpaper.view_count }}</span>
-                    </div>
-                    {% if forloop.counter|divisibleby:4 %}
+        <div class="wp-grid masonry">
+            {% for wallpaper in uploaded_wallpapers %}
+                <div class="uploaded masonry-item">
+                    <a href="{% url 'wallpaper_details' wallpaper.id %}" title="{{ wallpaper.title }}">
+                        <img loading="lazy" src="{{ wallpaper.wallpaper_image.url }}" width="100%" height="auto" alt="{{ wallpaper.title }}" title="{{ wallpaper.title }}">
+                        <div class="overlay">
+                            <h2 class="title">{{ wallpaper.title }}</h2>
+                            <span class="stats views">Views: {{ wallpaper.view_count }}</span>
+                        </div>
+                    </a>
+                </div>
+                {% if forloop.counter|divisibleby:4 %}
                     <div style="clear:both;"></div> 
                 {% endif %}
-                {% endfor %}
-            </div>
+            {% endfor %}
+        </div>
     
             <br style="clear: both;">
     

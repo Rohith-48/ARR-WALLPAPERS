@@ -3,46 +3,50 @@
 {% block content %}
 <style>
     .container {
-        text-align: center;
         max-width: 1200px;
         margin: 0 auto;
-        background-color: black;
+        padding: 20px;
     }
-
-    /* Add Masonry CSS */
-    #liked-wallpapers-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 10px;
+    
+    .masonry {
+        column-count: 4;  /* Adjust the number of columns as needed */
+        column-gap: 15px;
     }
-
+    
+    .masonry-item {
+        break-inside: avoid;
+        margin-bottom: 15px;
+        position: relative;
+    }
+    
     .liked-wallpaper {
         position: relative;
         overflow: hidden;
-        margin-bottom: 10px;
-        border-radius: 5px;
-        width: 100%; 
-        height: auto;
     }
+    
     .overlay {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(158, 155, 155, 0.067);
-        color: white;
+        background: rgba(0, 0, 0, 0.7); /* Adjust the overlay background color and opacity as needed */
+        color: #fff;  /* Adjust the text color as needed */
+        padding: 10px;
+        text-align: center;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
-        opacity: 0;
-        transition: opacity 0.3s ease;
     }
-
+    
     .liked-wallpaper:hover .overlay {
         opacity: 1;
     }
-
+    
+    
     .title {
         color: white;
         font-size: 14px;
@@ -52,34 +56,26 @@
         left: 10px;
         padding: 5px;
     }
-
+    
     .wallpaper-image {
-        max-width: 100%;
+        width: 100%;
         height: auto;
+        display: block;
     }
-
-    /* Add CSS to style the anchor tags for clickable images */
-    .liked-wallpaper a {
-        display: block; /* Make the anchor tag cover the entire image */
-        text-decoration: none; /* Remove underlines */
-        color: inherit; /* Inherit text color */
-    }
+    
 </style>
-
 <div class="container">
     <h1 style="color: white;">Liked Wallpapers</h1>
     <br>
-    <div id="liked-wallpapers-container">
+    <div id="liked-wallpapers-container" class="masonry">
         {% if wallpapers %}
             {% for wallpaper in wallpapers %}
-                <div class="liked-wallpaper">
-                    <div class="overlay">
-                        <a href="{% url 'wallpaper_details' wallpaper_id=wallpaper.id %}" data-lightbox="wallpapers" data-title="{{ wallpaper.title }}">
-                            <h2 class="title">{{ wallpaper.title }}</h2>
-                        </a>
-                    </div>
+                <div class="liked-wallpaper masonry-item">
                     <a href="{% url 'wallpaper_details' wallpaper_id=wallpaper.id %}" data-lightbox="wallpapers" data-title="{{ wallpaper.title }}">
                         <img src="{{ wallpaper.image_url }}" alt="{{ wallpaper.title }}" class="wallpaper-image">
+                        <div class="overlay">
+                            <h2 class="title">{{ wallpaper.title }}</h2>
+                        </div>
                     </a>
                 </div>
                 {% if forloop.counter|divisibleby:4 and not forloop.last %}
@@ -91,7 +87,6 @@
         {% endif %}
     </div>
 </div>
-
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
 <script>
