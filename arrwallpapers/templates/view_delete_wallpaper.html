@@ -103,7 +103,20 @@
 </div>
 {% endif %}
 
+<script>
+    $(document).ready(function () {
+    $("#live-search").on("keyup", function () {
+        var searchText = $(this).val().toLowerCase();
+        var wallpaperBoxes = $(".wallpaper-box");
+        wallpaperBoxes.filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
+        });
 
+        // Display static image if there are no search results
+        $("#search-results-notfound").toggle(wallpaperBoxes.filter(":visible").length === 0);
+    });
+});
+</script>
 
 
 <div class="overlay" id="overlay" onclick="closeOverlay()">

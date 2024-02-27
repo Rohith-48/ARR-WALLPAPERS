@@ -43,10 +43,36 @@
             <div class="form-field">
                 <label for="wallpaper_file" style="color: rgb(0, 0, 0);">Choose File:</label>
                 <input type="file" id="wallpaper_file" name="wallpaper_file" accept="image/*" required style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">
+                <img id="file-preview" src="#" alt="File Preview" style="max-width: 50%; max-height: 100px; display: none;">
             </div>
+            
         
             <button type="submit" class="upload-button">Upload Wallpaper</button>
         </form>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var fileInput = document.getElementById('wallpaper_file');
+                var filePreview = document.getElementById('file-preview');
+        
+                fileInput.addEventListener('change', function () {
+                    var file = fileInput.files[0];
+        
+                    if (file) {
+                        var reader = new FileReader();
+        
+                        reader.onload = function (e) {
+                            filePreview.src = e.target.result;
+                            filePreview.style.display = 'block';
+                        };
+        
+                        reader.readAsDataURL(file);
+                    } else {
+                        filePreview.src = '#';
+                        filePreview.style.display = 'none';
+                    }
+                });
+            });
+        </script>
         
         <script>
             function validateForm() {

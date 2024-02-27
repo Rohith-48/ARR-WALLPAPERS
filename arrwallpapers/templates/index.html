@@ -406,16 +406,42 @@
 				<span class="close">&times;</span>
 				<div id="image-container"></div>
 				<div id="modal-content-placeholder"></div>
-				
+				Search By Image
 				<!-- Include CSRF token within the modal form -->
 				<form method="post" action="{% url 'retrival' %}" enctype="multipart/form-data">
 					{% csrf_token %}
 					
 					<input type="file" accept="image/*" name="fileInput">
+					<div id="modal-content-placeholder">
+						<img id="preview-image" src="#" alt="Image Preview" style="max-width: 50%; max-height: 100px;">
+					</div>
+					
 					<button type="submit" >Search Similar</button>
 				</form>
 			</div>
 		</div>
+		
+
+		<script>
+			document.addEventListener('DOMContentLoaded', function () {
+				var fileInput = document.querySelector('input[name="fileInput"]');
+				var previewImage = document.getElementById('preview-image');
+		
+				fileInput.addEventListener('change', function () {
+					var file = fileInput.files[0];
+		
+					if (file) {
+						var reader = new FileReader();
+		
+						reader.onload = function (e) {
+							previewImage.src = e.target.result;
+						};
+		
+						reader.readAsDataURL(file);
+					}
+				});
+			});
+		</script>
 		
 	<style>
 .top-search {

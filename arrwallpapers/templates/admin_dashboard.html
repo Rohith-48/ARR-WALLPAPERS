@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="icon" type="image-asset/png" href="{% static '\image-asset\icon.png'%}">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css\fontawesome.css'%}">
     <style>
@@ -646,6 +647,7 @@ body.dark-mode .user-table tbody tr:hover {
     </style>
 </head>
 <body>
+    
     {% if user.is_superuser %}
     <div class="dark-mode-toggle">
         <label class="switch">
@@ -717,7 +719,7 @@ body.dark-mode .user-table tbody tr:hover {
         <div class="head-inner">
             <div class="left-part">
                 <form>
-                    <input type="text" placeholder="Search.." required>
+                    <input type="text" id="live-search" placeholder="Search..."required>
                     <button type="submit"><i class="fas fa-search"></i></button>
                 </form>
             </div>
@@ -854,7 +856,35 @@ body.dark-mode .user-table tbody tr:hover {
         {% endblock %}
     </div>
 </div>
+
 {% endif %}
+
+<div id="search-results-message">
+</div>
+<div id="search-results-notfound" style="display: none;">
+    <img src="{% static 'image-asset/not-found.svg' %}" alt="No Results Image" style="height: 500px; width: 500px; margin-left: 600px;">
+    No Data FOund!
+</div>
+<script>
+    $(document).ready(function () {
+        // Live search for Manage Content Creators section
+        $("#live-search").on("keyup", function () {
+            var searchText = $(this).val().toLowerCase();
+            var userTableRows = $(".user-table tbody tr");
+            userTableRows.filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
+            });
+
+            // Display static image if there are no search results
+            $("#search-results-notfound").toggle(userTableRows.filter(":visible").length === 0);
+        });
+
+        // Live search for View/Delete Wallpapers section
+      
+    });
+</script>
+
+
 
 <div class="alan-btn"></div>
         
