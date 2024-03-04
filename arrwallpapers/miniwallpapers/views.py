@@ -186,7 +186,7 @@ from django.http import JsonResponse
 def live_search(request):
     if request.method == 'GET':
         search_query = request.GET.get('query', '')
-        results = WallpaperCollection.objects.filter(title__istartswith=search_query)
+        results = WallpaperCollection.objects.filter(title__istartswith=search_query, is_deleted=False)
         product_data = []
 
         for product in results:
@@ -199,6 +199,64 @@ def live_search(request):
 
         return JsonResponse({'products': product_data})
     
+from django.http import JsonResponse
+from django.urls import reverse
+from .models import WallpaperCollection, Category
+
+def live_filter(request):
+    categories = Category.objects.all()
+    wallpapers = WallpaperCollection.objects.filter(is_deleted=False)
+
+    # Extract filters from request
+    query = request.GET.getlist('category')
+    license_filter = request.GET.getlist('license')
+    ratings_filter = request.GET.get('ratings', '')
+
+    if query:
+        wallpapers = wallpapers.filter(category__name__in=query)
+    if license_filter:
+        wallpapers = wallpapers.filter(price__in=license_filter)
+    if ratings_filter:
+        wallpapers = wallpapers.filter(average_rating=float(ratings_filter))
+
+    # Generate HTML content for filtered wallpapers
+    wallpaper_html_list = []
+
+    for idx, wallpaper in enumerate(wallpapers):
+        # Start a new row for every 3 wallpapers
+        if idx % 3 == 0:
+            wallpaper_html_list.append('<div class="row">')
+
+        # Determine the title color based on the wallpaper's price
+        title_color = 'white' if wallpaper.price == 'free' else 'gold'
+
+        # Add a paid icon if the wallpaper is paid
+        paid_icon = '<i class="fas fa-crown" style="position: absolute; top: 10px; right: 10px;"></i>' if wallpaper.price == 'paid' else ''
+
+        wallpaper_html_list.append(
+            f'<div class="col-md-4">' +
+            f'   <a href="{reverse("wallpaper_details", args=[wallpaper.id])}" class="card-link" style="position: relative; overflow: hidden;">' +
+            f'       <div class="card">' +
+            f'           {paid_icon}' +
+            f'           <img class="card-img-top" src="{wallpaper.wallpaper_image.url}" alt="{wallpaper.title}">' +
+            f'           <div class="card-body">' +
+            f'               <p class="card-title" style="color: {title_color};">Title: {wallpaper.title}</p>' +
+            f'           </div>' +
+            f'       </div>' +
+            f'   </a>' +
+            f'</div>'
+        )
+
+        # End the row for every 3 wallpapers
+        if (idx + 1) % 3 == 0 or (idx + 1) == len(wallpapers):
+            wallpaper_html_list.append('</div>')
+
+    # Join the HTML content
+    wallpaper_html = ''.join(wallpaper_html_list)
+
+    # Return the HTML content as JSON response
+    return JsonResponse({'html_content': wallpaper_html})
+
 
 
 
