@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallpaper Editor</title>
+    <!-- Include Toastr CSS and JS -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+</head>
+<body>
+
+    {% if user.userprofiledoc.subscribed %}
+    <!-- Add your existing Pixelixe editor iframe code here -->
+    <iframe 
+        style="position:fixed; top:0; left:0; bottom:0; right:0; width:100%; height:100%; border:none; margin:0; padding:0; overflow:hidden; z-index:999999;" allowfullscreen frameborder="0"
+        src="https://studio.pixelixe.com/#api?apiKey=H1geNToQEDwUBRMqAhoCTiNFJEMqDjASES00Xg&allowUploadOnly=true">
+    </iframe>
+{% else %}
+    <!-- Display a message if the user is not subscribed -->
+    <div style="text-align: center; padding: 50px;">
+        <h2>Please subscribe to the site for editing wallpapers.</h2>
+        <button onclick="showToast()">Subscribe Now</button>
+    </div>
+{% endif %}
+
+<!-- JavaScript for the Snackbar message -->
+<script>
+function showToast() {
+    // Use Toastr to show a simple toast message
+    toastr.info('Subscribe to unlock editing features.');
+}
+</script>
+
+</body>
+</html>
+
+
+</body>
+</html>

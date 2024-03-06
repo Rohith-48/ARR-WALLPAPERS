@@ -276,6 +276,10 @@ def category_filter(request, category):
 
 
 
+def AIEditor(request):
+    return render(request, 'AIEditor.html')
+
+
 
 
 def subscribe_page(request):

@@ -201,6 +201,39 @@
         margin-bottom: 10px; 
     }
 }
+
+
+
+#snackbar {
+	visibility: hidden;
+	min-width: 250px;
+	margin-left: -125px;
+	background-color: #04ca25;
+	color: #fff;
+	text-align: center;
+	border-radius: 2px;
+	padding: 16px;
+	position: fixed;
+	z-index: 1;
+	left: 50%;
+	bottom: 30px;
+	font-size: 17px;
+}
+
+#snackbar.show {
+	visibility: visible;
+	animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@keyframes fadein {
+	from {bottom: 0; opacity: 0;}
+	to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadeout {
+	from {bottom: 30px; opacity: 1;}
+	to {bottom: 0; opacity: 0;}
+}
 	</style>
 </head>
 <body>
@@ -348,6 +381,27 @@
 
 							</ul>
 						</li>
+
+						<li class="dropdown first">
+							{% if user.userprofiledoc.subscribed %}
+						<li><a href="{% url 'AIEditor' %}">AI Editor</a></li>
+					{% else %}
+						<li>
+							<a href="#" onclick="showSubscribeSnackbar()">AI Editor</a>
+							<script>
+								function showSubscribeSnackbar() {
+									var snackbar = document.getElementById("snackbar");
+									snackbar.innerHTML = "Please subscribe to access the AI Editor!";
+									snackbar.className = "show";
+									setTimeout(function(){ snackbar.className = snackbar.className.replace("show", ""); }, 3000);
+								}
+							</script>
+						</li>
+					{% endif %}
+						</li>
+
+
+
 						<li class="dropdown first">
 							<a href="{% url 'ai_wallpaper_generator' %}" class="btn btn-default lv1" target="_blank">
 								AI Wallpaper Generator
@@ -931,6 +985,7 @@
 </div>
 
 {% endblock %}
+<div id="snackbar"></div>
 <footer class="ht-footer">
 	<div class="container">
 		<div class="flex-parent-ft">
@@ -946,6 +1001,22 @@
 					<li><a href="{% url 'about' %}">About</a></li> 
 					<li><a href="{% url 'contactform' %}">Contact Us</a></li>
 					<li><a href="{% url 'community' %}">Forums</a></li>
+					{% if user.userprofiledoc.subscribed %}
+						<li><a href="{% url 'AIEditor' %}">AI Editor</a></li>
+					{% else %}
+						<li>
+							<a href="#" onclick="showSubscribeSnackbar()">AI Editor</a>
+							<script>
+								function showSubscribeSnackbar() {
+									var snackbar = document.getElementById("snackbar");
+									snackbar.innerHTML = "Please subscribe to access the AI Editor!";
+									snackbar.className = "show";
+									setTimeout(function(){ snackbar.className = snackbar.className.replace("show", ""); }, 3000);
+								}
+							</script>
+						</li>
+					{% endif %}
+						
 					<li><a href="#">Blog</a></li>
 					<li><a href="#">Help Center</a></li>
 				</ul>
