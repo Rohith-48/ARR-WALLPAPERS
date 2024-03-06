@@ -839,10 +839,11 @@ body.dark-mode .user-table tbody tr:hover {
                             <td>{{ user_profile.user.email }}</td>
                             <td>{% if user_profile.subscribed %} Yes {% else %} No {% endif %}</td>
                             <td>
-                                <form method="post" action="{% url 'delete_user' user_profile.user.id %}">
+                                <form method="post" action="{% url 'delete_sub' user_profile.user.id %}">
                                     {% csrf_token %}
                                     <button type="submit" class="delete-button">Delete</button>
                                 </form>
+                                
                             </td>
                         </tr>
                     {% endif %}

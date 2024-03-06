@@ -330,9 +330,22 @@
 							</a>
 							<ul class="dropdown-menu level1">
 								<li><a href="{% url 'community' %}">Community Chat</a></li>
-								<li><a href="#">user favorite list</a></li>
-								<li><a href="#">user profile</a></li>
-								<li class="it-last"><a href="#">user rate</a></li>
+								{% if user.is_authenticated %}
+									{% if user.userprofiledoc.is_creator %}
+										<li><a href="{% url 'userprofile' %}">User Profile</a></li>
+									{% endif %}
+									
+									{% if user.is_superuser %}
+										<li><a href="{% url 'admin_dashboard' %}">User Profile</a></li>
+									{% endif %}
+									
+									{% if user.userprofiledoc.is_premium %}
+										<li><a href="{% url 'premiumuserpage' %}">User Profile</a></li>
+									{% endif %}
+								{% else %}
+									<li><a href="{% url 'login' %}">User Profile</a></li>
+								{% endif %}
+
 							</ul>
 						</li>
 						<li class="dropdown first">
@@ -932,7 +945,7 @@
 				<ul>
 					<li><a href="{% url 'about' %}">About</a></li> 
 					<li><a href="{% url 'contactform' %}">Contact Us</a></li>
-					<li><a href="#">Forums</a></li>
+					<li><a href="{% url 'community' %}">Forums</a></li>
 					<li><a href="#">Blog</a></li>
 					<li><a href="#">Help Center</a></li>
 				</ul>

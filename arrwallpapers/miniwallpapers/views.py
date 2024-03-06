@@ -505,6 +505,18 @@ def delete_user(request, user_id):
 
 
 
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.models import User
+
+def delete_sub(request, user_id):
+    if request.method == 'POST':
+        user = get_object_or_404(User, id=user_id)
+        user.delete()
+        return redirect('admin_dashboard')  
+    return render(request, 'admin_dashboard.html') 
+
+
+
 @login_required
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def admin_dashboard(request):
@@ -597,13 +609,19 @@ def errorpage(request):
 
 
 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+
 @login_required
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def premiumuserpage(request):
     user = request.user
+
     if request.method == 'POST':
         user.first_name = request.POST.get('first_name', '')
         user.last_name = request.POST.get('last_name', '')
+        
+        # Handle avatar update
         avatar = request.FILES.get('avatar')
         if avatar:
             user.userprofiledoc.avatar = avatar
@@ -611,10 +629,11 @@ def premiumuserpage(request):
 
         user.save()
         messages.success(request, 'Profile updated successfully.')
-
         return redirect('premiumuserpage')
 
     return render(request, 'PremiumUserPage/premiumuserpage.html', {'user': user})
+
+
 
 
 
@@ -1103,7 +1122,7 @@ def ai_wallpaper_generator(request):
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
-            "Authorization": "Bearer sk-vOn49jmqCnzvAgcHG24nlxFQ8ztzRhLuihMJNG2j0PmW50mU",  
+            "Authorization": "Bearer sk-XpqT6E5KObGoqZc5g5aj3tQNIKMP0rZGXFmOhEuN8P7y4RlL",  
         }
 
         response = requests.post(url, headers=headers, json=body)

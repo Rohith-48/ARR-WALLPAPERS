@@ -12,7 +12,7 @@ urlpatterns=[
     path('ai_wallpaper_generator/', views.ai_wallpaper_generator, name='ai_wallpaper_generator'),
     #  path('upscaleimage/', views.upscaleimage, name='upscaleimage'),
     path('post_rating/<int:wallpaper_id>/', views.post_rating, name='post_rating'),
-
+    path('delete_sub/<int:user_id>/', views.delete_sub, name='delete_sub'),
 
     path('set_premium_status/', views.set_premium_status, name='set_premium_status'),
     path('login/', views.login, name='login'),
