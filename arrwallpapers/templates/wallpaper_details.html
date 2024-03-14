@@ -334,6 +334,55 @@
         <div class="wallpaper-image-container">
         <img src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}" class="wallpaper-image" id="watermarked-image">
         
+
+
+<!-- Add this button where you want it in your template -->
+{% if wallpaper.price == 'free' %}
+    <a href="#" onclick="generateQRCodeAndInitiateDownload()">Generate QR Code</a>
+    <div style="padding:10px; background:white; width: 150px" ><div id="qrcode" style="display: none;"></div></div>
+
+{% endif %}
+
+
+<!-- Add this script and iframe to your template -->
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<script>
+    function generateQRCodeAndInitiateDownload() {
+        // Get the wallpaper ID
+        var wallpaperId = {{ wallpaper.id }};
+    
+        // Generate the QR code URL by making a request to the Django view
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    var qrCodeUrl = xhr.responseText;
+                    // Create a new QR code
+                    var qrcode = new QRCode(document.getElementById("qrcode"), {
+                        text: qrCodeUrl,
+                        width: 128,
+                        height: 128
+                    });
+    
+                    // Display the QR code
+                    document.getElementById("qrcode").style.display = "block";
+    
+                    // Initiate the download after scanning
+                    initiateDownload(qrCodeUrl);
+                } else {
+                    // Handle errors
+                    console.error('Error fetching QR code URL');
+                }
+            }
+        };
+        xhr.open('GET', '{% url "generate_qrcode_url" wallpaper.id %}', true);
+        xhr.send();
+    }
+</script>
+
+
+
+
         <script>
             const imageUrl = "{{ wallpaper.wallpaper_image.url }}";
             const watermarkText = '©ARR WALLPAPERS';
@@ -533,43 +582,7 @@
         }
     </style>
     
-    <style>
-        #snackbar {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #19a700;
-            color: #fff;
-            text-align: center;
-            padding: 15px;
-            border-radius: 8px;
-            animation: fadeIn 0.5s, fadeOut 0.5s 2.5s forwards;
-        }
-    
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-    
-        @keyframes fadeOut {
-            from {
-                opacity: 1;
-            }
-            to {
-                opacity: 0;
-            }
-        }
-    
-        #snackbar.error {
-            background-color: #ff5c5c;
-        }
-    </style>
+   
     
     <div class="cont">
         <div class="stars">

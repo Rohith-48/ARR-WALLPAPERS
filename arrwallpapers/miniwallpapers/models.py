@@ -1,14 +1,17 @@
 from django.db import models
 from django.contrib.auth.models import User
-from allauth.socialaccount.models import SocialAccount
 from django.core.exceptions import ValidationError
+from nltk.sentiment import SentimentIntensityAnalyzer
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from allauth.socialaccount.models import SocialAccount
 
 class UserProfileDoc(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    is_creator = models.BooleanField(default=False)  
-    is_premium = models.BooleanField(default=False) 
+    is_creator = models.BooleanField(default=False)
+    is_premium = models.BooleanField(default=False)
     is_approved = models.BooleanField(default=False)
-    subscribed = models.BooleanField(default=False)  
+    subscribed = models.BooleanField(default=False)
     subscription_expiration = models.DateField(null=True, blank=True)
     subscription_duration = models.PositiveIntegerField(default=0)
     portfolio = models.FileField(upload_to='portfolio/', blank=True, null=True)
@@ -24,10 +27,10 @@ class UserProfileDoc(models.Model):
 
     def __str__(self):
         return self.user.username
-    
+
 class Tag(models.Model):
     name = models.CharField(max_length=50)
-    hashtag = models.CharField(max_length=50, default='default_hashtag') 
+    hashtag = models.CharField(max_length=50, default='default_hashtag')
 
     def __str__(self):
         return f'#{self.name}'
@@ -74,11 +77,14 @@ class WallpaperCollection(models.Model):
     total_ratings = models.PositiveIntegerField(default=0)
     view_count = models.PositiveIntegerField(default=0)
     downloads = models.PositiveIntegerField(default=0)
+    sentiment_score = models.DecimalField(max_digits=3, decimal_places=2, default=0.00)
     wallpaper_image = models.ImageField(
         upload_to=get_upload_path,
         default='path_to_default_image.jpg',
     )
     downloads_by_user = models.ManyToManyField(User, related_name='downloads', blank=True)
+
+
 
     def download(self, user):
         if self.price == 'paid' and user.userprofiledoc.subscribed:
@@ -104,7 +110,7 @@ class WallpaperCollection(models.Model):
     def clean(self):
         if self.tags.count() > 4:
             raise ValidationError("A wallpaper can have a maximum of 4 tags.")
-    
+
     def update_average_rating(self):
         # Calculate the new average rating whenever a new rating is added
         ratings = Rating.objects.filter(wallpaper=self)
@@ -117,15 +123,24 @@ class WallpaperCollection(models.Model):
         self.total_ratings = total_ratings
         self.save()
 
-    def __str__(self):
-        return self.title
+    def calculate_sentiment_score(self):
+        reviews_text = ' '.join([review.text for review in self.review_set.all()])
+        if reviews_text:
+            sid = SentimentIntensityAnalyzer()
+            sentiment_score = sid.polarity_scores(reviews_text)['compound']
+            self.sentiment_score = round(sentiment_score, 2)
+        else:
+            self.sentiment_score = 0.00
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.calculate_sentiment_score()
 
 class Rating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     wallpaper = models.ForeignKey(WallpaperCollection, on_delete=models.CASCADE)
     value = models.PositiveIntegerField()
-    
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         # Update the average rating and total ratings for the associated wallpaper
@@ -134,17 +149,18 @@ class Rating(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.wallpaper.title} - {self.value}"
 
-
-
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     wallpaper = models.ForeignKey(WallpaperCollection, on_delete=models.CASCADE)
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.wallpaper.calculate_sentiment_score()
+
     def __str__(self):
         return f"{self.user.username} - {self.wallpaper.title}"
-
 
 
 

@@ -202,38 +202,44 @@
     }
 }
 
+	</style>
 
-
-#snackbar {
-	visibility: hidden;
-	min-width: 250px;
-	margin-left: -125px;
-	background-color: #04ca25;
-	color: #fff;
-	text-align: center;
-	border-radius: 2px;
-	padding: 16px;
-	position: fixed;
-	z-index: 1;
-	left: 50%;
-	bottom: 30px;
-	font-size: 17px;
-}
-
-#snackbar.show {
-	visibility: visible;
-	animation: fadein 0.5s, fadeout 0.5s 2.5s;
-}
-
-@keyframes fadein {
-	from {bottom: 0; opacity: 0;}
-	to {bottom: 30px; opacity: 1;}
-}
-
-@keyframes fadeout {
-	from {bottom: 30px; opacity: 1;}
-	to {bottom: 0; opacity: 0;}
-}
+	<style>
+		#snackbar {
+			display: none;
+			position: fixed;
+			bottom: 0;
+			left: 50%;
+			transform: translateX(-50%);
+			background-color: #19a700;
+			color: #fff;
+			text-align: center;
+			padding: 15px;
+			border-radius: 8px;
+			animation: fadeIn 0.5s, fadeOut 0.5s 2.5s forwards;
+		}
+	
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+			}
+			to {
+				opacity: 1;
+			}
+		}
+	
+		@keyframes fadeOut {
+			from {
+				opacity: 1;
+			}
+			to {
+				opacity: 0;
+			}
+		}
+	
+		#snackbar.error {
+			background-color: #ff5c5c;
+		}
 	</style>
 </head>
 <body>
@@ -803,6 +809,42 @@
     {% endfor %}
 </div>
 
+
+<div class="title-hd">
+	<h2 style="color: rgb(255, 255, 255); font-weight: bold">Recommended Wallpapers</h2>
+</div>
+<div class="slick-multiItemSlider" id="slick-multiItemSlider-container">
+    {% if recommended_wallpapers %}
+	
+        {% for wallpaper in recommended_wallpapers %}
+            <div class="movie-item">
+				<div class="mv-img">
+					{% if wallpaper.wallpaper_image.width < wallpaper.wallpaper_image.height %}
+                    <a href="{% url 'wallpaper_details' wallpaper.id %}">
+                        <img src="{{ wallpaper.wallpaper_image.url }}" alt="" width="285" height="437">
+                    </a>
+                {% else %}
+                    <a href="{% url 'wallpaper_details' wallpaper.id %}">
+                        <img src="{{ wallpaper.wallpaper_image.url }}" alt="" width="285" height="437">
+                    </a>
+                {% endif %}
+				</div>
+                <div class="title-in" style="margin-bottom: -10px;">
+                    <div class="cate">
+                        <span class="blue"><a href="{% url 'wallpaper_details' wallpaper.id %}">{{ wallpaper.category.name }}</a></span>
+                    </div>
+					<h6><a href="{% url 'wallpaper_details' wallpaper.id %}">{{ wallpaper.title }}</a></h6>
+                    <p><i class="ion-android-star"></i><span>{{ wallpaper.average_rating }}/5</span> Rating</p>
+                    <p>Sentiment Score: {{ wallpaper.sentiment_score }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+
+
+
 <style>
     #filter-container12 {
         display: none;
@@ -925,9 +967,6 @@
 </script>
 
 
-
-
-
 <div class="wall-item">
     <div class="container">
         <div class="row ipad-width">
@@ -985,7 +1024,10 @@
 </div>
 
 {% endblock %}
+
+
 <div id="snackbar"></div>
+
 <footer class="ht-footer">
 	<div class="container">
 		<div class="flex-parent-ft">
@@ -1080,6 +1122,9 @@
 			<p><a href="#" id="back-to-top">Back to top  <i class="ion-ios-arrow-thin-up"></i></a></p>
 		</div>
 	</div>
+
+
+
 </footer>
 <!-- end of footer section-->
 <script src="{% static 'js\jquery.js'%}"></script>

@@ -156,7 +156,13 @@ def login(request):
 
 
 from django.shortcuts import render
-from .models import WallpaperCollection, UserProfileDoc, Category
+from .models import WallpaperCollection, UserProfileDoc, Category, Review
+from django.views.decorators.cache import cache_control
+import nltk
+from nltk.sentiment import SentimentIntensityAnalyzer
+nltk.download('vader_lexicon')
+
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def index(request):
     query = request.GET.get('q')
@@ -169,10 +175,28 @@ def index(request):
     # Retrieve the most viewed wallpapers
     most_viewed_wallpapers = WallpaperCollection.objects.order_by('-view_count')[:5]
 
+    # Integrate sentiment analysis recommendation logic
+    recommended_wallpapers = get_recommended_wallpapers(wallpapers)
+
     if query:
         wallpapers = wallpapers.filter(title__icontains=query)
 
-    return render(request, 'index.html', {'wallpapers': wallpapers, 'creators': creators, 'admin_user': admin_user, 'categories': categories, 'query': query, 'most_viewed_wallpapers': most_viewed_wallpapers})
+    return render(request, 'index.html', {'wallpapers': wallpapers, 'creators': creators, 'admin_user': admin_user, 'categories': categories, 'query': query, 'most_viewed_wallpapers': most_viewed_wallpapers, 'recommended_wallpapers': recommended_wallpapers})
+
+
+
+def get_recommended_wallpapers(wallpapers):
+    sid = SentimentIntensityAnalyzer()
+    for wallpaper in wallpapers:
+        reviews_text = ' '.join([review.text for review in wallpaper.review_set.all()])
+        if reviews_text:
+            sentiment_score = sid.polarity_scores(reviews_text)['compound']
+            wallpaper.sentiment_score = round(sentiment_score, 2)
+        else:
+            wallpaper.sentiment_score = 0.00
+    recommended_wallpapers = wallpapers.order_by('-sentiment_score')[:5]
+
+    return recommended_wallpapers
 
 
 
@@ -442,6 +466,22 @@ def post_rating(request, wallpaper_id):
         return JsonResponse({'success': True})
     else:
         return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+
+import qrcode
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
+from io import BytesIO
+
+def generate_qrcode_url(request, wallpaper_id):
+    wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
+    wallpaper_url = request.build_absolute_uri(wallpaper.wallpaper_image.url)
+    return HttpResponse(wallpaper_url)
+    # qr_code_url = f"https://arrwallpapers.pythonanywhere.com/wallpaper/{wallpaper_id}/"
+    # return HttpResponse(qr_code_url)
+
+
 
 
 
