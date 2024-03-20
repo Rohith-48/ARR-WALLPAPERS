@@ -126,32 +126,38 @@ def set_premium_status(request):
 
 from django.shortcuts import render, redirect
 from django.contrib import messages, auth
-from .models import UserProfileDoc
+from .forms import LoginForm
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def login(request):
     if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
-        user = auth.authenticate(username=username, password=password)
-        if user is not None:
-            if user.is_superuser or (hasattr(user, 'userprofiledoc') and user.userprofiledoc.is_approved):
-                auth.login(request, user)
-                if user.is_superuser:
-                    return redirect('index')
-                else:
-                    if user.userprofiledoc.is_premium:
+        form = LoginForm(request.POST)
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        
+        # Check if reCAPTCHA is valid
+        if form.is_valid():
+            user = auth.authenticate(username=username, password=password)
+            if user is not None:
+                if user.is_superuser or (hasattr(user, 'userprofiledoc') and user.userprofiledoc.is_approved):
+                    auth.login(request, user)
+                    if user.is_superuser or user.userprofiledoc.is_premium:
                         return redirect('index')
                     else:
                         return redirect('index')
+                else:
+                    messages.info(request, 'Your account is not approved yet. Please wait for admin approval.')
+                    return redirect('login')
             else:
-                messages.info(request, 'Your account is not approved yet. Please wait for admin approval.')
+                messages.info(request, 'Invalid Credentials')
                 return redirect('login')
         else:
-            messages.info(request, 'Invalid Credentials')
+            # ReCAPTCHA validation failed, display error message
+            messages.error(request, 'Please complete the reCAPTCHA verification.')
             return redirect('login')
     else:
-        return render(request, "login.html")
-
+        form = LoginForm()
+    return render(request, "login.html", {'form': form})
 
 
 

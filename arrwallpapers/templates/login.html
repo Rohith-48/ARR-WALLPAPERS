@@ -225,7 +225,10 @@ a.google span{
                     <div class="form-link">
                         <a href="{% url 'forgot_password'%}" class="forgot-pass">Forgot password?</a>
                     </div>
-    
+                    <div class="field">
+                        {{ form.recaptcha }}
+                    </div>
+                    <br>
                     <div class="field button-field">
                         <button type="submit" id="submit">Login</button>
                     </div>

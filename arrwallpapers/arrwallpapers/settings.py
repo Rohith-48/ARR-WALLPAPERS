@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'miniwallpapers',
     'channels',
-    'captcha',
+    'django_recaptcha',
     'corsheaders',
     'django.contrib.sites',
     'allauth',
@@ -203,5 +203,6 @@ RAZOR_KEY_ID = 'rzp_test_0zpOMoTxoYH2my'
 RAZOR_KEY_SECRET = '8CMU9Qg9plMX3mYD07IrUEu2'
 
 
-RECAPTCHA_PUBLIC_KEY = '6LfYup4pAAAAAF8dGWjaexJ-RJ4XD_vs3mBBPoll'
-RECAPTCHA_PRIVATE_KEY = '6LfYup4pAAAAAHLnwAA0HYeW6pslxQ6bZNWnOZtW'
+RECAPTCHA_PUBLIC_KEY = '6Lfdwp4pAAAAAKy9ZFfZptV5Uu2AKrEzJ23eX14S'
+RECAPTCHA_PRIVATE_KEY = '6Lfdwp4pAAAAAEF9naCDHK-O13Xh3MGlLXGVHzwa'
+SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
