@@ -333,15 +333,99 @@
     <div class="wallpaper-container">
         <div class="wallpaper-image-container">
         <img src="{{ wallpaper.wallpaper_image.url }}" alt="{{ wallpaper.title }}" class="wallpaper-image" id="watermarked-image">
-        
-
-
-<!-- Add this button where you want it in your template -->
 {% if wallpaper.price == 'free' %}
     <a href="#" onclick="generateQRCodeAndInitiateDownload()">Generate QR Code</a>
     <div style="padding:10px; background:white; width: 150px" ><div id="qrcode" style="display: none;"></div></div>
 
 {% endif %}
+<svg id="share-button" xmlns="http://www.w3.org/2000/svg" height="14" width="14" viewBox="0 0 512 512" style="cursor: pointer;">
+    <path fill="#ffffff" d="M307 34.8c-11.5 5.1-19 16.6-19 29.2v64H176C78.8 128 0 206.8 0 304C0 417.3 81.5 467.9 100.2 478.1c2.5 1.4 5.3 1.9 8.1 1.9c10.9 0 19.7-8.9 19.7-19.7c0-7.5-4.3-14.4-9.8-19.5C108.8 431.9 96 414.4 96 384c0-53 43-96 96-96h96v64c0 12.6 7.4 24.1 19 29.2s25 3 34.4-5.4l160-144c6.7-6.1 10.6-14.7 10.6-23.8s-3.8-17.7-10.6-23.8l-160-144c-9.4-8.5-22.9-10.6-34.4-5.4z"/>
+</svg>
+<div id="share-options" class="hidden">
+    <button id="whatsapp-share"><i class="fab fa-whatsapp"></i> Share via WhatsApp</button>
+    <button id="facebook-share"><i class="fab fa-facebook"></i> Share via Facebook</button>
+    <button id="reddit-share"><i class="fab fa-reddit"></i> Share via Reddit</button>
+    <button id="email-share"><i class="fas fa-envelope"></i> Share via Email</button>
+    <button id="twitter-share"><i class="fab fa-twitter"></i>Share via Twitter</button>
+    <button id="copy-link"><i class="fas fa-copy"></i> Copy Link</button>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+    .hidden {
+        display: none;
+    }
+    #share-button{
+        margin-left: 500px;
+    }
+</style>
+<script>
+    // Share button click event
+    document.getElementById('share-button').addEventListener('click', function() {
+        // Toggle visibility of share options
+        document.getElementById('share-options').classList.toggle('hidden');
+    });
+
+    // WhatsApp share button click event
+    document.getElementById('whatsapp-share').addEventListener('click', function() {
+        // Get the current page URL
+        var currentPageUrl = encodeURIComponent(window.location.href);
+        var whatsappUrl = 'https://api.whatsapp.com/send?text=' + currentPageUrl;
+        window.open(whatsappUrl, '_blank');
+    });
+
+    // Facebook share button click event
+    document.getElementById('facebook-share').addEventListener('click', function() {
+        // Get the current page URL
+        var currentPageUrl = encodeURIComponent(window.location.href);
+        var facebookUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + currentPageUrl;
+        window.open(facebookUrl, '_blank');
+    });
+
+    // Reddit share button click event
+    document.getElementById('reddit-share').addEventListener('click', function() {
+        // Get the current page URL
+        var currentPageUrl = encodeURIComponent(window.location.href);
+        var redditUrl = 'https://www.reddit.com/submit?url=' + currentPageUrl;
+        window.open(redditUrl, '_blank');
+    });
+
+    // Email share button click event
+    document.getElementById('email-share').addEventListener('click', function() {
+        // Get the current page URL
+        var currentPageUrl = encodeURIComponent(window.location.href);
+        var subject = encodeURIComponent("Check out this link");
+        var body = encodeURIComponent("I thought you might find this interesting: " + currentPageUrl);
+        var emailUrl = 'mailto:?subject=' + subject + '&body=' + body;
+        window.open(emailUrl);
+    });
+
+    // Twitter share button click event
+    document.getElementById('twitter-share').addEventListener('click', function() {
+        // Get the current page URL
+        var currentPageUrl = encodeURIComponent(window.location.href);
+        var twitterUrl = 'https://twitter.com/intent/tweet?url=' + currentPageUrl;
+        window.open(twitterUrl, '_blank');
+    });
+
+    // Copy link button click event
+    document.getElementById('copy-link').addEventListener('click', function() {
+        // Get the current page URL
+        var currentPageUrl = window.location.href;
+        
+        // Copy to clipboard
+        var dummy = document.createElement('input');
+        document.body.appendChild(dummy);
+        dummy.value = currentPageUrl;
+        dummy.select();
+        document.execCommand('copy');
+        document.body.removeChild(dummy);
+
+        // Inform the user that the link has been copied
+        alert('Link copied to clipboard!');
+    });
+</script>
+
 
 
 <!-- Add this script and iframe to your template -->
@@ -379,8 +463,6 @@
         xhr.send();
     }
 </script>
-
-
 
 
         <script>
@@ -452,8 +534,6 @@
 {% else %}
     <p>No username information available</p>
 {% endif %}
-
-        
     </div>
 
     <style>
