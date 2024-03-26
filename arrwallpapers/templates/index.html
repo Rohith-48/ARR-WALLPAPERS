@@ -353,7 +353,7 @@
 							Upload
 						</a>
 					{% elif user.userprofiledoc.is_premium %}
-						<a href="{% url 'subscribe_page' %}" class="btn btn-default lv1">
+						<a href="{% url 'subscribe_page' %}" class="btn btn-default lv1" id="price">
 							Pricing
 						</a>
 					{% else %}
@@ -411,7 +411,7 @@
 
 
 						<li class="dropdown first">
-							<a href="{% url 'ai_wallpaper_generator' %}" class="btn btn-default lv1" target="_blank">
+							<a href="{% url 'ai_wallpaper_generator' %}" class="btn btn-default lv1">
 								AI Wallpaper Generator
 							</a>
 						</li>
@@ -443,9 +443,9 @@
 									</ul>
 								</li>
 							{% else %}
-								<li class="login"><a href="{% url 'subscribe_page'%}">Pricing</a></li>
+								<li class="login" id="subscribe"><a href="{% url 'subscribe_page'%}">Pricing</a></li>
 								<li class="btn signup"><a href="{% url 'login'%}">LOG IN</a></li>
-								<li class="btn signup"><a href="{% url 'Premium_signup'%}">SIGN UP</a></li>
+								<li class="btn signup" id="premiumsignup"><a href="{% url 'Premium_signup'%}">SIGN UP</a></li>
 							{% endif %}
 						</ul>
 						

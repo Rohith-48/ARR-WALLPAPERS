@@ -44,9 +44,15 @@ class Hosttest(TestCase):
         password = driver.find_element(By.CSS_SELECTOR, "input#password")
         password.send_keys("NewUser@123")
         time.sleep(1)
-        submitc = driver.find_element(By.CSS_SELECTOR, "button#submit")
-        submitc.click()
+        captcha = driver.find_element(By.CSS_SELECTOR, ".g-recaptcha")
+        captcha.click() 
+        time.sleep(30)
+        submit_button = driver.find_element(By.CSS_SELECTOR, "button#submit")
+        submit_button.click()
         time.sleep(2)
+
+
+
 
         # Perform actions after login (e.g., download)
         driver.get("http://127.0.0.1:8000/wallpaper/46/")
@@ -54,6 +60,58 @@ class Hosttest(TestCase):
         submitc = driver.find_element(By.CSS_SELECTOR, "a#download-for-my-screen")
         submitc.click()
         time.sleep(2)
+
+        ai_wallpaper_generator_link = driver.find_element(By.XPATH, "//li[@class='dropdown first']/a[contains(text(),'AI Wallpaper Generator')]")
+        ai_wallpaper_generator_link.click()
+        time.sleep(2)
+
+        prompt_input = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "input.prompt-input")))
+
+        # Clear any existing text in the input field
+        prompt_input.clear()
+
+        # Enter the desired text
+        prompt_input.send_keys("car on a road")
+
+        # Wait for a short moment to ensure the text is entered before proceeding (optional)
+        time.sleep(2)
+        # Locate the "Generate" button and click on it
+        generate_button = driver.find_element(By.CSS_SELECTOR, "button#generate-btn")
+        generate_button.click()
+        time.sleep(30)
+
+
+        driver.get("http://127.0.0.1:8000/")
+        time.sleep(2)
+
+#         download_icons = driver.find_elements(By.CLASS_NAME, "download-icon")
+
+# # Click on each download icon
+#         for download_icon in download_icons:
+#             download_icon.click()
+        # review_section = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, "cont")))
+        # actions = ActionChains(driver)
+        # actions.move_to_element(review_section).perform()
+
+        # # Wait for the stars to be clickable
+        # stars = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "input.star.star-5")))
+
+        # # Select the 5-star rating
+        # star_5 = driver.find_element(By.CSS_SELECTOR, "input.star.star-5")
+        # star_5.click()
+
+        # # Enter the review message
+        # review_textarea = driver.find_element(By.ID, "review")
+        # review_textarea.send_keys("super")
+
+        # # Click the "Post" button
+        # post_button = driver.find_element(By.CLASS_NAME, "post-button")
+        # post_button.click()
+
+        # # Optional: Add a delay to ensure the review submission completes
+        # time.sleep(2)
+
+
 
         dropdown_toggle = driver.find_element(By.CLASS_NAME, "dropdown-toggle")
         dropdown_toggle.click()

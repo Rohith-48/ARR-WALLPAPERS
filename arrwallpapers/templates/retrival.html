@@ -64,17 +64,24 @@
 
 <body>
   <br><br>
+  <h2 style="color: white; text-transform: uppercase; text-align: left;">RETRIEVED WALLPAPERS</h2><br>
   <div id="result-container" class="masonry">
-    {% for wallpaper in similar_wallpapers %}
-    <a href="{% url 'wallpaper_details' wallpaper.pk %}" data-lightbox="wallpapers" data-title="{{ wallpaper.title }}">
-        <div class="image-container masonry-item">
-            <img src="{{ wallpaper.image_url }}" alt="{{ wallpaper.title }}">
-            <div class="overlay">
-                <p>{{ wallpaper.title }}</p>
-            </div>
-        </div>
-    </a>
-{% endfor %}
+  {% if similar_wallpapers %}
+
+        {% for wallpaper in similar_wallpapers %}
+            <a href="{% url 'wallpaper_details' wallpaper.pk %}" data-lightbox="wallpapers" data-title="{{ wallpaper.title }}">
+                <div class="image-container masonry-item">
+                    <img src="{{ wallpaper.image_url }}" alt="{{ wallpaper.title }}">
+                    <div class="overlay">
+                        <p>{{ wallpaper.title }}</p>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+
+{% else %}
+    <p>No wallpapers to be shown!</p>
+{% endif %}
 
 
 </div>

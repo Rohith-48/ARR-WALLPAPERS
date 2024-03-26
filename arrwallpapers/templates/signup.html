@@ -83,8 +83,8 @@
 
         .eye-icon {
             position: absolute;
-            top: 35%;
-            right: 0px;
+            top: 38%;
+            right: 20px;
             transform: translateY(-50%);
             font-size: 18px;
             color: #8b8b8b;
@@ -202,33 +202,58 @@ img.google-img{
             margin-right: 20px; /* Adjust the spacing between columns */
         }
 
-        @media screen and (max-width: 400px) {
+        @media screen and (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
             .form {
-                padding: 20px 10px;
+                max-width: 100%;
             }
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-                font-family: 'Poppins', sans-serif;
-                margin-bottom: 34px;
+        
+            .flex-container {
+                flex-direction: column;
             }
-        }
+        
+            .flex-column {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+        
+            .field.input-field {
+                margin-top: 10px;
+            }
+        
+            .eye-icon {
+                top: 30%;
+                margin-top: 169px;
 
-        .validation-message {
-            font-size: 14px;
-            color: red;
-            margin-top: 5px;
-            display: block;
+            }
+        
+            .password-match-message {
+                margin-top: 10px;
+            }
+        
+            .field.button-field {
+                margin-top: 20px;
+            }
+        
+            .file-input {
+                width: 100%;
+            }
+            #phoneno{
+                max-width: 300px;
+            }
+        
+            .form-link {
+                margin-top: 20px;
+            }
+        
+            .media-options {
+                margin-top: 20px;
+            }
         }
         
-        .password-match-message {
-            font-size: 14px;
-            color: green;
-            margin-top: 5px;
-            display: block;
-        }
-     
     </style>
 </head>
 <body>

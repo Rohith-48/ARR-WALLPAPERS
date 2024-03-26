@@ -1278,60 +1278,80 @@ def privacypolicy(request):
     return render(request, 'registration/privacypolicy.html', context)
 
 
-import cv2
+
+import os
 import numpy as np
 from django.http import JsonResponse
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.conf import settings  # Import Django settings module
 from .models import WallpaperCollection
+from keras.preprocessing import image
+from keras.applications.vgg16 import preprocess_input
+from sklearn.metrics.pairwise import cosine_similarity
+from keras.applications import VGG16
 
+# Load pre-trained VGG16 model
+vgg_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
 
-def color_histogram(uploaded_file):
-    # Check if the uploaded_file is an InMemoryUploadedFile
-    if isinstance(uploaded_file, InMemoryUploadedFile):
-        # Read the image from memory using cv2
-        file_data = uploaded_file.read()
-        image = cv2.imdecode(np.frombuffer(file_data, np.uint8), cv2.IMREAD_COLOR)
-        
-        # Calculate color histogram
-        hist = cv2.calcHist([image], [0, 1, 2], None, [8, 8, 8], [0, 256, 0, 256, 0, 256])
-        hist = cv2.normalize(hist, hist).flatten()
-
-        return hist
-
-    # Return a default descriptor or handle the None case
-    return np.zeros(512, dtype=float)  # Adjust the size and type as needed
+# Function to extract features from an image using VGG16 model
+def extract_features_vgg(image_path):
+    img = image.load_img(image_path, target_size=(224, 224))
+    img_array = image.img_to_array(img)
+    img_array = np.expand_dims(img_array, axis=0)
+    img_array = preprocess_input(img_array)
+    features = vgg_model.predict(img_array)
+    features = features.flatten()
+    return features
 
 def calculate_similarity(descriptor1, descriptor2):
-    # Use any suitable similarity metric
-    # Here, I'll use the absolute difference for simplicity
-    return np.sum(np.abs(descriptor1 - descriptor2))
-
+    # Use cosine similarity for comparing feature vectors
+    return cosine_similarity([descriptor1], [descriptor2])[0][0]
 
 from django.shortcuts import render
 from .models import WallpaperCollection, UserProfileDoc, Category
 
 def retrival(request):
     if request.method == 'POST' and request.FILES.get('fileInput'):
-        uploaded_file = request.FILES['fileInput']
-        uploaded_image_descriptor = color_histogram(uploaded_file)
+        uploaded_file = request.FILES['fileInput']  # Get the uploaded file object
+
+        # Save the uploaded file to the media/similarimage folder
+        media_root = settings.MEDIA_ROOT
+        similar_image_dir = os.path.join(media_root, 'similarimage')
+        if not os.path.exists(similar_image_dir):
+            os.makedirs(similar_image_dir)
+
+        uploaded_image_path = os.path.join(similar_image_dir, uploaded_file.name)
+        with open(uploaded_image_path, 'wb') as f:
+            for chunk in uploaded_file.chunks():
+                f.write(chunk)
+
+        # Extract features from the uploaded image
+        uploaded_image_descriptor = extract_features_vgg(uploaded_image_path)
 
         # Retrieve all wallpapers from the database
         all_wallpapers = WallpaperCollection.objects.select_related('user').filter(is_deleted=False)
 
-
         # Calculate similarity with each wallpaper
-        similar_wallpapers = []
+        similarity_scores = []
         for wallpaper in all_wallpapers:
-            wallpaper_descriptor = color_histogram(wallpaper.wallpaper_image)
+            wallpaper_descriptor = extract_features_vgg(wallpaper.wallpaper_image.path)
             similarity_score = calculate_similarity(uploaded_image_descriptor, wallpaper_descriptor)
+            similarity_scores.append((wallpaper, similarity_score))
 
-            # If the similarity score is below a threshold, consider it a match
-            if similarity_score < 1000:
-                similar_wallpapers.append({
-                    'title': wallpaper.title,
-                    'image_url': wallpaper.wallpaper_image.url,
-                    'pk': wallpaper.pk,  # Add the primary key
-                })
+        # Sort wallpapers by similarity score (descending order)
+        similarity_scores.sort(key=lambda x: x[1], reverse=True)
+
+        # Fetch top 5 wallpapers with the highest similarity scores
+        similar_wallpapers = similarity_scores[:5]
+
+        # Prepare data for rendering
+        similar_wallpapers_data = [{
+            'title': wallpaper.title,
+            'image_url': wallpaper.wallpaper_image.url,
+            'pk': wallpaper.pk,
+            'similarity_score': score
+        } for wallpaper, score in similar_wallpapers]
+
         # Retrieve additional context variables
         creators = UserProfileDoc.objects.filter(is_creator=True)
         admin_user = User.objects.filter(is_staff=True).first()
@@ -1339,7 +1359,7 @@ def retrival(request):
 
         # Combine all context variables
         context = {
-            'similar_wallpapers': similar_wallpapers,
+            'similar_wallpapers': similar_wallpapers_data,
             'categories': categories,
             'admin_user': admin_user,
             'creators': creators,
@@ -1353,8 +1373,6 @@ def retrival(request):
     else:
         # Handle other request methods
         return render(request, 'retrival.html', {'error': 'Invalid request'})
-
-
 
 
 
