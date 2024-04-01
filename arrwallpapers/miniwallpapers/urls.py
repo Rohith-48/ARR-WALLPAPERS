@@ -79,8 +79,10 @@ urlpatterns=[
 
 
 
-    path('alan-callback/', views.alan_callback, name='alan_callback'),
-
+    path('api/login/', views.SuperuserLogin.as_view(), name='superuser_login'),
+    path('api/userprofiles/', views.UserProfileListView.as_view(), name='userprofile-list'),
+    path('api/userprofiles/<int:user_id>/approve/', views.approve_user_api, name='approve_user_api'),
+    path('api/userprofiles/<int:user_id>/deactivate/', views.deactivate_user_api, name='deactivate_user_api'),
     ]
 
 if settings.DEBUG:

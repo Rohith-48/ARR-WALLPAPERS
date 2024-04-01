@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'rest_framework',
+    'rest_framework.authtoken',
     'allauth.socialaccount.providers.google',
     # 'allauth.socialaccount.providers.facebook',
 ]
@@ -206,3 +208,11 @@ RAZOR_KEY_SECRET = '8CMU9Qg9plMX3mYD07IrUEu2'
 RECAPTCHA_PUBLIC_KEY = '6Lfdwp4pAAAAAKy9ZFfZptV5Uu2AKrEzJ23eX14S'
 RECAPTCHA_PRIVATE_KEY = '6Lfdwp4pAAAAAEF9naCDHK-O13Xh3MGlLXGVHzwa'
 SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
+
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}

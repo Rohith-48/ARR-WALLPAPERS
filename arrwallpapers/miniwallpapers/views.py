@@ -296,14 +296,13 @@ from django.shortcuts import render
 from .models import WallpaperCollection, Category
 
 def category_filter(request, category):
-    category_obj = Category.objects.get(name__iexact=category)
+    category_obj = get_object_or_404(Category, name__iexact=category)
     categories = Category.objects.all()
     creators = UserProfileDoc.objects.filter(is_creator=True)
     admin_user = User.objects.filter(is_staff=True).first()
-    wallpapers = WallpaperCollection.objects.filter(category=category_obj).order_by('-upload_date')
+    wallpapers = WallpaperCollection.objects.filter(category=category_obj, is_deleted=False).order_by('-upload_date')
 
     return render(request, 'category_filter.html', {'wallpapers': wallpapers, 'selected_category': category_obj, 'categories': categories, 'admin_user': admin_user, 'creators' : creators})
-
 
 
 def AIEditor(request):
@@ -344,11 +343,13 @@ from .models import UserProfileDoc, WallpaperCollection
 from django.db.models import Sum
 from django.core.paginator import Paginator
 
+
 def profileview(request, username):
-    user = User.objects.get(username=username)
+    user = get_object_or_404(User, username=username)
     creators = UserProfileDoc.objects.filter(is_creator=True)
     admin_user = User.objects.filter(is_staff=True).first()
     categories = Category.objects.all()
+
     if user.is_staff:
         user_profile = get_object_or_404(User, username=username)
         user_content = WallpaperCollection.objects.filter(user=user, is_deleted=False)
@@ -1423,6 +1424,7 @@ def send_message(request):
         messages.error(request, 'Invalid request method.')
 
     return redirect('community')
+    
 
 
 
@@ -1433,19 +1435,57 @@ def send_message(request):
 
 
 
+from django.contrib.auth import authenticate
+from django.http import JsonResponse
+from rest_framework.views import APIView
+from rest_framework.authtoken.models import Token
+
+class SuperuserLogin(APIView):
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        user = authenticate(username=username, password=password)
+
+        if user is not None and user.is_superuser:
+            token, _ = Token.objects.get_or_create(user=user)
+            return JsonResponse({'token': token.key})
+        else:
+            return JsonResponse({'error': 'Invalid credentials'}, status=400)
 
 
-def alan_callback(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            # Check if the received data includes a command to redirect to login
-            if data.get('command') == 'redirect' and data.get('route') == 'login':
-                # Redirect to the login page
-                return redirect('login')
-            else:
-                return JsonResponse({'error': 'Invalid command or route'}, status=400)
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON data'}, status=400)
-    else:
-        return HttpResponse(status=405, content="Method Not Allowed")
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import UserProfileDoc
+from .serializers import UserProfileSerializer
+
+class UserProfileListView(APIView):
+    def get(self, request):
+        user_profiles = UserProfileDoc.objects.filter(is_creator=True)
+        serializer = UserProfileSerializer(user_profiles, many=True)
+        return Response(serializer.data)
+
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+from .models import UserProfileDoc
+from .serializers import UserProfileSerializer
+
+@api_view(['POST'])
+def approve_user_api(request, user_id):
+    user_profile = get_object_or_404(UserProfileDoc, user__id=user_id)
+    user_profile.is_approved = True
+    user_profile.save()
+    # You can also send an email notification here if needed
+    return Response({'message': 'User approved successfully'}, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+def deactivate_user_api(request, user_id):
+    user_profile = get_object_or_404(UserProfileDoc, user__id=user_id)
+    user_profile.is_approved = False
+    user_profile.save()
+    # You can also send an email notification here if needed
+    return Response({'message': 'User deactivated successfully'}, status=status.HTTP_200_OK)

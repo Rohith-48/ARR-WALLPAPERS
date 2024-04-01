@@ -1263,48 +1263,31 @@ $(document).ready(function () {
 </script>
 
 <div class="alan-btn"></div>
-<script type="text/javascript" src="https://studio.alan.app/web/lib/alan_lib.min.js"></script>
-<!-- Include the Alan AI SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@alan-ai/alan-sdk-web/dist/alan.min.js"></script>
-
+<script type="text/javascript" src="https://studio.alan.app/web/lib/alan_lib.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 <script>
-// JavaScript Integration
-var alanBtnInstance = alanBtn({
-    key: "990295dbd0c4bd2bf080918877d35c002e956eca572e1d8b807a3e2338fdd0dc/stage",
-    onCommand: function (commandData) {
-        if (commandData.command === "redirect") {
-            handleRedirect(commandData.route);
-        }
-    },
-    rootEl: document.querySelector(".alan-btn"),
-});
-
-function handleRedirect(route) {
-    switch (route) {
-        case 'login':
-            // Send a request to your Django server with the redirect command
-            fetch('http://localhost:8000/alan-callback/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',  // Include credentials (cookies) in the request
-                body: JSON.stringify({ command: 'redirect', route: 'login' }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Handle the response if needed
-                console.log('Server Response:', data);
-            })
-            .catch(error => console.error('Error:', error));
-            break;
-        // Add more cases for other routes if needed
-    }
-    
-    // Log a message to indicate that the handleRedirect function was called
-    console.log('handleRedirect function called for route:', route);
-}
+    var alanBtnInstance = alanBtn({
+        key: "990295dbd0c4bd2bf080918877d35c002e956eca572e1d8b807a3e2338fdd0dc/stage",
+        onCommand: function (commandData) {
+            if (commandData.command === "go:back") {
+                window.location.href = "{% url 'ai_wallpaper_generator' %}";
+            } else if (commandData.command === "login") {
+                window.location.href = "{% url 'login' %}";
+            } else if (commandData.command === "go:index") {
+                window.location.href = "{% url 'index' %}";
+            } else if (commandData.command === "superherowallpapers") {
+                window.location.href = "/category/superhero/";
+            }else if (commandData.command === "animewallpapers") {
+                window.location.href = "/category/anime/";
+            }else if (commandData.command === "pricing") {
+                window.location.href = "{% url 'subscribe_page' %}";
+			}	
+        },
+        rootEl: document.getElementById("alan-btn"),
+    });
 </script>
+
 
 
 </body>
