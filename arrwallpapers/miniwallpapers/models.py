@@ -19,6 +19,7 @@ class UserProfileDoc(models.Model):
     about_me = models.TextField(blank=True)
     phoneno = models.CharField(max_length=15, blank=True, null=True)
     money = models.IntegerField(default=0)
+    invoice_path = models.FileField(upload_to='invoices/', blank=True, null=True)
 
     @classmethod
     def get_or_create_profile(cls, user):

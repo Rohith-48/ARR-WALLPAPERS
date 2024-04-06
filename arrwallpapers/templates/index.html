@@ -837,7 +837,7 @@
                     </div>
 					<h6><a href="{% url 'wallpaper_details' wallpaper.id %}">{{ wallpaper.title }}</a></h6>
                     <p><i class="ion-android-star"></i><span>{{ wallpaper.average_rating }}/5</span> Rating</p>
-                    <p>Sentiment Score: {{ wallpaper.sentiment_score }}</p>
+                    {% comment %} <p>Sentiment Score: {{ wallpaper.sentiment_score }}</p> {% endcomment %}
                 </div>
             </div>
         {% endfor %}
@@ -1062,7 +1062,7 @@
 					{% endif %}
 						
 					<li><a href="#">Blog</a></li>
-					<li><a href="#">Help Center</a></li>
+					{% comment %} <li><a href="#">Help Center</a></li> {% endcomment %}
 				</ul>
 			</div>
 			<div class="flex-child-ft item3">
@@ -1101,7 +1101,7 @@
 					
 
 					<li><a href="#">Collections</a></li>
-					<li><a href="#">User Guide</a></li>
+					{% comment %} <li><a href="#">User Guide</a></li> {% endcomment %}
 					
 
 				</ul>

@@ -265,9 +265,9 @@ img.google-img{
                 </div>
             </div>
     
-            <div class="line"></div>
+            {% comment %} <div class="line"></div> {% endcomment %}
     
-            <div class="media-options">
+            {% comment %} <div class="media-options">
                 <a href="#" class="field facebook">
                     <i class='bx bxl-facebook facebook-icon'></i>
                     <span>Signup with Facebook</span>
@@ -279,7 +279,7 @@ img.google-img{
                     <img src="{% static 'image-asset\google.png'%}" alt="" class="google-img">
                     <span>Signup with Google</span>
                 </a>
-            </div>
+            </div> {% endcomment %}
             <div>
                 {% for message in messages %}
                 <h3>{{message}}</h3>

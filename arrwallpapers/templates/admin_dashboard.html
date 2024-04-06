@@ -782,6 +782,7 @@ body.dark-mode .user-table tbody tr:hover {
                     <th>Portfolio</th>
                     <th>Approval</th>
                     <th>Deactivate</th>
+                    <th>Their Earnings</th>
                 </tr>
             </thead>
             <tbody>
@@ -814,6 +815,7 @@ body.dark-mode .user-table tbody tr:hover {
                                     <button type="submit" class="delete-button">Deactivate</button>
                                 </form>
                             </td>
+                            <td>{{ user_profile.money }}</td>
                         </tr>
                     {% endif %}
                 {% endfor %}

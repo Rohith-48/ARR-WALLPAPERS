@@ -60,7 +60,7 @@ form .btn{
     bottom: 0;
     padding-left:20px;
     font-size: 1.3rem;
-    background: #6c63ff;
+    background: #000000;
 }
 
 @media screen and (max-width:940px){
@@ -114,7 +114,7 @@ form .btn{
 .bar,.bar:after,.bar:before {
     width:30px;
     height:3px;
-    background: #6c63ff;
+    background: #000000;
     transition: all 0.2s;
 }
 
@@ -159,7 +159,7 @@ form .btn{
     z-index: 1;
     height: 100%;
     width: 100%;
-    background: #6c63ff;
+    background: #000000;
     transition: width 0.5s;
     width: 0%;
 }
@@ -216,13 +216,13 @@ form .btn{
             <div class="bar"></div>
         
         </div>
-        
+        <script src="https://kit.fontawesome.com/4c94bd7560.js" crossorigin="anonymous"></script>
         <div class="expand-menu nav flex-column">
             <a href="{% url 'index'%}"><img class="logo" src="{% static '\image-asset\icon.png'%}" alt="" width="120" height="90"></a>
             <a href="#" class="nav-link active mt-auto"><i class="far fa-user-circle"></i> Profile</a>
-                <a href="#" class="nav-link"><i class="far fa-bell"></i> Notifications</a>
+               <a href="#" class="nav-link"><i class="far fa-bell"></i> Notifications</a> 
                 <a href="#" id="billingInfoLink" class="nav-link"><i class="far fa-file-alt"></i> Billing Info</a>
-                <a href="#" class="nav-link mb-auto"><i class="fas fa-cogs"></i> General</a>    
+            <a href="{% url 'index' %}" class="nav-link mb-auto"><i class="fa-solid fa-house"></i> Home</a>  
         </div>
         
         <div class="row align-items-center" style="height:100%">
@@ -232,9 +232,9 @@ form .btn{
             <div class="container-fluid nav sidebar flex-column">
             
                 <a href="{% url 'premiumuserpage' %}" class="nav-link active mt-auto"><i class="far fa-user-circle"></i> Profile</a>
-                <a href="#" class="nav-link"><i class="far fa-bell"></i> Notifications</a>
+              <a href="#" class="nav-link"><i class="far fa-bell"></i> Notifications</a> 
                 <a href="{% url 'Billinginfo' %}" id="billingInfoLink" class="nav-link"><i class="far fa-file-alt"></i> Billing Info</a>
-                <a href="#" class="nav-link mb-auto"><i class="fas fa-cogs"></i> General</a>
+                <a href="{% url 'index' %}" class="nav-link mb-auto"><i class="fa-solid fa-house"></i> Home</a>
                
             </div>
         </div>
@@ -251,17 +251,22 @@ form .btn{
                 
                     <div class="col-md-3">
                         <div class="d-inline">
-                            <img src="{% if user.userprofiledoc.avatar %}{{ user.userprofiledoc.avatar.url }}{% else %}{% static 'image-asset/dp.jpg' %}{% endif %}" width="130px" style="margin: 0; border-radius: 50%" id="avatar-preview">
+                            <img src="{% if user.userprofiledoc.avatar %}{{ user.userprofiledoc.avatar.url }}{% else %}{% static 'image-asset/dp.jpg' %}{% endif %}" width="130px" style="margin: 0; border-radius: 50%; height: 100px;" id="avatar-preview">
                             <br>
-                            <form method="post" enctype="multipart/form-data" action="{% url 'premiumuserpage' %}" id="avatar-form">
+                        
+                            <form method="post" enctype="multipart/form-data" action="{% url 'premiumuserpage' %}">
                                 {% csrf_token %}
-                                <input type="file" name="avatar" id="avatar-file" style="display:none;">
-                                <br>
-                                <button type="submit" class="btn" style="color: #000000; font-weight: 600; display: none;" id="save-avatar">Save</button>
+                                <input type="file" name="avatar" accept="image/*" class="choose-file-input">
+                                <button type="submit" class="update-avatar-button">Update Avatar</button>
                             </form>
-                            <p class="pl-2 mt-2">
-                                <a href="#" id="edit-avatar" class="btn" style="color: #8f9096; font-weight: 600" onclick="openFileInput()">Edit Picture</a>
-                            </p>
+                            <style>
+                                .update-avatar-button {
+                                    margin-left: -210px;
+                                }
+                                
+                            </style>
+
+<br>
                             <a class="logout" href="{% url 'logout' %}">Logout</a>
                         </div>
                     </div>
@@ -348,56 +353,6 @@ form .btn{
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
     
-
-
-    <script>
-        $(document).ready(function(){
-            var avatarInput = $('#avatar-input');
-            var avatarPreview = $('#avatar-preview');
-            var editAvatarLink = $('#edit-avatar');
-            var saveAvatarButton = $('#save-avatar');
-            var avatarForm = $('#avatar-form');
-            var avatarFileInput = $('#avatar-file');
-            editAvatarLink.on('click', function(e) {
-                e.preventDefault();
-                avatarInput.click();
-            });
-            avatarInput.on('change', function() {
-                var file = this.files[0];
-                if (file) {
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        avatarPreview.attr('src', e.target.result);
-                    };
-                    reader.readAsDataURL(file);
-                    saveAvatarButton.show();
-                }
-            });
-            avatarForm.on('submit', function(e) {
-                e.preventDefault();
-                var file = avatarFileInput[0].files[0];
-    
-                if (file) {
-                    var formData = new FormData();
-                    formData.append('avatar', file);
-                    $.ajax({
-                        url: '{% url "premiumuserpage" %}',
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function(response) {
-                            console.log(response);
-                            saveAvatarButton.hide();
-                        },
-                        error: function(error) {
-                            console.error(error);
-                        }
-                    });
-                }
-            });
-        });
-    </script>
 
 <script>
     $(document).ready(function(){

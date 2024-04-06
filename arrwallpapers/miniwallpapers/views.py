@@ -658,11 +658,10 @@ def successpage(request):
 def errorpage(request):
     return render(request, 'PremiumUserPage/errorpage.html')
 
-
-
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from .models import UserProfileDoc  # Import your UserProfileDoc model here
 
 @login_required
 def premiumuserpage(request):
@@ -674,17 +673,18 @@ def premiumuserpage(request):
         
         # Handle avatar update
         avatar = request.FILES.get('avatar')
+        print(avatar)  # Add this line for debugging
         if avatar:
-            user.userprofiledoc.avatar = avatar
-            user.userprofiledoc.save()
+            # Assuming UserProfileDoc is related to User through a OneToOneField
+            profile, created = UserProfileDoc.objects.get_or_create(user=user)
+            profile.avatar = avatar
+            profile.save()
 
         user.save()
         messages.success(request, 'Profile updated successfully.')
         return redirect('premiumuserpage')
 
     return render(request, 'PremiumUserPage/premiumuserpage.html', {'user': user})
-
-
 
 
 
@@ -720,6 +720,13 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime, timedelta, timezone
 from .models import UserProfileDoc
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from django.utils import formats
+from io import BytesIO
+import os
+from django.core.mail import EmailMessage
 
 @csrf_exempt
 @login_required
@@ -737,11 +744,13 @@ def paymenthandler(request):
             client = razorpay.Client(auth=('rzp_test_0zpOMoTxoYH2my', '8CMU9Qg9plMX3mYD07IrUEu2'))
             payment = client.payment.fetch(payment_id)
             payment_amount = payment['amount']
-            result = razorpay_client.utility.verify_payment_signature(params_dict)
+            result = client.utility.verify_payment_signature(params_dict)
 
             if result is not None:
                 authenticated_user = request.user
+                print(authenticated_user)
                 user_profile = UserProfileDoc.objects.get(user=authenticated_user)
+                print(user_profile)
                 amount = 200 if payment_amount == 20000 else 1000
                 # Set the subscription duration based on the plan
                 if amount == 200:
@@ -756,26 +765,71 @@ def paymenthandler(request):
                 user_profile.subscribed = True
                 user_profile.save()
                 username = authenticated_user.username
-                # Your code for sending a successful subscription email
+                
+                # Generate PDF invoice
+                pdf_data, pdf_path = generate_invoice(username, current_date, expiration_date)
+
+                # Save PDF file to media/invoices folder
+                user_profile.invoice_path = pdf_path
+                user_profile.save()
+
+                # Send the email with PDF attachment
                 subject = 'Subscription Successful'
-                message = ('Dear {};'
-                       '\n\nThank you for subscribing to our platform. We are thrilled to have you on board! Your subscription is now active, and you can start enjoying our exclusive content.;'
-                       '\n\nTo begin your journey, click here👉🏻 http://127.0.0.1:8000/ to visit our index page. We have also attached a digital signature to this email for your reference.;'
-                       '\n\nIf you have any questions or need assistance, please don\'t hesitate to contact us.;'
-                       '\n\nBest Regards,'
-                       '\nARR').format(username)
-            
+                message = (
+                    'Dear {},'
+                    '\n\nThank you for subscribing to our platform. We are thrilled to have you on board! Your subscription is now active, and you can start enjoying our exclusive content.;'
+                    '\n\nTo begin your journey, click here👉🏻 http://127.0.0.1:8000/ to visit our index page. We have also attached a digital signature to this email for your reference.;'
+                    '\n\nIf you have any questions or need assistance, please don\'t hesitate to contact us.;'
+                    '\n\nBest Regards,'
+                    '\nARR'
+                ).format(username)
                 from_email = settings.DEFAULT_FROM_EMAIL
                 recipient_list = [authenticated_user.email]
-                send_mail(subject, message, from_email, recipient_list, fail_silently=False)
-
+                email = EmailMessage(
+                    subject=subject,
+                    body=message,
+                    from_email=from_email,
+                    to=recipient_list,
+                )
+                email.attach('invoice.pdf', pdf_data, 'application/pdf')
+                email.send(fail_silently=False)
                 return render(request, 'PremiumUserPage/successpage.html')
             else:
                 return render(request, 'PremiumUserPage/errorpage.html')
         except Exception as e:
+            print(e, "sdfsdf")
             return render(request, 'PremiumUserPage/errorpage.html', {'error_message': str(e)})
     else:
         return render(request, 'PremiumUserPage/errorpage.html')
+
+
+def generate_invoice(username, start_date, end_date):
+    buffer = BytesIO()
+    pdf = SimpleDocTemplate(buffer, pagesize=letter)
+    data = [
+        ['Username', 'Subscription Start Date', 'Subscription End Date'],
+        [username, formats.date_format(start_date, 'SHORT_DATE_FORMAT'), formats.date_format(end_date, 'SHORT_DATE_FORMAT')],
+    ]
+    table = Table(data)
+    table.setStyle(TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                               ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                               ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                               ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                               ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                               ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                               ('GRID', (0, 0), (-1, -1), 1, colors.black)]))
+    pdf.build([table])
+    pdf_data = buffer.getvalue()
+    buffer.close()
+
+    # Define the path where the PDF will be saved
+    pdf_filename = f"{username}_invoice.pdf"
+    pdf_path = os.path.join(settings.MEDIA_ROOT, 'invoices', pdf_filename)
+
+    with open(pdf_path, 'wb') as f:
+        f.write(pdf_data)
+
+    return pdf_data, pdf_path
 
 
 
