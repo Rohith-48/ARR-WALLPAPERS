@@ -802,8 +802,8 @@ def paymenthandler(request):
     else:
         return render(request, 'PremiumUserPage/errorpage.html')
 
-
 def generate_invoice(username, start_date, end_date):
+    # Create a buffer to store the PDF data
     buffer = BytesIO()
     pdf = SimpleDocTemplate(buffer, pagesize=letter)
     data = [
@@ -826,6 +826,12 @@ def generate_invoice(username, start_date, end_date):
     pdf_filename = f"{username}_invoice.pdf"
     pdf_path = os.path.join(settings.MEDIA_ROOT, 'invoices', pdf_filename)
 
+    # Check if the file already exists
+    if os.path.exists(pdf_path):
+        # If it exists, remove it
+        os.remove(pdf_path)
+
+    # Write the PDF data to the file
     with open(pdf_path, 'wb') as f:
         f.write(pdf_data)
 
