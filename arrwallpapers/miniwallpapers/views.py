@@ -712,21 +712,15 @@ def paymentform(request: HttpRequest):
     context['callback_url'] = callback_url
 
     return render(request, 'paymentform.html', context=context)
-
-from django.core.mail import send_mail
-from django.conf import settings
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from django.views.decorators.csrf import csrf_exempt
-from datetime import datetime, timedelta, timezone
-from .models import UserProfileDoc
-from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
-from django.utils import formats
 from io import BytesIO
-import os
+from django.utils import formats
 from django.core.mail import EmailMessage
+from django.conf import settings
+import os
+from datetime import datetime, timedelta
 
 @csrf_exempt
 @login_required
@@ -748,37 +742,28 @@ def paymenthandler(request):
 
             if result is not None:
                 authenticated_user = request.user
-                print(authenticated_user)
                 user_profile = UserProfileDoc.objects.get(user=authenticated_user)
-                print(user_profile)
                 amount = 200 if payment_amount == 20000 else 1000
-                # Set the subscription duration based on the plan
-                if amount == 200:
-                    user_profile.subscription_duration = 1  # 1 month
-                elif amount == 1000:
-                    user_profile.subscription_duration = 12  # 12 months
-                # Calculate the subscription expiration date
+                subscription_period = 'Monthly' if amount == 200 else 'Yearly'
+
+                user_profile.subscription_duration = 1 if subscription_period == 'Monthly' else 12
                 current_date = datetime.now().date()
-                expiration_date = current_date + timedelta(days=30 * user_profile.subscription_duration)  # Assuming 30 days per month
+                expiration_date = current_date + timedelta(days=30 * user_profile.subscription_duration) if subscription_period == 'Monthly' else current_date + timedelta(days=365 * user_profile.subscription_duration)
                 user_profile.subscription_expiration = expiration_date
-                # Set the user as subscribed
                 user_profile.subscribed = True
                 user_profile.save()
                 username = authenticated_user.username
-                
-                # Generate PDF invoice
-                pdf_data, pdf_path = generate_invoice(username, current_date, expiration_date)
 
-                # Save PDF file to media/invoices folder
+                pdf_data, pdf_path = generate_invoice(username, current_date, expiration_date, amount, subscription_period)
+
                 user_profile.invoice_path = pdf_path
                 user_profile.save()
 
-                # Send the email with PDF attachment
                 subject = 'Subscription Successful'
                 message = (
                     'Dear {},'
                     '\n\nThank you for subscribing to our platform. We are thrilled to have you on board! Your subscription is now active, and you can start enjoying our exclusive content.;'
-                    '\n\nTo begin your journey, click here👉🏻 http://127.0.0.1:8000/ to visit our index page. We have also attached a digital signature to this email for your reference.;'
+                    '\n\nTo begin your journey, click here👉🏻 https://arrwallpapers.pythonanywhere.com/ to visit our index page. We have also attached a digital signature to this email for your reference.;'
                     '\n\nIf you have any questions or need assistance, please don\'t hesitate to contact us.;'
                     '\n\nBest Regards,'
                     '\nARR'
@@ -802,40 +787,86 @@ def paymenthandler(request):
     else:
         return render(request, 'PremiumUserPage/errorpage.html')
 
-def generate_invoice(username, start_date, end_date):
-    # Create a buffer to store the PDF data
+
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
+from reportlab.lib.styles import ParagraphStyle
+from io import BytesIO
+from django.utils import formats
+from django.conf import settings
+import os
+from datetime import datetime, timedelta
+import random
+import string
+def generate_invoice(username, start_date, end_date, amount, subscription_period):
     buffer = BytesIO()
     pdf = SimpleDocTemplate(buffer, pagesize=letter)
-    data = [
-        ['Username', 'Subscription Start Date', 'Subscription End Date'],
-        [username, formats.date_format(start_date, 'SHORT_DATE_FORMAT'), formats.date_format(end_date, 'SHORT_DATE_FORMAT')],
+
+    # Define header content
+    header_content = [
+        ['Order ID:', ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))],  # Generate a random order ID
+        ['Receipt for Purchases'],
     ]
-    table = Table(data)
-    table.setStyle(TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-                               ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-                               ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                               ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                               ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-                               ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-                               ('GRID', (0, 0), (-1, -1), 1, colors.black)]))
-    pdf.build([table])
+
+    # Define table content
+    table_data = [
+        ['Amount:', f'Rs {amount}'],
+        ['Subscription Period:', subscription_period],
+        ['Subscription Start Date:', formats.date_format(start_date, 'SHORT_DATE_FORMAT')],
+        ['Subscription End Date:', formats.date_format(end_date, 'SHORT_DATE_FORMAT')],
+        ['Date and Time of Purchase:', datetime.now().strftime('%Y-%m-%d %H:%M:%S')],
+    ]
+
+    # Define footer content
+    footer_content = [
+        ['@arrwallpapers'],
+    ]
+
+    # Create header table
+    header_table = Table(header_content)
+    header_table.setStyle(TableStyle([('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                                      ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+                                      ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+                                      ('SIZE', (0, 0), (-1, -1), 12)]))
+
+    # Create main table
+    main_table = Table(table_data)
+    main_table.setStyle(TableStyle([('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                                    ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+                                    ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+                                    ('SIZE', (0, 0), (-1, -1), 12),
+                                    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                                    ('GRID', (0, 0), (-1, -1), 1, colors.black)]))
+
+    # Create footer table
+    footer_table = Table(footer_content)
+    footer_table.setStyle(TableStyle([('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                                      ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+                                      ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+                                      ('SIZE', (0, 0), (-1, -1), 10)]))
+
+    elements = [header_table, Spacer(1, 20), main_table, Spacer(1, 20), footer_table]
+
+    pdf.build(elements)
     pdf_data = buffer.getvalue()
     buffer.close()
 
-    # Define the path where the PDF will be saved
     pdf_filename = f"{username}_invoice.pdf"
     pdf_path = os.path.join(settings.MEDIA_ROOT, 'invoices', pdf_filename)
 
-    # Check if the file already exists
     if os.path.exists(pdf_path):
-        # If it exists, remove it
         os.remove(pdf_path)
 
-    # Write the PDF data to the file
     with open(pdf_path, 'wb') as f:
         f.write(pdf_data)
 
     return pdf_data, pdf_path
+
+
+
+
+
 
 
 

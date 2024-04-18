@@ -84,11 +84,6 @@ class Hosttest(TestCase):
         driver.get("http://127.0.0.1:8000/")
         time.sleep(2)
 
-#         download_icons = driver.find_elements(By.CLASS_NAME, "download-icon")
-
-# # Click on each download icon
-#         for download_icon in download_icons:
-#             download_icon.click()
         # review_section = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, "cont")))
         # actions = ActionChains(driver)
         # actions.move_to_element(review_section).perform()
