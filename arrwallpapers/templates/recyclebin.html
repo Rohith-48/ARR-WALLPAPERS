@@ -69,8 +69,6 @@
         }
     }
 </style>
-
-
 <div class="content_table">
     {% if deleted_wallpapers %}
         <ul class="wallpapers-list">
@@ -92,6 +90,13 @@
                             <input type="hidden" name="wallpaper_id" value="{{ wallpaper.id }}">
                             <button type="submit" class="restore-button">Restore</button>
                         </form>
+                       <!-- Stylish "Delete Permanently" button -->
+                        <form method="post" action="{% url 'delete_permanently_wallpaper' wallpaper.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="wallpaper_id" value="{{ wallpaper.id }}">
+                            <button type="submit" class="delete-permanently-button">Delete Permanently</button>
+                        </form>
+
                     </div>
                 </li>
             {% endfor %}
@@ -110,11 +115,20 @@
         margin-top: 10px;
         border-radius: 5px;
     }
+    .delete-permanently-button {
+        background-color: red;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
 </style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const restoreButtons = document.querySelectorAll('.restore-button');
+        const deletePermanentlyButtons = document.querySelectorAll('.delete-permanently-button');
 
         restoreButtons.forEach(button => {
             button.addEventListener('click', function () {
@@ -133,8 +147,21 @@
                 }, 3000); // Adjust the timeout duration as needed
             });
         });
+
+        deletePermanentlyButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                if (confirm("Are you sure you want to delete this wallpaper permanently?")) {
+                    // Proceed with the form submission
+                    button.closest('form').submit();
+                } else {
+                    // Cancel the action
+                    return false;
+                }
+            });
+        });
     });
 </script>
+
 
 
 {% endblock %}

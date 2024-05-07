@@ -53,8 +53,9 @@ urlpatterns=[
 
     path('recyclebin/', views.recyclebin, name='recyclebin'),
     path('userrecyclebin/', views.userrecyclebin, name='userrecyclebin'),
+    path('delete_permanently/<int:wallpaper_id>/', views.delete_permanently_wallpaper, name='delete_permanently_wallpaper'),
+    path('userdelete_permanently/<int:wallpaper_id>/', views.delete_permanently_userwallpaper, name='delete_permanently_userwallpaper'),
 
-           
     path('wallpaper/<int:wallpaper_id>/', views.wallpaper_details, name='wallpaper_details'),
     path('liked_wallpapers/', views.liked_wallpapers, name='liked_wallpapers'),
     path('subscribe_page/', views.subscribe_page, name='subscribe_page'),

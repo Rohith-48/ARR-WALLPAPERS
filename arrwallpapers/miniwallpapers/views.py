@@ -712,6 +712,8 @@ def paymentform(request: HttpRequest):
     context['callback_url'] = callback_url
 
     return render(request, 'paymentform.html', context=context)
+
+
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
@@ -963,14 +965,20 @@ def view_delete_userwallpaper(request):
     return render(request, 'view_delete_userwallpaper.html', context)
 
 
-
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render
+from django.contrib.auth.decorators import user_passes_test
 from .models import WallpaperCollection
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@user_passes_test(lambda u: u.is_staff)  # Ensure only admin users can access this view
 def recyclebin(request):
-    deleted_wallpapers = WallpaperCollection.objects.filter(is_deleted=True, user=request.user)
-    context = {'deleted_wallpapers': deleted_wallpapers}
+    # Fetch all deleted wallpapers
+    deleted_wallpapers = WallpaperCollection.objects.filter(is_deleted=True)
+    context = {
+        'deleted_wallpapers': deleted_wallpapers,
+    }
     return render(request, 'recyclebin.html', context)
+
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -1005,6 +1013,52 @@ def restore_wallpaper1(request):
 
     return redirect('userrecyclebin')
 
+
+
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.conf import settings
+import os
+
+from .models import WallpaperCollection
+
+def delete_permanently_wallpaper(request, wallpaper_id):
+    wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
+
+    # Delete the wallpaper from the media folder
+    if wallpaper.wallpaper_image:
+        os.remove(os.path.join(settings.MEDIA_ROOT, str(wallpaper.wallpaper_image)))
+
+    # Delete the wallpaper from the database
+    wallpaper.delete()
+
+    messages.success(request, "Wallpaper deleted permanently.")
+
+    return redirect('recyclebin') 
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.conf import settings
+import os
+
+from .models import WallpaperCollection
+
+def delete_permanently_userwallpaper(request, wallpaper_id):
+    wallpaper = get_object_or_404(WallpaperCollection, id=wallpaper_id)
+
+    # Delete the wallpaper from the media folder
+    if wallpaper.wallpaper_image:
+        os.remove(os.path.join(settings.MEDIA_ROOT, str(wallpaper.wallpaper_image)))
+
+    # Delete the wallpaper from the database
+    wallpaper.delete()
+
+    messages.success(request, "Wallpaper deleted permanently.")
+
+    return redirect('userrecyclebin') 
 
 
 
@@ -1051,7 +1105,7 @@ ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'webp', 'svg',
 def user_upload(request):
     user_profile = UserProfileDoc.objects.get(user=request.user)
     categories = Category.CATEGORY_CHOICES  # Define categories outside the if-else block
-    
+    avatar = user_profile.avatar if user_profile.avatar else None
     # Default values
     uploaded_wallpapers_count = 0
 
@@ -1102,20 +1156,24 @@ def user_upload(request):
         "categories": categories,
         "user_profile": user_profile,
         'uploaded_wallpapers_count': uploaded_wallpapers_count,
+        'avatar': avatar,
     }
 
     return render(request, "user_upload.html", context)
-
-
 
 @login_required
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def user_edit_wallpaper(request):
     user_profile = UserProfileDoc.objects.get(user=request.user)
-    wallpapers = WallpaperCollection.objects.filter(user=request.user)
+    
+    # Fetch the avatar
+    avatar = user_profile.avatar if user_profile.avatar else None
+    
+    # Filter out wallpapers that are not deleted
+    wallpapers = WallpaperCollection.objects.filter(user=request.user, is_deleted=False)
     
     # Fetch the count of uploaded wallpapers
-    uploaded_wallpapers_count = WallpaperCollection.objects.filter(user=request.user).count()
+    uploaded_wallpapers_count = wallpapers.count()
 
     all_tags = Tag.objects.all()
 
@@ -1127,7 +1185,7 @@ def user_edit_wallpaper(request):
         tags_list = [tag.strip() for tag in tags_input.split(",")]
 
         try:
-            wallpaper = WallpaperCollection.objects.get(id=selected_wallpaper_id, user=request.user)
+            wallpaper = WallpaperCollection.objects.get(id=selected_wallpaper_id, user=request.user, is_deleted=False)
             wallpaper.title = title
             wallpaper.description = description
             wallpaper.save()
@@ -1145,7 +1203,8 @@ def user_edit_wallpaper(request):
         "wallpapers": wallpapers,
         "all_tags": all_tags,
         "user_profile": user_profile,  
-        'uploaded_wallpapers_count': uploaded_wallpapers_count, 
+        'uploaded_wallpapers_count': uploaded_wallpapers_count,
+        'avatar': avatar,  # Add the avatar to the context
     }
     return render(request, "user_edit.html", context)
 

@@ -94,6 +94,12 @@
                             <input type="hidden" name="wallpaper_id" value="{{ wallpaper.id }}">
                             <button type="submit" class="restore-button">Restore</button>
                         </form>
+                        <!-- Stylish "Delete Permanently" button -->
+                        <form method="post" action="{% url 'delete_permanently_userwallpaper' wallpaper.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="wallpaper_id" value="{{ wallpaper.id }}">
+                            <button type="button" class="delete-permanently-button" style="background-color: red; color: white;">Delete Permanently</button>
+                        </form>
                     </div>
                 </li>
             {% endfor %}
@@ -106,6 +112,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const restoreButtons = document.querySelectorAll('.restore-button');
+        const deletePermanentlyButtons = document.querySelectorAll('.delete-permanently-button');
 
         restoreButtons.forEach(button => {
             button.addEventListener('click', function () {
@@ -124,8 +131,21 @@
                 }, 3000); 
             });
         });
+
+        deletePermanentlyButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                if (confirm("Are you sure you want to delete this wallpaper permanently?")) {
+                    // Proceed with the form submission
+                    button.closest('form').submit();
+                } else {
+                    // Cancel the action
+                    return false;
+                }
+            });
+        });
     });
 </script>
+
 
 
 
